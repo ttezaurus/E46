@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>E46 OBD</title>
+<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d23;--text:#eceff4;--muted:#9aa3b2;--accent:#5b9dff;--danger:#ef6b6b;--line:#2a2e36}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d23;--text:#eceff4;--muted:#9aa3b2;--accent:#5b9dff;--danger:#ef6b6b;--line:#2a2e36}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0 0 4px}
+#status{color:var(--muted);font-size:14px;min-height:20px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+button{font:inherit;border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:#fff}
+button.sec{background:var(--card);color:var(--text);border:1px solid var(--line)}
+button.danger{background:var(--danger)}
+button:disabled{opacity:.4}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.card small{display:block;color:var(--muted);font-size:12px}
+.card b{font-size:22px;font-variant-numeric:tabular-nums}
+.card span{color:var(--muted);font-size:13px;margin-left:4px}
+h2{font-size:16px;margin:18px 0 8px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0 10px;margin:0 0 8px}
+.tabs button{padding:10px 4px;font-size:13px;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-panel{display:none;min-width:0}.tab-panel.active{display:block}
+.panel-note{color:var(--muted);font-size:12px;margin:4px 0 10px}
+@media(max-width:380px){.tabs button{font-size:11px;padding:9px 2px}}
+#dtc div{font-family:ui-monospace,Menlo,monospace;padding:6px 0;border-bottom:1px solid var(--line)}
+details{margin-top:18px}
+a{color:var(--accent)}
+.card b{cursor:pointer}.card.wide{grid-column:1/-1}.cv{display:flex;align-items:baseline;gap:4px}
+.gb{margin-left:auto;font-style:normal;cursor:pointer;padding:0 4px}
+canvas{width:100%;height:70px;margin-top:6px}
+select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--text)}
+#hud{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;background:var(--bg);box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+#hudGrid{display:grid;gap:8px;height:100%}
+#hudAl{display:none;background:var(--danger);color:#fff;padding:8px;border-radius:10px;margin-bottom:8px;text-align:center}
+.hc{display:flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid var(--line);border-radius:16px}
+.hc b{font-size:min(22vw,110px);font-variant-numeric:tabular-nums;cursor:default}
+.hc small{font-size:16px;color:var(--muted)}
+input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--text);flex:1;min-width:0}
+.mod{display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-family:ui-monospace,Menlo,monospace}
+#udsOut,#tOut,#report{white-space:pre-wrap;word-break:break-all;font:12px ui-monospace,Menlo,monospace;margin-top:8px}
+#log{white-space:pre-wrap;word-break:break-all;font:12px ui-monospace,Menlo,monospace;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:240px;overflow:auto}
+</style>
+</head>
+<body>
+<main>
+<h1>E46 OBD</h1>
+<div id="status">Откройте страницу в браузере Bluefy и нажмите «Подключить адаптер».</div>
+<div id="alarm" style="display:none;background:var(--danger);color:#fff;padding:10px;border-radius:10px;margin-bottom:10px"></div>
+<div class="row">
+  <button id="bConn">Подключить адаптер</button>
+  <button id="bDemo" class="sec">Демо</button>
+  <button id="bStop" class="sec" disabled>Остановить</button>
+</div>
+<nav class="tabs" role="tablist" aria-label="Разделы приложения">
+  <button type="button" class="tab-btn" data-tab="monitor" role="tab" aria-selected="true">Монитор</button>
+  <button type="button" class="tab-btn" data-tab="trip" role="tab" aria-selected="false">Поездка</button>
+  <button type="button" class="tab-btn" data-tab="diagnostics" role="tab" aria-selected="false">Диагностика</button>
+  <button type="button" class="tab-btn" data-tab="tools" role="tab" aria-selected="false">Инструменты</button>
+</nav>
+<section id="tab-monitor" class="tab-panel active" role="tabpanel">
+  <div class="row"><button id="bHud" class="sec">HUD</button><button id="bPk" class="sec">Сброс пиков</button><button id="bTg" class="sec" style="display:none">📤 Отправить файл в Telegram</button></div>
+  <div class="grid" id="grid"></div>
+  <div id="rate" style="color:var(--muted);font-size:12px;margin:6px 0"></div>
+  <details><summary>Выбор параметров</summary><div id="pick"></div></details>
+</section>
+<section id="tab-trip" class="tab-panel" role="tabpanel">
+  <h2>Разгон</h2>
+  <div class="card" style="margin-bottom:8px;cursor:default"><small>0–60 / 0–100 / 0–200 км/ч (нужен параметр «Скорость»)</small>
+  <b id="dragR" style="font-size:16px;cursor:default;white-space:pre-line">Готов к старту: остановитесь и троньтесь</b>
+  <button id="bDrag" class="sec" style="float:right;padding:4px 10px;font-size:12px">Сброс</button></div>
+  <h2>Статистика поездки</h2>
+  <div class="card" style="margin-bottom:8px;cursor:default"><small>По данным скорости OBD</small>
+  <b id="tripR" style="font-size:15px;cursor:default;white-space:pre-line">—</b>
+  <button id="bTrip" class="sec" style="float:right;padding:4px 10px;font-size:12px">Сброс</button></div>
+  <details open><summary>Сигнализация по порогу</summary>
+    <div class="row" style="margin-top:8px"><select id="alK"></select><select id="alC"><option value="gt">выше</option><option value="lt">ниже</option></select>
+    <input id="alV" type="number" step="any" placeholder="порог (в единицах карточки)"><label><input type="checkbox" id="alOn"> вкл</label></div>
+  </details>
+</section>
+<section id="tab-diagnostics" class="tab-panel" role="tabpanel">
+  <h2>Ошибки OBD-II</h2>
+  <div class="row"><button id="bRead" class="sec" disabled>Прочитать коды</button><button id="bClear" class="danger" disabled>Стереть коды</button></div>
+  <div id="dtc"></div>
+  <h2>Блоки (CAN/UDS)</h2>
+  <div class="row"><button id="bScan" class="sec" disabled>Найти блоки</button></div>
+  <div id="mods"></div><div id="udsOut"></div>
+  <details><summary>Отчёт: перед покупкой / для себя</summary>
+    <div class="row" style="margin-top:8px"><input id="odo" type="number" placeholder="Одометр, км (вручную)"><button id="bRep" class="sec" disabled>Собрать отчёт</button><button id="bRepS" class="sec">Сохранить отчёт</button></div>
+    <div id="report"></div>
+  </details>
+</section>
+<section id="tab-tools" class="tab-panel" role="tabpanel">
+  <h2>Запись параметров</h2>
+  <div class="row"><button id="bRec" class="sec" disabled>● Запись</button><button id="bCsv" class="sec" disabled>Сохранить CSV</button><button id="bLog" class="sec">Сохранить лог</button></div>
+  <div class="panel-note">CSV содержит выбранные параметры и временные отметки. Лог содержит обмен с адаптером.</div>
+  <h2>Терминал ELM327</h2>
+  <div class="row"><input id="tIn" placeholder="например ATDP или 0100" autocapitalize="characters" autocomplete="off"><button id="tSend" class="sec" disabled>Отправить</button></div>
+  <div id="tOut"></div>
+  <h2>Технический лог</h2><details><summary>Показать лог обмена</summary><pre id="log"></pre></details>
+</section>
+</main>
+<div id="hud"><div id="hudAl"></div><div id="hudGrid"></div></div>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let logBuf = '';
+const log = m => {
+  logBuf += m + '\n'; if (logBuf.length > 300000) logBuf = logBuf.slice(-250000);
+  const l = $('#log'); l.textContent = logBuf.slice(-4000); l.scrollTop = l.scrollHeight;
+};
+async function saveLog() { return shareText('obd-log.txt', logBuf); }
+async function shareText(name, text) {
+  const f = new File([text], name, {type: name.endsWith('.csv') ? 'text/csv;charset=utf-8' : 'text/plain;charset=utf-8'});
+  try {
+    if (navigator.share && navigator.canShare && navigator.canShare({files: [f]})) {
+      await navigator.share({files: [f], title: name});
+      status('Файл передан в системное меню отправки. Выберите Telegram, если он доступен.');
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+    log('share: ' + errText(e));
+  }
+  const url = URL.createObjectURL(f), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  status('Файл скачан. Откройте его и отправьте через Telegram.');
+}
+const status = m => { $('#status').textContent = m; };
+const errText = e => (e && (e.name || e.message)) ? ((e.name || '') + ': ' + (e.message || '')) : 'неизвестная ошибка (' + String(e) + ')';
+
+const M = (pid, t, u, f, k) => ({pid, t, u, f, k: k || String(pid)});
+const w = (b, i) => b[i] * 256 + b[i + 1];
+const s16 = (b, i) => { const v = w(b, i); return v > 32767 ? v - 65536 : v; };
+const METRICS = [
+  M(0x04, 'Нагрузка двигателя', '%', b => b[0] * 100 / 255),
+  M(0x05, 'Температура ОЖ', '°C', b => b[0] - 40),
+  M(0x0A, 'Давление топлива (манометр)', 'кПа', b => b[0] * 3),
+  M(0x0B, 'Давление во впуске (абс.)', 'кПа', b => b[0]),
+  M(0x0B, 'Наддув (избыточное, от 101 кПа)', 'кПа', b => b[0] - 101.3, 'boost'),
+  M(0x0C, 'Обороты', 'об/мин', b => w(b, 0) / 4),
+  M(0x0D, 'Скорость', 'км/ч', b => b[0]),
+  M(0x0E, 'Угол опережения', '°', b => b[0] / 2 - 64),
+  M(0x0F, 'Темп. впуска', '°C', b => b[0] - 40),
+  M(0x10, 'Расход воздуха', 'г/с', b => w(b, 0) / 100),
+  M(0x11, 'Положение дросселя', '%', b => b[0] * 100 / 255),
+  M(0x1F, 'Время работы двигателя', 'с', b => w(b, 0)),
+  M(0x22, 'Давление в рампе (отн. впуска)', 'кПа', b => w(b, 0) * 0.079),
+  M(0x23, 'Давление в топливной рампе', 'кПа', b => w(b, 0) * 10),
+  M(0x2C, 'Команда EGR', '%', b => b[0] * 100 / 255),
+  M(0x2D, 'Ошибка EGR', '%', b => b[0] * 100 / 128 - 100),
+  M(0x33, 'Атмосферное давление', 'кПа', b => b[0]),
+  M(0x3C, 'Температура катализатора', '°C', b => w(b, 0) / 10 - 40),
+  M(0x42, 'Напряжение бортсети', 'В', b => w(b, 0) / 1000),
+  M(0x43, 'Абсолютная нагрузка', '%', b => w(b, 0) * 100 / 255),
+  M(0x46, 'Темп. окружающего воздуха', '°C', b => b[0] - 40),
+  M(0x59, 'Давление в рампе (абс.)', 'кПа', b => w(b, 0) * 10),
+  M(0x5A, 'Положение педали (отн.)', '%', b => b[0] * 100 / 255),
+  M(0x5C, 'Температура масла', '°C', b => b[0] - 40),
+  M(0x5D, 'Угол начала впрыска', '°', b => w(b, 0) / 128 - 210),
+  M(0x5E, 'Расход топлива', 'л/ч', b => w(b, 0) / 20),
+  M(0x62, 'Момент двигателя (факт.)', '%', b => b[0] - 125),
+  M(0x73, 'Давление выхлопа (ряд 1)', 'кПа', b => w(b, 1) / 10),
+  M(0x78, 'Темп. выхлопа (ряд 1, датчик 1)', '°C', b => w(b, 1) / 10 - 40, '781'),
+  M(0x78, 'Темп. выхлопа (ряд 1, датчик 2)', '°C', b => w(b, 3) / 10 - 40, '782'),
+  M(0x7A, 'DPF: перепад давления', 'кПа', b => s16(b, 1) / 100, '7a1'),
+  M(0x7A, 'DPF: давление на входе', 'кПа', b => w(b, 3) / 10, '7a2'),
+  M(0x7A, 'DPF: давление на выходе', 'кПа', b => w(b, 5) / 10, '7a3'),
+  M(0x7C, 'DPF: температура на входе', '°C', b => w(b, 1) / 10 - 40, '7c1'),
+  M(0x7C, 'DPF: температура на выходе', '°C', b => w(b, 3) / 10 - 40, '7c2'),
+  M(0x21, 'Пробег с горящей лампой MIL', 'км', b => w(b, 0)),
+  M(0x30, 'Прогревов после сброса ошибок', 'шт', b => b[0]),
+  M(0x31, 'Пробег после сброса ошибок', 'км', b => w(b, 0)),
+  M(0x4D, 'Время с горящей лампой MIL', 'мин', b => w(b, 0)),
+  M(0x4E, 'Время после сброса ошибок', 'мин', b => w(b, 0))
+];
+const PIDLEN = {0x01: 4, 0x04: 1, 0x05: 1, 0x0A: 1, 0x0B: 1, 0x0C: 2, 0x0D: 1, 0x0E: 1, 0x0F: 1, 0x10: 2, 0x11: 1, 0x1F: 2, 0x21: 2, 0x22: 2, 0x23: 2,
+  0x2C: 1, 0x2D: 1, 0x30: 1, 0x31: 2, 0x33: 1, 0x3C: 2, 0x42: 2, 0x43: 2, 0x46: 1, 0x4D: 2, 0x4E: 2, 0x59: 2, 0x5A: 1, 0x5C: 1, 0x5D: 2, 0x5E: 2, 0x62: 1,
+  0x73: 5, 0x78: 9, 0x7A: 7, 0x7C: 9};
+const U = h => '0000' + h + '-0000-1000-8000-00805f9b34fb';
+const SERVICES = [U('fff0'), U('ffe0'), U('ffe5'), U('18f0'),
+  'e7810a71-73ae-499d-8c15-faa9aef0c3f2', '49535343-fe7d-4ae5-8fa9-9fafd205e455'];
+
+let wch = null, nch = null, buf = '', pending = null, running = false, action = null, active = [], avail = [];
+let sel = new Set(['4', '5', '11', 'boost', '12', '13', '15', '16', '66', '92']);
+try { const j = JSON.parse(localStorage.getItem('sel')); if (Array.isArray(j)) sel = new Set(j); } catch (e) {}
+function refresh() { active = avail.filter(m => sel.has(m.k)); render(); }
+function pickUI() {
+  const b = $('#pick'); b.innerHTML = '<small>показ / запись / HUD (если запись не отмечена, пишутся все показываемые)</small>';
+  avail.forEach(m => {
+    const l = document.createElement('label'); l.style.display = 'block'; l.style.padding = '4px 0';
+    const mkc = (set, key) => {
+      const c = document.createElement('input'); c.type = 'checkbox'; c.checked = set.has(m.k);
+      c.onchange = () => { if (c.checked) set.add(m.k); else set.delete(m.k); try { localStorage.setItem(key, JSON.stringify([...set])); } catch (e) {} refresh(); };
+      return c;
+    };
+    l.append(mkc(sel, 'sel'), ' ', mkc(recSet, 'rec'), ' ', mkc(hudSet, 'hud'), ' ' + m.t + ' (' + m.u + ')'); b.appendChild(l);
+  });
+}
+
+
+function onData(e) {
+  buf += new TextDecoder().decode(e.target.value);
+  if (buf.includes('>') && pending) {
+    const p = pending; pending = null; clearTimeout(p.t);
+    const lines = buf.replace(/>/g, '').split(/[\r\n]+/).map(s => s.trim()).filter(Boolean);
+    buf = '';
+    log('< ' + lines.join(' | '));
+    p.res(lines);
+  }
+}
+
+function send(cmd, to = 5000) {
+  if (demo) return fake(cmd);
+  return new Promise((res, rej) => {
+    buf = '';
+    const t = setTimeout(() => { pending = null; rej(new Error('нет ответа на ' + cmd)); }, to);
+    pending = {res, rej, t};
+    const d = new TextEncoder().encode(cmd + '\r');
+    log('> ' + cmd);
+    const w = wch.properties.writeWithoutResponse ? wch.writeValueWithoutResponse(d) : wch.writeValue(d);
+    w.catch(e => { clearTimeout(t); pending = null; rej(e); });
+  });
+}
+
+let quick = true;
+async function bytes(pid, to = 5000) {
+  const h2 = pid.toString(16).padStart(2, '0').toUpperCase();
+  let r = await send('01' + h2 + (quick ? '1' : ''), to);
+  if (quick && r.some(l => l.includes('?'))) { quick = false; r = await send('01' + h2, to); }
+  const h = hexBody(r);
+  const i = h.indexOf('41' + h2);
+  return i < 0 ? null : (h.slice(i + 4).match(/../g) || []).map(v => parseInt(v, 16));
+}
+
+async function supported() {
+  const s = new Set(); let base = 0;
+  while (true) {
+    const b = await bytes(base, 20000);
+    if (!b || b.length < 4) break;
+    for (let i = 0; i < 32; i++) if (b[i >> 3] & (0x80 >> (i & 7))) s.add(base + i + 1);
+    if (!s.has(base + 0x20) || base >= 0x60) break;
+    base += 0x20;
+  }
+  return s;
+}
+
+const DESC = {
+P0016:'Рассогласование коленвала и распредвала',P0087:'Низкое давление в топливной рампе',P0088:'Слишком высокое давление в топливной рампе',P0089:'Регулятор давления топлива: неисправность',
+P0100:'Датчик расхода воздуха (MAF): цепь',P0101:'MAF: сигнал вне диапазона',P0102:'MAF: низкий сигнал',P0103:'MAF: высокий сигнал',
+P0105:'Датчик давления во впуске (MAP): цепь',P0106:'MAP: сигнал вне диапазона',P0107:'MAP: низкий сигнал',P0108:'MAP: высокий сигнал',
+P0110:'Датчик температуры воздуха на впуске: цепь',P0115:'Датчик температуры ОЖ: цепь',P0116:'Датчик температуры ОЖ: вне диапазона',P0117:'Датчик температуры ОЖ: низкий сигнал',P0118:'Датчик температуры ОЖ: высокий сигнал',
+P0120:'Датчик положения педали/дросселя: цепь',P0121:'Датчик положения педали/дросселя: вне диапазона',P0122:'Датчик положения педали/дросселя: низкий сигнал',P0123:'Датчик положения педали/дросселя: высокий сигнал',
+P0128:'Термостат: температура ОЖ ниже нормы',P0130:'Лямбда-зонд 1: цепь',P0171:'Бедная смесь (ряд 1)',P0172:'Богатая смесь (ряд 1)',P0174:'Бедная смесь (ряд 2)',P0175:'Богатая смесь (ряд 2)',
+P0217:'Перегрев двигателя',P0234:'Избыточное давление наддува',P0235:'Датчик давления наддува: цепь',P0236:'Датчик давления наддува: вне диапазона',P0237:'Датчик давления наддува: низкий сигнал',P0238:'Датчик давления наддува: высокий сигнал',P0299:'Недостаточное давление наддува',
+P0300:'Пропуски зажигания (несколько цилиндров)',P0325:'Датчик детонации: цепь',P0335:'Датчик коленвала: цепь',P0336:'Датчик коленвала: вне диапазона',P0340:'Датчик распредвала: цепь',P0341:'Датчик распредвала: вне диапазона',
+P0380:'Свечи накала: цепь',P0400:'Рециркуляция ОГ (EGR): неисправность',P0401:'EGR: недостаточный поток',P0402:'EGR: избыточный поток',P0403:'EGR: цепь клапана',P0404:'EGR: вне диапазона',
+P0420:'Катализатор: эффективность ниже порога',P0430:'Катализатор (ряд 2): эффективность ниже порога',P0440:'Система улавливания паров (EVAP): неисправность',P0442:'EVAP: малая утечка',P0455:'EVAP: большая утечка',
+P0500:'Датчик скорости автомобиля',P0560:'Напряжение бортсети: неисправность',P0562:'Низкое напряжение бортсети',P0563:'Высокое напряжение бортсети',P0571:'Выключатель стоп-сигнала: цепь',
+P0600:'Ошибка CAN-связи между блоками',P0601:'Ошибка памяти ЭБУ (контрольная сумма)',P0602:'Ошибка программирования ЭБУ',P0606:'Неисправность процессора ЭБУ',P0620:'Генератор: цепь управления',P0670:'Блок управления свечами накала',
+P0700:'Неисправность системы управления АКПП',P0715:'Датчик частоты вращения входного вала АКПП',P0720:'Датчик частоты вращения выходного вала АКПП',P0730:'Неверное передаточное число АКПП',P0741:'Блокировка гидротрансформатора: не включается',P0750:'Соленоид переключения A (АКПП)',P0755:'Соленоид переключения B (АКПП)',
+P2002:'Сажевый фильтр (DPF): эффективность ниже порога',U0100:'Нет связи с блоком двигателя',U0101:'Нет связи с блоком АКПП',U0121:'Нет связи с блоком ABS',U0140:'Нет связи с блоком кузова',U0155:'Нет связи с панелью приборов'
+};
+function describe(c) {
+  if (DESC[c]) return DESC[c];
+  let m;
+  if ((m = c.match(/^P020([1-8])$/))) return 'Форсунка цилиндра ' + m[1] + ': цепь';
+  if ((m = c.match(/^P030([1-8])$/))) return 'Пропуски зажигания в цилиндре ' + m[1];
+  if ((m = c.match(/^P067([1-8])$/))) return 'Свеча накала цилиндра ' + m[1] + ': цепь';
+  return 'нет в базе';
+}
+function dtcRow(c, x) {
+  const d = document.createElement('div');
+  d.textContent = c + (x ? ' [' + x + ']' : '') + ' — ' + describe(c.slice(0, 5)) + ' ';
+  const a = document.createElement('a');
+  a.textContent = 'искать'; a.target = '_blank'; a.rel = 'noopener';
+  a.href = 'https://www.google.com/search?q=' + encodeURIComponent(c.slice(0, 5) + ' ошибка расшифровка');
+  d.appendChild(a);
+  return d;
+}
+
+function decodeDTC(h) {
+  if (h.length !== 4 || h === '0000') return null;
+  const v = parseInt(h, 16);
+  return 'PCBU'[v >> 14] + ((v >> 12) & 3) + (v & 0xFFF).toString(16).toUpperCase().padStart(3, '0');
+}
+
+async function readDTC() {
+  const out = new Set();
+  for (const l of await send('03', 10000)) {
+    let h = l.replace(/\s/g, '');
+    if (!h.startsWith('43')) continue;
+    h = h.slice(2);
+    if (h.length % 4 === 2) h = h.slice(2); // CAN добавляет байт-счётчик, K-line (E46) нет
+    for (let i = 0; i + 4 <= h.length; i += 4) { const c = decodeDTC(h.substr(i, 4)); if (c) out.add(c); }
+  }
+  const box = $('#dtc');
+  box.innerHTML = '';
+  if (!out.size) box.textContent = 'Ошибок нет';
+  [...out].sort().forEach(c => box.appendChild(dtcRow(c)));
+}
+
+async function restore() {
+  for (const c of ['ATZ', 'ATE0', 'ATL0', 'ATS0', 'ATH0', 'ATAT2', 'ATSP' + savedProto()]) { try { await send(c, 8000); } catch (e) {} }
+  try { await send('0100', 20000); } catch (e) {}
+}
+function hexBody(lines) {
+  let h = '';
+  for (let l of lines) {
+    l = l.replace(/\s/g, '');
+    if (!/^([0-9A-F]:)?[0-9A-F]+$/.test(l) || /^[0-9A-F]{3}$/.test(l)) continue;
+    h += l.replace(/^[0-9A-F]:/, '');
+  }
+  return h;
+}
+const MODN = {'7E0': 'Двигатель (PCM)', '7E1': 'Коробка (TCM)', '760': 'ABS/ESP', '720': 'Приборная панель', '726': 'Блок кузова (BCM)',
+  '737': 'Подушки безопасности', '736': 'Парктроники', '7D0': 'Мультимедиа (APIM)', '727': 'Аудио', '730': 'Усилитель руля',
+  '740': 'Дверь водителя', '741': 'Дверь пассажира', '724': 'Подрулевой блок', '733': 'Климат'};
+function showMods(list) {
+  const b = $('#mods'); b.innerHTML = '';
+  if (!list.length) { b.textContent = 'Блоки не ответили (нужен автомобиль с CAN).'; return; }
+  list.forEach(m => {
+    const d = document.createElement('div'); d.className = 'mod';
+    const t = document.createElement('span'), nm = MODN[m.req];
+    t.textContent = m.req + '→' + m.resp + (nm ? ' ' + (m.req.startsWith('7E') ? '' : '≈') + nm : '');
+    const mk = (txt, a) => { const bt = document.createElement('button'); bt.className = 'sec'; bt.textContent = txt; bt.onclick = () => { action = a; }; return bt; };
+    d.append(t, mk('Инфо', {t: 'info', m}), mk('Активные', {t: 'uds', m, mask: '0C'}), mk('Все', {t: 'uds', m, mask: 'FF'}));
+    b.appendChild(d);
+  });
+}
+async function scanMods() {
+  const found = [];
+  $('#mods').textContent = 'Поиск блоков… до 2 минут, не закрывайте страницу.';
+  try {
+    for (const c of ['ATSP6', 'ATH1', 'ATST19']) await send(c, 5000);
+    for (let id = 0x700; id <= 0x7FF && running; id++) {
+      if (id === 0x7DF) continue;
+      const req = id.toString(16).toUpperCase();
+      await send('ATSH' + req, 2000);
+      const r = await send('3E00', 2000).catch(() => []);
+      const hit = r.map(l => l.replace(/\s/g, '')).find(l => /^7[0-9A-F]{2}([0-9A-F]{2})+$/.test(l));
+      if (hit && hit.slice(0, 3) !== req) found.push({req, resp: hit.slice(0, 3)});
+    }
+  } catch (e) { log('! scan ' + errText(e)); }
+  await restore(); showMods(found);
+}
+async function udsSetup(m) {
+  for (const c of ['ATH0', 'ATSH' + m.req, 'ATCRA' + m.resp, 'ATST64']) await send(c, 3000);
+}
+async function udsDTC(m, mask) {
+  const o = $('#udsOut'); o.textContent = 'Чтение…';
+  try {
+    await udsSetup(m);
+    const raw = await send('1902' + mask, 12000);
+    const h = hexBody(raw).replace(/7F1978/g, '');
+    const nm = (MODN[m.req] || m.req);
+    if (h.startsWith('5902')) {
+      const rows = [];
+      for (let i = 6; i + 8 <= h.length; i += 8) {
+        const c = decodeDTC(h.substr(i, 4));
+        if (c) rows.push({c, x: h.substr(i + 4, 2) + ' / статус ' + h.substr(i + 6, 2)});
+      }
+      o.textContent = nm + ': ' + (rows.length ? rows.length + ' кодов' : 'ошибок нет') +
+        (raw.some(l => /BUFFER/.test(l)) ? '\n⚠ список обрезан буфером адаптера, нажмите «Активные»' : '');
+      rows.forEach(e => o.appendChild(dtcRow(e.c, e.x)));
+    } else o.textContent = nm + ': ответ ' + (h || 'нет данных');
+  } catch (e) { o.textContent = 'Ошибка: ' + errText(e); }
+  await restore();
+}
+async function udsInfo(m) {
+  const o = $('#udsOut'); o.textContent = 'Чтение…';
+  const out = [];
+  try {
+    await udsSetup(m);
+    for (const [d, n] of [['F190', 'VIN'], ['F187', 'Номер детали'], ['F188', 'Версия ПО'], ['F191', 'Версия железа'], ['F18C', 'Серийный номер'], ['F194', 'Версия ПО (доп.)']]) {
+      const h = hexBody(await send('22' + d, 5000)).replace(/7F2278/g, '');
+      if (!h.startsWith('62' + d)) continue;
+      const t = (h.slice(6).match(/../g) || []).map(x => parseInt(x, 16)).filter(c => c > 31 && c < 127).map(c => String.fromCharCode(c)).join('');
+      if (t) out.push(n + ': ' + t);
+    }
+  } catch (e) { out.push('Ошибка: ' + errText(e)); }
+  o.textContent = (MODN[m.req] || m.req) + '\n' + (out.length ? out.join('\n') : 'блок не отдал идентификаторы');
+  await restore();
+}
+async function term(cmd) {
+  const o = $('#tOut'); o.textContent += '> ' + cmd + '\n';
+  try { o.textContent += (await send(cmd, 10000)).join('\n') + '\n'; }
+  catch (e) { o.textContent += '! ' + errText(e) + '\n'; }
+}
+async function doExt(a) {
+  if (a.t === 'scan') await scanMods(); else if (a.t === 'uds') await udsDTC(a.m, a.mask); else if (a.t === 'info') await udsInfo(a.m); else if (a.t === 'term') await term(a.cmd); else if (a.t === 'report') await report();
+}
+
+function buttons() {
+  $('#bScan').disabled = !running;
+  $('#bDemo').disabled = running;
+  $('#bRep').disabled = !running;
+  $('#bRec').disabled = !running;
+  $('#tSend').disabled = !running;
+  $('#bConn').disabled = running;
+  $('#bStop').disabled = !running;
+  $('#bRead').disabled = !running;
+  $('#bClear').disabled = !running;
+}
+
+const UNITS = {
+  'кПа': [['кПа', v => v, 0], ['бар', v => v / 100, 2], ['psi', v => v * 0.145038, 1]],
+  '°C': [['°C', v => v, 1], ['°F', v => v * 9 / 5 + 32, 1]],
+  'км/ч': [['км/ч', v => v, 0], ['mph', v => v * 0.621371, 0]],
+  'г/с': [['г/с', v => v, 1], ['кг/ч', v => v * 3.6, 1]],
+  'км': [['км', v => v, 0], ['миль', v => v * 0.621371, 0]]
+};
+let unitSel = {}, graphOn = new Set(), hist = {}, last = {};
+try { unitSel = JSON.parse(localStorage.getItem('units')) || {}; } catch (e) {}
+let recOn = false, recSet = new Set(), recRows = [], recT0 = 0, recCols = [], recUpdated = new Set();
+try { const j = JSON.parse(localStorage.getItem('rec')); if (Array.isArray(j)) recSet = new Set(j); } catch (e) {}
+const unitOf = m => { const L = UNITS[m.u]; return L ? L[(unitSel[m.k] || 0) % L.length] : [m.u, v => v, 1]; };
+
+function render() {
+  const g = $('#grid'); g.innerHTML = '';
+  active.forEach(m => {
+    const c = document.createElement('div'); c.className = 'card' + (graphOn.has(m.k) ? ' wide' : '');
+    c.innerHTML = '<small></small><div class="cv"><b id="v' + m.k + '">—</b><span id="u' + m.k + '"></span><i class="gb">📈</i></div><small id="m' + m.k + '"></small><canvas id="g' + m.k + '"></canvas>';
+    c.querySelector('small').textContent = m.t;
+    c.querySelector('canvas').style.display = graphOn.has(m.k) ? 'block' : 'none';
+    c.querySelector('b').onclick = () => {
+      const L = UNITS[m.u]; if (!L) return;
+      unitSel[m.k] = ((unitSel[m.k] || 0) + 1) % L.length;
+      try { localStorage.setItem('units', JSON.stringify(unitSel)); } catch (e) {}
+      paint(m);
+    };
+    c.querySelector('.gb').onclick = () => { if (graphOn.has(m.k)) graphOn.delete(m.k); else graphOn.add(m.k); render(); };
+    g.appendChild(c); paint(m);
+  });
+}
+function paint(m) {
+  const v = last[m.k];
+  if (v === undefined) return;
+  const [u, f, d] = unitOf(m), txt = f(v).toFixed(d);
+  const hv = $('#h' + m.k); if (hv) { hv.textContent = txt; $('#hu' + m.k).textContent = u; }
+  const el = $('#v' + m.k); if (!el) return;
+  el.textContent = txt; $('#u' + m.k).textContent = u;
+  const r = mm[m.k], mi = $('#m' + m.k);
+  if (r && mi) mi.textContent = 'мин ' + f(r.lo).toFixed(d) + ' · макс ' + f(r.hi).toFixed(d);
+  if (graphOn.has(m.k)) drawGraph(m);
+}
+function drawGraph(m) {
+  const cv = $('#g' + m.k); if (!cv) return;
+  const W = cv.width = Math.max(cv.clientWidth, 200) * 2, H = cv.height = 140, ctx = cv.getContext('2d');
+  const f = unitOf(m)[1], now = performance.now(), pts = (hist[m.k] || []).filter(p => now - p[0] <= 60000);
+  if (pts.length < 2) return;
+  const ys = pts.map(p => f(p[1])); let lo = Math.min(...ys), hi = Math.max(...ys);
+  if (hi - lo < 1e-6) { lo -= 1; hi += 1; }
+  const css = getComputedStyle(document.documentElement);
+  ctx.strokeStyle = css.getPropertyValue('--accent'); ctx.lineWidth = 3; ctx.beginPath();
+  pts.forEach((p, i) => {
+    const x = W - (now - p[0]) / 60000 * W, y = H - 14 - (f(p[1]) - lo) / (hi - lo) * (H - 28);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  });
+  ctx.stroke(); ctx.fillStyle = css.getPropertyValue('--muted'); ctx.font = '22px sans-serif';
+  ctx.fillText(hi.toFixed(2), 4, 20); ctx.fillText(lo.toFixed(2), 4, H - 4);
+}
+let demo = false, demoT0 = 0, fakeHdr = '7DF';
+const HX = a => a.map(x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0').toUpperCase()).join('');
+const hexAscii = t => [...t].map(ch => ch.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')).join('');
+const DEMO_PIDS = [0x04, 0x05, 0x0B, 0x0C, 0x0D, 0x0F, 0x10, 0x11, 0x1F, 0x21, 0x30, 0x31, 0x4D, 0x4E];
+function demoState() {
+  const t = ((performance.now() - demoT0) / 1000) % 60;
+  let speed = 0, phase = 'idle';
+  if (t >= 6 && t < 22) { speed = (t - 6) / 16 * 110; phase = 'accel'; }
+  else if (t >= 22 && t < 35) { speed = 110; phase = 'cruise'; }
+  else if (t >= 35 && t < 49) { speed = Math.max(0, 110 * (49 - t) / 14); phase = 'decel'; }
+  const gear = Math.max(1, Math.min(5, Math.floor(speed / 23) + 1));
+  const rpm = speed < 1 ? 800 : 1250 + (speed - (gear - 1) * 23) * 78;
+  const throttle = phase === 'accel' ? 68 : phase === 'cruise' ? 22 : 0;
+  const load = phase === 'accel' ? 62 : phase === 'cruise' ? 27 : phase === 'decel' ? 12 : 18;
+  const map = phase === 'accel' ? 145 + 15 * Math.sin((t - 6) / 16 * Math.PI) : phase === 'cruise' ? 48 : 34;
+  const maf = map * rpm * 0.000174;
+  return {t, speed, rpm, throttle, load, map, maf, phase};
+}
+function demoBitmap(base) {
+  const bits = new Array(4).fill(0);
+  for (const pid of DEMO_PIDS) {
+    if (pid > base && pid <= base + 0x20) {
+      const bit = pid - base - 1;
+      bits[bit >> 3] |= 0x80 >> (bit & 7);
+    }
+  }
+  if (DEMO_PIDS.some(pid => pid > base + 0x20 && pid <= base + 0x40)) {
+    bits[3] |= 0x01;
+  }
+  return bits;
+}
+function demoVal(pid) {
+  const d = demoState();
+  const rpmRaw = Math.round(d.rpm * 4), mafRaw = Math.round(d.maf * 100);
+  const vals = {
+    0x00: demoBitmap(0), 0x20: demoBitmap(0x20), 0x40: demoBitmap(0x40), 0x01: [0x01, 0x0F, 0x4A, 0x40],
+    0x04: [Math.round(d.load * 255 / 100)], 0x05: [130],
+    0x0B: [Math.round(d.map)], 0x0C: [rpmRaw >> 8, rpmRaw & 255],
+    0x0D: [Math.round(d.speed)], 0x0F: [70],
+    0x10: [mafRaw >> 8, mafRaw & 255], 0x11: [Math.round(d.throttle * 255 / 100)],
+    0x1F: [0, Math.floor(d.t)], 0x21: [0, 12], 0x30: [5],
+    0x31: [0, 150], 0x4D: [0, 3], 0x4E: [0, 200]
+  };
+  return vals[pid];
+}
+async function fake(cmd) {
+  await sleep(30);
+  const c = cmd.toUpperCase();
+  if (c === 'ATDP') return ['ДЕМО: ISO 15765-4 (CAN 11/500)'];
+  if (c.startsWith('ATSH')) { fakeHdr = c.slice(4); return ['OK']; }
+  if (c.startsWith('AT')) return ['OK'];
+  if (c === '0100' || c === '0120' || c === '0140') {
+    const base = parseInt(c.slice(2), 16);
+    return ['41' + c.slice(2) + HX(demoBitmap(base))];
+  }
+  if (c.startsWith('01')) {
+    const ids = c.slice(2).match(/../g) || [];
+    let out = '41';
+    for (const id of ids) { const v = demoVal(parseInt(id, 16)); if (v) out += id + HX(v); }
+    return out === '41' ? ['NO DATA'] : [out];
+  }
+  if (c.startsWith('02')) {
+    const id = c.slice(2, 4);
+    if (id === '02') return ['4202000101'];
+    const v = demoVal(parseInt(id, 16));
+    return v ? ['42' + id + '00' + HX(v)] : ['NO DATA'];
+  }
+  if (c === '03') return ['43010100000000'];
+  if (c === '07' || c === '0A') return [(c === '07' ? '47' : '4A') + '000000000000'];
+  if (c === '0902') { const vin = 'WBADEMO1234567890'; return ['014', '0:490201' + hexAscii(vin.slice(0, 3)), '1:' + hexAscii(vin.slice(3, 10)), '2:' + hexAscii(vin.slice(10))]; }
+  if (c === '04') return ['44'];
+  if (c === '3E00') return fakeHdr === '7E0' ? ['7E8027E00'] : fakeHdr === '726' ? ['72E027E00'] : ['NO DATA'];
+  if (c.startsWith('1902')) return ['5902FF01010008'];
+  if (c === '22F190') return ['62F190' + hexAscii('DEMOVIN0000000000')];
+  if (c === '22F187') return ['62F187' + hexAscii('DEMO-123')];
+  return ['NO DATA'];
+}
+
+const MARKS = [60, 100, 200];
+let drag = {s: 'idle', t0: 0, pt: 0, pv: 0, res: {}}, dragBest = {}, dragText = '';
+function dragShow() {
+  const r = drag.res, parts = MARKS.filter(x => r[x] !== undefined).map(x => '0–' + x + ': ' + r[x].toFixed(2) + ' с');
+  if (r[100] !== undefined && r[200] !== undefined) parts.push('100–200: ' + (r[200] - r[100]).toFixed(2) + ' с');
+  dragText = parts.join(' · ');
+  const b = MARKS.filter(x => dragBest[x] !== undefined).map(x => x + ': ' + dragBest[x].toFixed(2)).join(' · ');
+  $('#dragR').textContent = (dragText || 'Разгон…') + (b ? '\nЛучшие 0–N: ' + b : '');
+}
+function dragStep(v, now) {
+  const d = drag;
+  if (d.s === 'idle' && v >= 1 && d.pv === 0 && d.pt) { d.s = 'run'; d.t0 = (d.pt + now) / 2; d.res = {}; $('#dragR').textContent = 'Разгон…'; }
+  else if (d.s === 'run') {
+    MARKS.forEach(x => {
+      if (d.res[x] === undefined && v >= x) {
+        const tc = d.pv < x ? d.pt + (x - d.pv) / (v - d.pv) * (now - d.pt) : now, t = (tc - d.t0) / 1000;
+        d.res[x] = t; dragBest[x] = dragBest[x] === undefined ? t : Math.min(dragBest[x], t);
+        dragShow(); log('DRAG 0–' + x + ': ' + t.toFixed(2));
+      }
+    });
+    if (v === 0) { d.s = 'idle'; if (!MARKS.some(x => d.res[x] !== undefined)) $('#dragR').textContent = 'Прервано. Готов к старту'; }
+  }
+  d.pt = now; d.pv = v;
+}
+
+let alarm = {k: '', c: 'gt', v: '', on: false}, lastAlarm = 0, alarmText = '', ac = null;
+try { alarm = Object.assign(alarm, JSON.parse(localStorage.getItem('alarm'))); } catch (e) {}
+function unlockAudio() { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {} }
+function beep() {
+  try { const o = ac.createOscillator(), g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.frequency.value = 880; g.gain.value = 0.2; o.start(); o.stop(ac.currentTime + 0.25); } catch (e) {}
+}
+function fillAlarm() {
+  const sl = $('#alK'); sl.innerHTML = '';
+  avail.forEach(m => { const o = document.createElement('option'); o.value = m.k; o.textContent = m.t; sl.appendChild(o); });
+  sl.value = alarm.k || (avail[0] && avail[0].k) || ''; $('#alC').value = alarm.c; $('#alV').value = alarm.v; $('#alOn').checked = alarm.on;
+}
+function saveAlarm() {
+  alarm = {k: $('#alK').value, c: $('#alC').value, v: $('#alV').value, on: $('#alOn').checked};
+  try { localStorage.setItem('alarm', JSON.stringify(alarm)); } catch (e) {}
+}
+function checkAlarm(m, v) {
+  if (!alarm.on || m.k !== alarm.k || alarm.v === '') return;
+  const [u, f, d] = unitOf(m), x = f(v), lim = parseFloat(alarm.v);
+  if (alarm.c === 'gt' ? x > lim : x < lim) {
+    const now = performance.now(), box = $('#alarm');
+    alarmText = '⚠ ' + m.t + ': ' + x.toFixed(d) + ' ' + u + (alarm.c === 'gt' ? ' > ' : ' < ') + lim;
+    box.textContent = alarmText; box.style.display = 'block';
+    const ha = $('#hudAl'); ha.textContent = alarmText; ha.style.display = 'block'; clearTimeout(ha._t); ha._t = setTimeout(() => { ha.style.display = 'none'; }, 6000);
+    clearTimeout(box._t); box._t = setTimeout(() => { box.style.display = 'none'; }, 6000);
+    if (now - lastAlarm > 3000) { lastAlarm = now; beep(); log('ALARM ' + alarmText); try { navigator.vibrate && navigator.vibrate(300); } catch (e) {} }
+  }
+}
+
+function show(m, v) {
+  last[m.k] = v;
+  const h = hist[m.k] || (hist[m.k] = []), now = performance.now();
+  h.push([now, v]); if (h.length > 900) h.shift();
+  const r = mm[m.k] || (mm[m.k] = {lo: v, hi: v}); r.lo = Math.min(r.lo, v); r.hi = Math.max(r.hi, v);
+  paint(m);
+  if (m.k === '13') { dragStep(v, now); tripStep(v, now); }
+  checkAlarm(m, v);
+  if (recOn && recCols.some(c => c.m.k === m.k)) recUpdated.add(m.k);
+}
+function recordCycle() {
+  if (!recOn || !recCols.length) return;
+  const now = performance.now();
+  // Одна строка после обновления всех выбранных параметров.
+  if (now - recBatchT0 > 10000) { recUpdated.clear(); recBatchT0 = now; }
+  if (!recCols.every(c => recUpdated.has(c.m.k))) return;
+  recRows.push([
+    ((now - recT0) / 1000).toFixed(2),
+    ...recCols.map(c => last[c.m.k] === undefined ? '' : c.u[1](last[c.m.k]).toFixed(3))
+  ]);
+  recUpdated.clear();
+  recBatchT0 = now;
+  if (recRows.length % 10 === 0) saveBackup();
+}
+const FAST = new Set([0x04, 0x0B, 0x0C, 0x0D, 0x10, 0x11, 0x23, 0x59, 0x5A, 0x5D, 0x5E, 0x62, 0x73, 0x7A]);
+let cycle = 0, reqs = 0, rt = performance.now();
+function recUI() { $('#bRec').textContent = recOn ? '■ Стоп записи (' + recRows.length + ')' : '● Запись'; $('#bCsv').disabled = !recRows.length; }
+function tickRate() {
+  const n = performance.now();
+  if (n - rt > 2000) { $('#rate').textContent = 'Опрос: ' + (reqs * 1000 / (n - rt)).toFixed(1) + ' запросов/с'; reqs = 0; rt = n; recUI(); if (recOn) saveBackup(); }
+}
+
+let gen = 0, dev = null, userStop = false, reconnecting = false, multi = false, protoName = '';
+let mm = {}, hudSet = new Set(), recHead = [];
+try { const j = JSON.parse(localStorage.getItem('hud')); if (Array.isArray(j)) hudSet = new Set(j); } catch (e) {}
+try { const j = JSON.parse(localStorage.getItem('recBackup')); if (j && j.rows && j.rows.length) { recHead = j.head; recRows = j.rows; } } catch (e) {}
+const savedProto = () => { try { return localStorage.getItem('proto') || '0'; } catch (e) { return '0'; } };
+function saveBackup() { try { const j = JSON.stringify({head: recHead, rows: recRows}); if (j.length < 1500000) localStorage.setItem('recBackup', j); } catch (e) {} }
+
+let trip = {km: 0, mv: 0, max: 0, pv: 0, pt: 0, g: 0};
+function tripStep(v, now) {
+  const T = trip;
+  if (T.pt) {
+    const dt = Math.min((now - T.pt) / 1000, 2);
+    T.km += v * dt / 3600; if (v > 1) T.mv += dt;
+    if (dt > 0.05) T.g = (v - T.pv) / 3.6 / dt / 9.81;
+  }
+  T.max = Math.max(T.max, v); T.pv = v; T.pt = now;
+  const avg = T.mv > 0 ? T.km / (T.mv / 3600) : 0;
+  $('#tripR').textContent = T.km.toFixed(2) + ' км · в движении ' + (T.mv / 60).toFixed(1) + ' мин · ср. ' + avg.toFixed(0) + ' км/ч · макс ' + T.max.toFixed(0) + '\nускорение сейчас ' + T.g.toFixed(2) + ' g';
+}
+function openHud() {
+  const list = (hudSet.size ? active.filter(m => hudSet.has(m.k)) : active).slice(0, 4);
+  const g = $('#hudGrid'); g.innerHTML = '';
+  list.forEach(m => {
+    const d = document.createElement('div'); d.className = 'hc';
+    d.innerHTML = '<small></small><b id="h' + m.k + '">—</b><small id="hu' + m.k + '"></small>';
+    d.querySelector('small').textContent = m.t; g.appendChild(d); paint(m);
+  });
+  g.style.gridTemplateRows = 'repeat(' + Math.max(list.length, 1) + ', 1fr)';
+  $('#hud').style.display = 'block';
+}
+
+// несколько PID одним запросом (только CAN); при сбое возвращаемся к обычному опросу
+async function readPids(g) {
+  if (g.length === 1) { const b = await bytes(g[0]); return b && b.length ? [[g[0], b]] : []; }
+  const r = await send('01' + g.map(p => p.toString(16).padStart(2, '0')).join('').toUpperCase(), 6000);
+  const h = hexBody(r), out = [];
+  if (h.startsWith('41')) {
+    let i = 2;
+    while (i + 2 <= h.length) {
+      const pid = parseInt(h.substr(i, 2), 16), n = PIDLEN[pid];
+      if (!n || !g.includes(pid) || i + 2 + n * 2 > h.length) break;
+      out.push([pid, h.substr(i + 2, n * 2).match(/../g).map(x => parseInt(x, 16))]); i += 2 + n * 2;
+    }
+  }
+  if (out.length < g.length) {
+    multi = false; log('пакетный опрос не поддерживается, отключён');
+    const o2 = []; for (const p of g) { const b = await bytes(p); if (b && b.length) o2.push([p, b]); } return o2;
+  }
+  return out;
+}
+
+// ---- режимы 09 / 07 / 0A / 02 / готовность ----
+async function mode09(pid) {
+  const r = await send('09' + pid, 10000);
+  let txt;
+  if (r.some(l => /^[0-9A-F]:/.test(l))) { const h = hexBody(r); txt = h.startsWith('49' + pid) ? h.slice(6) : ''; }
+  else txt = r.map(l => l.replace(/\s/g, '')).filter(l => l.startsWith('49' + pid)).map(l => l.slice(6)).join('');
+  return (txt.match(/../g) || []).map(x => parseInt(x, 16)).filter(c => c > 32 && c < 127).map(c => String.fromCharCode(c)).join('');
+}
+async function dtcMode(cmd, pref) {
+  const out = new Set();
+  try {
+    for (const l of await send(cmd, 10000)) {
+      let h = l.replace(/\s/g, ''); if (!h.startsWith(pref)) continue;
+      h = h.slice(2); if (h.length % 4 === 2) h = h.slice(2);
+      for (let i = 0; i + 4 <= h.length; i += 4) { const c = decodeDTC(h.substr(i, 4)); if (c) out.add(c); }
+    }
+  } catch (e) {}
+  return [...out].sort();
+}
+const MON_SPARK = ['Катализатор', 'Подогрев катализатора', 'Система EVAP', 'Вторичный воздух', 'Кондиционер', 'Лямбда-зонд', 'Подогрев лямбда-зонда', 'EGR'];
+const MON_DIESEL = ['Катализатор NMHC', 'NOx/SCR', '', 'Давление наддува', '', 'Датчик выхлопа', 'Сажевый фильтр (DPF)', 'EGR/VVT'];
+async function readiness() {
+  const b = await bytes(0x01); if (!b || b.length < 4) return null;
+  const diesel = !!(b[1] & 8), names = diesel ? MON_DIESEL : MON_SPARK, mons = [];
+  ['Пропуски зажигания', 'Топливная система', 'Комплексный компонент'].forEach((n, i) => { if (b[1] & (1 << i)) mons.push([n, !(b[1] & (16 << i))]); });
+  names.forEach((n, i) => { if (n && (b[2] & (1 << i))) mons.push([n, !(b[3] & (1 << i))]); });
+  return {mil: !!(b[0] & 0x80), count: b[0] & 0x7F, diesel, mons};
+}
+async function freeze() {
+  const dc = hexBody(await send('020200', 5000));
+  const code = dc.startsWith('420200') ? decodeDTC(dc.substr(6, 4)) : null;
+  if (!code) return null;
+  const rows = [];
+  for (const m of METRICS.filter(x => [0x04, 0x05, 0x0B, 0x0C, 0x0D, 0x0F, 0x10].includes(x.pid) && x.k !== 'boost')) {
+    const h2 = m.pid.toString(16).padStart(2, '0').toUpperCase(), h = hexBody(await send('02' + h2 + '00', 5000));
+    if (!h.startsWith('42' + h2 + '00')) continue;
+    const b = (h.slice(6).match(/../g) || []).map(x => parseInt(x, 16)), [u, f, d] = unitOf(m);
+    try { rows.push(m.t + ': ' + f(m.f(b)).toFixed(d) + ' ' + u); } catch (e) {}
+  }
+  return {code, rows};
+}
+async function report() {
+  const o = $('#report'), L = [], put = t => { L.push(t); o.textContent = L.join('\n'); };
+  const pv = async pid => { const b = await bytes(pid), m = METRICS.find(x => x.pid === pid); try { return b && b.length && m ? m.f(b) : undefined; } catch (e) { return undefined; } };
+  put('ОТЧЁТ OBD · ' + new Date().toLocaleString()); put('Протокол: ' + protoName);
+  const odo = $('#odo').value.trim();
+  put('Одометр: ' + (odo ? odo + ' км (введён вручную)' : 'не указан (стандартный OBD-II одометр не отдаёт)'));
+  let vin = ''; try { vin = await mode09('02'); } catch (e) {}
+  put('VIN: ' + (vin || 'ЭБУ не отдал'));
+  try { const c = await mode09('04'); if (c) put('Калибровка: ' + c); } catch (e) {}
+  put('\n— Состояние —');
+  const R = await readiness().catch(() => null);
+  if (R) {
+    put('Лампа Check Engine: ' + (R.mil ? 'ГОРИТ' : 'не горит') + ' · кодов по данным ЭБУ: ' + R.count);
+    put('Мониторы готовности: ' + (R.mons.length ? R.mons.map(x => x[0] + (x[1] ? ' ✓' : ' ✗')).join(', ') : 'нет данных'));
+  } else put('Мониторы готовности: нет данных');
+  put('\n— Ошибки —');
+  for (const [t, cmd, pref] of [['Сохранённые', '03', '43'], ['Ожидающие', '07', '47'], ['Постоянные', '0A', '4A']]) {
+    const c = await dtcMode(cmd, pref); put(t + ': ' + (c.length ? c.length : 'нет')); c.forEach(x => put('  ' + x + ' — ' + describe(x.slice(0, 5))));
+  }
+  const ff = await freeze().catch(() => null);
+  if (ff) { put('Стоп-кадр (' + ff.code + '):'); ff.rows.forEach(r => put('  ' + r)); }
+  put('\n— Пробег и сброс ошибок —');
+  const d21 = await pv(0x21), w30 = await pv(0x30), d31 = await pv(0x31), t4d = await pv(0x4D), t4e = await pv(0x4E), t1f = await pv(0x1F);
+  [['Пробег с горящей лампой', d21, 'км'], ['Пробег после сброса ошибок', d31, 'км'], ['Прогревов после сброса', w30, ''],
+   ['Время работы с лампой', t4d, 'мин'], ['Время после сброса ошибок', t4e, 'мин'], ['Время работы двигателя', t1f === undefined ? t1f : t1f / 60, 'мин']]
+    .forEach(([n, v, u]) => put(n + ': ' + (v === undefined ? 'не поддерживается' : Math.round(v) + (u ? ' ' + u : ''))));
+  put('\n— Текущие значения —');
+  active.forEach(m => { if (last[m.k] !== undefined) { const [u, f, d] = unitOf(m); put(m.t + ': ' + f(last[m.k]).toFixed(d) + ' ' + u); } });
+  const N = [];
+  if (R && R.mil) N.push('Лампа Check Engine горит.');
+  if (d31 !== undefined && d31 < 100) N.push('После последнего сброса ошибок пройдено всего ' + Math.round(d31) + ' км: коды могли стирать недавно (или отключали АКБ).');
+  if (w30 !== undefined && w30 < 5) N.push('Мало прогревов после сброса (' + w30 + '): признак недавнего сброса.');
+  if (R && R.mons.filter(x => !x[1]).length >= 2) N.push('Несколько мониторов не готовы: типично после недавнего стирания кодов или отключения АКБ.');
+  if (d21 !== undefined && d21 > 0) N.push('Лампа горела на пробеге ' + Math.round(d21) + ' км.');
+  put('\n— Заметки —');
+  (N.length ? N : ['Явных признаков сброса или активных ошибок не найдено.']).forEach(x => put('• ' + x));
+  put('Это признаки, а не доказательство: часть ЭБУ не отдаёт эти данные, а пробег нужно сверять с историей автомобиля.');
+}
+
+async function run() {
+  const my = ++gen;
+  running = true; buttons();
+  try {
+    try { await navigator.wakeLock?.request('screen'); } catch (e) {}
+    status('Инициализация адаптера…');
+    const saved = savedProto();
+    for (const c of ['ATZ', 'ATE0', 'ATL0', 'ATS0', 'ATH0', 'ATAT2', 'ATSP' + saved]) await send(c, c === 'ATZ' ? 8000 : 5000);
+    status('Связь с ЭБУ (на K-line до 10 с)…');
+    let sup = await supported();
+    if (!sup.size && saved !== '0') { await send('ATSP0', 5000); sup = await supported(); }
+    if (!sup.size) { status('ЭБУ не отвечает. Зажигание включено? Адаптер вставлен до конца?'); if (my === gen) { running = false; buttons(); } return; }
+    avail = METRICS.filter(m => sup.has(m.pid)); pickUI(); fillAlarm(); refresh();
+    protoName = (await send('ATDP', 3000)).join(' ');
+    multi = /CAN/.test(protoName);
+    status('Протокол: ' + protoName + (multi ? ' · пакетный опрос' : ''));
+    if (!demo) {
+      const n = ((await send('ATDPN', 3000))[0] || '').replace(/^A/, '');
+      if (/^[1-9A-C]$/i.test(n)) { try { localStorage.setItem('proto', n.toUpperCase()); } catch (e) {} }
+    }
+    while (running && my === gen) {
+      cycle++;
+      recUpdated.clear();
+      const due = [...new Set(active.map(m => m.pid))].filter(pid => FAST.has(pid) || cycle % 5 === 0), groups = [];
+      if (multi) {
+        const ok = due.filter(p => PIDLEN[p]);
+        for (let i = 0; i < ok.length; i += 4) groups.push(ok.slice(i, i + 4));
+        due.filter(p => !PIDLEN[p]).forEach(p => groups.push([p]));
+      } else due.forEach(p => groups.push([p]));
+      for (const g of groups) {
+        if (!running || my !== gen) break;
+        for (const [pid, b] of await readPids(g)) {
+          reqs++;
+          active.filter(m => m.pid === pid).forEach(m => { try { const v = m.f(b); if (isFinite(v)) show(m, v); } catch (e) {} });
+        }
+      }
+      recordCycle();
+      recordCycle();
+      tickRate();
+      if (action === 'read') { action = null; await readDTC(); }
+      else if (action === 'clear') { action = null; await send('04', 10000); $('#dtc').textContent = 'Коды стёрты. Нажмите «Прочитать коды» для проверки.'; }
+      if (action && action.t) { const a = action; action = null; await doExt(a); }
+      await sleep(20);
+    }
+  } catch (e) { if (my === gen && !reconnecting) { status('Ошибка: ' + errText(e)); log('! ' + errText(e)); } }
+  if (my === gen) { running = false; demo = false; buttons(); }
+}
+
+async function openGatt() {
+  status('Подключение…');
+  const srv = await dev.gatt.connect();
+  log('GATT подключён');
+  wch = nch = null;
+  const notifs = [], writes = [];
+  for (const s of await srv.getPrimaryServices()) {
+    for (const c of await s.getCharacteristics()) {
+      const p = c.properties;
+      log('char ' + c.uuid + ' [' + ['read', 'write', 'writeWithoutResponse', 'notify', 'indicate'].filter(k => p[k]).join(',') + ']');
+      if (p.notify || p.indicate) notifs.push(c);
+      if (p.write || p.writeWithoutResponse) writes.push(c);
+    }
+  }
+  const pick = (arr, keys) => { for (const k of keys) { const f = arr.find(c => c.uuid.toLowerCase().includes(k)); if (f) return f; } return arr[0]; };
+  wch = pick(writes, ['8841', 'fff2', 'ffe1', 'bef8d6c9']);
+  nch = pick(notifs, ['1e4d', 'fff1', 'ffe1', 'bef8d6c9']);
+  if (!nch || !wch) throw new Error('не найден канал ELM327 (смотрите лог)');
+  log('канал: notify ' + nch.uuid + ', write ' + wch.uuid);
+  for (const c of notifs) {
+    try { await c.startNotifications(); c.addEventListener('characteristicvaluechanged', onData); }
+    catch (e) { log('notify ' + c.uuid + ': ' + errText(e)); }
+  }
+}
+
+async function onDisc() {
+  running = false; buttons();
+  if (pending) { clearTimeout(pending.t); const p = pending; pending = null; p.rej(new Error('отключено')); }
+  if (userStop || demo || reconnecting) { status('Адаптер отключился.'); return; }
+  reconnecting = true;
+  for (let i = 1; i <= 6; i++) {
+    status('Связь потеряна, переподключение ' + i + '/6…'); log('reconnect ' + i);
+    try { await sleep(2000); await openGatt(); reconnecting = false; run(); return; } catch (e) { log('! ' + errText(e)); }
+  }
+  reconnecting = false; status('Не удалось переподключиться. Нажмите «Подключить адаптер».');
+}
+
+async function connect() {
+  demo = false; userStop = false;
+  if (!navigator.bluetooth) { status('Web Bluetooth недоступен. Откройте страницу в браузере Bluefy.'); return; }
+  try {
+    log('запрос устройства…');
+    dev = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: SERVICES});
+    dev.addEventListener('gattserverdisconnected', onDisc);
+    log('выбрано: ' + dev.name);
+    await openGatt();
+    run();
+  } catch (e) { status('Ошибка: ' + errText(e)); log('! ' + errText(e)); }
+}
+
+$('#bConn').onclick = () => { unlockAudio(); connect(); };
+$('#bStop').onclick = () => { userStop = true; running = false; };
+$('#bRead').onclick = () => { action = 'read'; };
+$('#bClear').onclick = () => { if (confirm('Стереть коды ошибок?')) action = 'clear'; };
+$('#bLog').onclick = saveLog;
+$('#bDemo').onclick = () => { unlockAudio(); demo = true; demoT0 = performance.now(); demoCache = null; demoCacheAt = 0; status('Демо-режим: данные имитируются'); run(); };
+$('#bDrag').onclick = () => { drag = {s: 'idle', t0: 0, pt: 0, pv: 0, res: {}}; dragBest = {}; dragText = ''; $('#dragR').textContent = 'Готов к старту: остановитесь и тронитесь'; };
+['alK', 'alC', 'alV', 'alOn'].forEach(id => { $('#' + id).addEventListener('input', saveAlarm); $('#' + id).addEventListener('change', saveAlarm); });
+window.addEventListener('load', () => {
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg && tg.initData) { try { tg.ready(); tg.expand(); } catch (e) {} $('#bTg').style.display = ''; }
+});
+$('#bTg').onclick = async () => {
+  const lines = active.map(m => { const [u, f, d] = unitOf(m); return m.t + ': ' + (last[m.k] === undefined ? '—' : f(last[m.k]).toFixed(d) + ' ' + u); });
+  const txt = ['OBD — ' + new Date().toLocaleString(), 'Режим: ' + (demo ? 'ДЕМО (имитация)' : 'подключение к автомобилю'), dragText, alarmText, ...lines].filter(Boolean).join('\n');
+  await shareText('obd-live-report.txt', txt);
+};
+$('#bRec').onclick = () => {
+  if (!recOn) {
+    recCols = active.filter(m => !recSet.size || recSet.has(m.k)).map(m => ({m, u: unitOf(m)}));
+    recHead = ['t_s', ...recCols.map(c => '"' + c.m.t + ', ' + c.u[0] + '"')];
+    recRows = []; recUpdated.clear(); recT0 = performance.now(); recOn = true;
+  } else { recOn = false; recUpdated.clear(); saveBackup(); }
+  recUI();
+};
+$('#bCsv').onclick = () => {
+  const csvCell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = '\uFEFF' + [recHead.map(csvCell).join(','), ...recRows.map(r => r.map(csvCell).join(','))].join('\r\n');
+  shareText('obd-record.csv', csv);
+};
+$('#bHud').onclick = openHud;
+$('#hud').onclick = () => { $('#hud').style.display = 'none'; $('#hudGrid').innerHTML = ''; };
+$('#bPk').onclick = () => { mm = {}; active.forEach(m => { const e = $('#m' + m.k); if (e) e.textContent = ''; }); };
+$('#bTrip').onclick = () => { trip = {km: 0, mv: 0, max: 0, pv: 0, pt: 0, g: 0}; $('#tripR').textContent = '—'; };
+$('#bRep').onclick = () => { action = {t: 'report'}; };
+$('#bRepS').onclick = () => { shareText('obd-report.txt', $('#report').textContent); };
+function activateTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const on = b.dataset.tab === name;
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  try { localStorage.setItem('obdTab', name); } catch (e) {}
+  // Canvas dimensions are wrong when rendered while their panel is hidden.
+  if (name === 'monitor') requestAnimationFrame(() => active.forEach(m => { if (graphOn.has(m.k)) drawGraph(m); }));
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => activateTab(b.dataset.tab)));
+try { const savedTab = localStorage.getItem('obdTab'); if (savedTab && document.getElementById('tab-' + savedTab)) activateTab(savedTab); } catch (e) {}
+
+recUI();
+$('#bScan').onclick = () => { action = {t: 'scan'}; };
+$('#tSend').onclick = () => { const v = $('#tIn').value.trim(); if (v) { action = {t: 'term', cmd: v}; $('#tIn').value = ''; } };
+log('браузер: ' + navigator.userAgent.slice(0, 90));
+buttons();
+})();
+</script>
+</body>
+</html>
