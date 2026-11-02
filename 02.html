@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OBD Pro Diagnostics</title>
-<!-- Подключаем официальный скрипт Telegram Web App -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -21,38 +20,60 @@ button.demo{background:#2e7d32;color:#fff}
 button:disabled{opacity:.4}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;position:relative}
-.card.warn{border-color:var(--warning);background:rgba(245,124,0,0.1)}
-.card.alarm{border-color:var(--danger);background:rgba(198,40,40,0.2)}
 .card small{display:block;color:var(--muted);font-size:12px}
 .card b{font-size:22px}
 .card span{color:var(--muted);font-size:13px;margin-left:4px}
 .card .hint{font-size:10px;color:var(--accent);display:block;margin-top:2px}
-#devLog{white-space:pre-wrap;word-break:break-all;font:11px ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:150px;overflow:auto;color:var(--danger)}
+#devLog{white-space:pre-wrap;word-break:break-all;font:11px ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:130px;overflow:auto;color:var(--danger)}
 #modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:100;justify-content:center;align-items:center;padding:16px;box-sizing:border-box}
 #modalContent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;width:100%;max-width:500px}
 .settings-box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;font-size:14px}
-.settings-box input{width:60px;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:4px;border-radius:6px;text-align:center}
+.settings-box select, .settings-box input{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:6px;border-radius:6px;margin-top:4px;width:100%}
+.drag-box{background:linear-gradient(135deg, #1a1d23, #2a1a1f);border:1px solid var(--warning);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
 <main>
 <h1>OBD Pro (Telegram Mini App)</h1>
-<div id="status">Нажмите «Демо-режим» для теста или «Подключить» в Bluefy.</div>
+<div id="status">Нажмите «Подключить» или «Демо-режим».</div>
 
 <div class="row">
   <button id="bConn">Подключить</button>
   <button id="bDemo" class="demo">Демо-режим</button>
   <button id="bStop" class="sec" disabled>Стоп</button>
   <button id="bSendLog" class="sec" style="background:#2a2e36">📤 Выгрузить лог</button>
-  <button id="bSettings" class="sec">⚙️ Пороги</button>
+  <button id="bSettings" class="sec">⚙️ Настройки</button>
 </div>
 
-<!-- Блок настройки триггеров алармов (скрыт по умолчанию) -->
+<!-- Блок Драг-таймера 0-100 км/ч -->
+<div class="drag-box">
+  <div>
+    <small style="color:var(--warning);font-weight:bold;">🏁 ДРАГ-ТАЙМЕР (0-100 км/ч)</small>
+    <div id="dragResult" style="font-size:20px;font-weight:bold;margin-top:2px;">Ожидание старта...</div>
+  </div>
+  <button id="bResetDrag" class="sec" style="padding:6px 10px;font-size:12px;">Сброс</button>
+</div>
+
+<!-- Панель настроек триггеров и алармов -->
 <div id="settingsPanel" class="settings-box" style="display:none;">
-  <strong>Настройка лимитов (аварийных порогов):</strong>
-  <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-    <label>🌡 Макс. температура ОЖ (°C): <input type="number" id="limitECT" value="115"></label>
-    <label>⚡ Мин. напряжение сети (В): <input type="number" id="limitVolt" value="11.5" step="0.1"></label>
+  <strong>⚙️ Настройка триггера аларма:</strong>
+  <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+    <label>Контролируемый параметр:
+      <select id="triggerMetric">
+        <option value="5">Температура ОЖ</option>
+        <option value="66">Напряжение бортсети</option>
+        <option value="12">Обороты двигателя</option>
+        <option value="11">Давление во впуске</option>
+        <option value="92">Температура масла</option>
+      </select>
+    </label>
+    <label>Условие срабатывания:
+      <select id="triggerCondition">
+        <option value="gt">Превышает (>)</option>
+        <option value="lt">Ниже (&lt;)</option>
+      </select>
+    </label>
+    <label>Пороговое значение: <input type="number" id="triggerLimit" value="115"></label>
   </div>
 </div>
 
@@ -80,6 +101,16 @@ let running = false, isDemoMode = false, activeMetric = null;
 let chartHistory = {};
 let unitConversions = {};
 
+// Bluetooth переменные
+let btDevice = null, btServer = null, rxCharacteristic = null, txCharacteristic = null;
+const SPP_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
+let readBuffer = '';
+
+// Переменные для Драг-таймера (0-100 км/ч)
+let dragStartTime = null;
+let dragStarted = false;
+let dragFinished = false;
+
 const devLog = (msg) => {
   const time = new Date().toLocaleTimeString();
   logBuf += `[${time}] ${msg}\n`;
@@ -93,26 +124,33 @@ const sendLogToTelegram = (text) => {
   if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
     window.Telegram.WebApp.sendData(text);
   } else {
-    alert("Функция доступна только при запуске через Telegram Mini App!");
-    devLog("Лог (не в Telegram): " + text);
+    devLog("Лог (вне Telegram): " + text);
   }
 };
 
 const METRICS = [
   {pid:0x0C, k:'12', t:'Обороты двигателя', u:'об/мин', f:b=>(b[0]*256+b[1])/4},
+  {pid:0x0D, k:'13', t:'Скорость автомобиля', u:'км/ч', f:b=>b[0]},
   {pid:0x05, k:'5',  t:'Температура ОЖ', u:'°C', f:b=>b[0]-40},
   {pid:0x0B, k:'11', t:'Давление во впуске', u:'кПа', f:b=>b[0]},
   {pid:0x42, k:'66', t:'Напряжение бортсети', u:'В', f:b=>(b[0]*256+b[1])/1000},
-  {pid:0x10, k:'16', t:'Расход воздуха (MAF)', u:'г/с', f:b=>(b[0]*256+b[1])/100},
   {pid:0x5C, k:'92', t:'Температура масла', u:'°C', f:b=>b[0]-40}
 ];
 
 let active = [...METRICS];
 
-// Управление панелью настроек порогов
 $('#bSettings').onclick = () => {
   const panel = $('#settingsPanel');
   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+};
+
+// Сброс драг-таймера
+$('#bResetDrag').onclick = () => {
+  dragStartTime = null;
+  dragStarted = false;
+  dragFinished = false;
+  $('#dragResult').textContent = 'Ожидание старта...';
+  $('#dragResult.style').color = 'var(--text)';
 };
 
 function renderGrid() {
@@ -120,7 +158,7 @@ function renderGrid() {
   active.forEach(m => {
     const c = document.createElement('div'); c.className = 'card'; c.id = 'card-' + m.k;
     let unit = (unitConversions[m.k] && m.u === 'кПа') ? 'бар' : m.u;
-    c.innerHTML = `<small>${m.t}</small><b id="v${m.k}">—</b> <span>${unit}</span><small class="hint">клик: график / кПа↔бар</small>`;
+    c.innerHTML = `<small>${m.t}</small><b id="v${m.k}">—</b> <span>${unit}</span><small class="hint">клик: график</small>`;
     c.onclick = () => {
       if (m.u === 'кПа') { unitConversions[m.k] = !unitConversions[m.k]; renderGrid(); return; }
       openChart(m);
@@ -143,17 +181,13 @@ function drawCanvasChart() {
   const canvas = $('#chartCanvas');
   const ctx = canvas.getContext('2d');
   const data = chartHistory[activeMetric.k] || [];
-  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (data.length < 2) return;
-
   const min = Math.min(...data) * 0.9;
   const max = Math.max(...data) * 1.1 || 1;
-  
   ctx.beginPath();
   ctx.strokeStyle = '#5b9dff';
   ctx.lineWidth = 2;
-
   data.forEach((val, i) => {
     const x = (i / (data.length - 1)) * canvas.width;
     const y = canvas.height - ((val - min) / (max - min)) * canvas.height;
@@ -162,42 +196,156 @@ function drawCanvasChart() {
   ctx.stroke();
 }
 
+async function connectBluetooth() {
+  try {
+    if (!navigator.bluetooth) {
+      alert('Web Bluetooth не поддерживается. На iOS используйте Bluefy.');
+      return;
+    }
+    status('Поиск OBD адаптера...');
+    btDevice = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [SPP_UUID, '0000ff01-0000-1000-8000-00805f9b34fb']
+    });
+    btServer = await btDevice.gatt.connect();
+    
+    const services = await btServer.getPrimaryServices();
+    for (let s of services) {
+      try {
+        const chars = await s.getCharacteristics();
+        for (let c of chars) {
+          if (c.properties.write || c.properties.writeWithoutResponse) rxCharacteristic = c;
+          if (c.properties.notify || c.properties.indicate) {
+            txCharacteristic = c;
+            await txCharacteristic.startNotifications();
+            txCharacteristic.addEventListener('characteristicvaluechanged', handleBtData);
+          }
+        }
+      } catch (e) {}
+    }
+
+    status('Инициализация ELM327...');
+    await sendCommand('AT Z');
+    await sendCommand('AT E0');
+    await sendCommand('AT S0');
+    await sendCommand('AT H0');
+    status('Подключено!');
+    loop();
+  } catch (err) {
+    devLog('Ошибка BT: ' + err);
+    status('Ошибка подключения');
+  }
+}
+
+function handleBtData(event) {
+  const value = event.target.value;
+  for (let i = 0; i < value.byteLength; i++) {
+    const char = String.fromCharCode(value.getUint8(i));
+    if (char === '>') {
+      processElmResponse(readBuffer.trim());
+      readBuffer = '';
+    } else {
+      readBuffer += char;
+    }
+  }
+}
+
+let responseResolve = null;
+function processElmResponse(resp) {
+  if (responseResolve) {
+    let res = responseResolve;
+    responseResolve = null;
+    res(resp);
+  }
+}
+
+async function sendCommand(cmd) {
+  if (!rxCharacteristic) return;
+  readBuffer = '';
+  const encoder = new TextEncoder();
+  await rxCharacteristic.writeValue(encoder.encode(cmd + '\r'));
+  return new Promise((resolve) => {
+    responseResolve = resolve;
+    setTimeout(() => { if (responseResolve) { responseResolve(''); responseResolve = null; } }, 1500);
+  });
+}
+
 async function loop() {
   running = true;
   $('#bConn').disabled = $('#bDemo').disabled = true;
   $('#bStop').disabled = false;
-  devLog('Старт опроса...');
 
   while (running) {
-    // Считываем актуальные значения лимитов из полей (или берем стандартные)
-    const maxECT = parseFloat($('#limitECT').value) || 115;
-    const minVolt = parseFloat($('#limitVolt').value) || 11.5;
+    // Читаем настройки пользовательского триггера
+    const trigMetricKey = $('#triggerMetric').value;
+    const trigCond = $('#triggerCondition').value;
+    const trigLimit = parseFloat($('#triggerLimit').value) || 0;
 
     for (const m of active) {
       if (!running) break;
       let rawVal = 0;
+
       if (isDemoMode) {
         await sleep(30);
         if (m.k === '12') rawVal = 750 + Math.random() * 50;
-        else if (m.k === '5') rawVal = 92 + Math.random() * 5; // В штатном демо-режиме температура нормальная (~92-97°C)
+        else if (m.k === '13') {
+          // Имитация разгона в демо-режиме
+          if (!dragStarted && Math.random() > 0.8) { dragStarted = true; dragStartTime = performance.now(); }
+          rawVal = dragStarted && !dragFinished ? Math.min(110, (performance.now() - dragStartTime) / 50) : 0;
+          if (rawVal >= 100 && !dragFinished) dragFinished = true;
+        }
+        else if (m.k === '5') rawVal = 92 + Math.random() * 3;
         else if (m.k === '66') rawVal = 14.2;
         else rawVal = Math.random() * 50 + 10;
+      } else if (btDevice && btDevice.gatt.connected) {
+        const hexPid = m.pid.toString(16).toUpperCase().padStart(2, '0');
+        const resp = await sendCommand(`01 ${hexPid}`);
+        const clean = resp.replace(/\s+/g, '');
+        const expectedHeader = '41' + hexPid;
+        const idx = clean.indexOf(expectedHeader);
+        if (idx !== -1) {
+          let bytes = [];
+          const hexBytesStr = clean.slice(idx + expectedHeader.length);
+          for (let i = 0; i < hexBytesStr.length; i += 2) bytes.push(parseInt(hexBytesStr.substr(i, 2), 16));
+          if (bytes.length > 0) rawVal = m.f(bytes);
+        }
       }
-      
+
       let val = rawVal;
       if (unitConversions[m.k] && m.u === 'кПа') val = val / 100;
 
       const el = $('#v' + m.k);
       if (el) el.textContent = val.toFixed(1);
 
-      // Проверка на выход за лимиты (срабатывает только если реально перешагнули введенный порог)
-      if (m.k === '5' && val > maxECT) {
-        devLog(`⚠️ ВНИМАНИЕ: Перегрев! ОЖ = ${val.toFixed(1)}°C (Лимит: ${maxECT}°C)`);
-        sendLogToTelegram(`⚠️ АВАРИЯ! Перегрев двигателя: Температура ОЖ достигла ${val.toFixed(1)}°C (Превышен лимит ${maxECT}°C)`);
+      // Логика работы Драг-таймера 0-100 км/ч (по PID скорости '13')
+      if (m.k === '13') {
+        const speed = val;
+        if (!dragStarted && speed > 1 && speed < 5) {
+          dragStarted = true;
+          dragStartTime = performance.now();
+          dragFinished = false;
+          $('#dragResult').textContent = 'Идет разгон... 🚀';
+        } else if (dragStarted && !dragFinished) {
+          if (speed >= 100) {
+            dragFinished = true;
+            const elapsed = ((performance.now() - dragStartTime) / 1000).toFixed(2);
+            $('#dragResult').textContent = `⚡ 0-100 км/ч: ${elapsed} сек.`;
+            devLog(`🏁 Драг-результат 0-100 км/ч: ${elapsed} сек.`);
+            sendLogToTelegram(`🏁 Зафиксирован результат разгона 0-100 км/ч: ${elapsed} сек.`);
+          }
+        }
       }
-      if (m.k === '66' && val < minVolt) {
-        devLog(`⚠️ ВНИМАНИЕ: Просадка сети! Напряжение = ${val.toFixed(1)}В`);
-        sendLogToTelegram(`⚠️ АВАРИЯ! Низкое напряжение сети: ${val.toFixed(1)}В (Лимит: ${minVolt}В)`);
+
+      // Проверка на пользовательский триггер аларма
+      if (m.k === trigMetricKey) {
+        let triggered = false;
+        if (trigCond === 'gt' && val > trigLimit) triggered = true;
+        if (trigCond === 'lt' && val < trigLimit) triggered = true;
+
+        if (triggered) {
+          devLog(`⚠️ ТРИГГЕР СРАБОТАЛ: ${m.t} = ${val.toFixed(1)} ${m.u}`);
+          sendLogToTelegram(`⚠️ ВНИМАНИЕ! Сработал триггер: ${m.t} достигло ${val.toFixed(1)} ${m.u} (Лимит: ${trigLimit})`);
+        }
       }
 
       if (!chartHistory[m.k]) chartHistory[m.k] = [];
@@ -206,17 +354,20 @@ async function loop() {
 
       if (activeMetric && activeMetric.k === m.k) drawCanvasChart();
     }
-    await sleep(20);
+    await sleep(isDemoMode ? 20 : 100);
   }
   
   $('#bConn').disabled = $('#bDemo').disabled = false;
   $('#bStop').disabled = true;
-  devLog('Остановлено.');
-}
+};
 
 $('#bDemo').onclick = () => { isDemoMode = true; loop(); };
-$('#bStop').onclick = () => { running = false; isDemoMode = false; };
-$('#bConn').onclick = () => { devLog('Используйте браузер Bluefy на iOS или Chrome на Android.'); };
+$('#bStop').onclick = () => { 
+  running = false; 
+  isDemoMode = false; 
+  if (btDevice && btDevice.gatt.connected) btDevice.gatt.disconnect();
+};
+$('#bConn').onclick = () => { connectBluetooth(); };
 
 $('#bSendLog').onclick = () => {
   const logSummary = "📊 Срез параметров OBD Pro:\n" + JSON.stringify(chartHistory, null, 2);
@@ -224,7 +375,7 @@ $('#bSendLog').onclick = () => {
 };
 
 renderGrid();
-devLog('Готов к работе в Telegram Mini App.');
+devLog('Готово к работе.');
 })();
 </script>
 </body>
