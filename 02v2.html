@@ -16,10 +16,10 @@ main{max-width:none;margin:0 auto;padding:12px 16px}
 h1{font-size:22px;margin:0 0 4px}
 #status{color:var(--muted);font-size:14px;min-height:20px;margin-bottom:12px}
 .row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-button{font:inherit;border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:#fff;cursor:pointer}
+button{font:inherit;border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:#fff}
 button.sec{background:var(--card);color:var(--text);border:1px solid var(--line)}
 button.danger{background:var(--danger)}
-button:disabled{opacity:.4;cursor:not-allowed}
+button:disabled{opacity:.4}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .card small{display:block;color:var(--muted);font-size:12px}
@@ -79,12 +79,9 @@ input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radi
 .mod{display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-family:ui-monospace,Menlo,monospace}
 #udsOut,#tOut,#report{white-space:pre-wrap;word-break:break-all;font:12px ui-monospace,Menlo,monospace;margin-top:8px}
 #log{white-space:pre-wrap;word-break:break-all;font:12px ui-monospace,Menlo,monospace;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:240px;overflow:auto}
-#shiftFlash{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99;background:rgba(255,0,0,0.45);pointer-events:none}
-.dpf-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
 </style>
 </head>
 <body>
-<div id="shiftFlash"></div>
 <main>
 <h1>OBDnoPRO</h1>
 <div id="carInfo" style="color:var(--muted);font-size:13px;margin:0 0 8px">Автомобиль не определён</div>
@@ -104,29 +101,16 @@ input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radi
   <button type="button" class="tab-btn" data-tab="blocks" role="tab" aria-selected="false">Блоки</button>
   <button type="button" class="tab-btn" data-tab="tools" role="tab" aria-selected="false">Инструм.</button>
 </nav>
-
 <section id="tab-monitor" class="tab-panel active" role="tabpanel">
-  <div class="dpf-card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <small style="font-weight:600">Состояние сажевого фильтра (DPF)</small>
-      <button id="bToggleDpf" class="sec" style="padding:2px 8px;font-size:11px">Показать/Скрыть</button>
-    </div>
-    <div id="dpfContent" style="margin-top:6px;font-size:13px;display:none">
-      <div>Перепад давления DPF: <b id="dpfDiff">—</b> кПа</div>
-      <div>Темп. на входе DPF: <b id="dpfTin">—</b> °C</div>
-      <div>Темп. на выходе DPF: <b id="dpfTout">—</b> °C</div>
-    </div>
-  </div>
   <div class="row">
     <button id="bHud" class="sec">HUD</button>
     <button id="bPk" class="sec">Сброс пиков</button>
-    <button id="bTg" class="sec" style="display:none">📤 Отправить в Telegram</button>
+    <button id="bTg" class="sec">📤 Отправить файл в Telegram</button>
   </div>
   <div class="grid" id="grid"></div>
   <div id="rate" style="color:var(--muted);font-size:12px;margin:6px 0"></div>
   <details><summary>Выбор параметров</summary><div id="pick"></div></details>
 </section>
-
 <section id="tab-trip" class="tab-panel" role="tabpanel">
   <h2>Разгон</h2>
   <div class="card" id="dragCard" style="margin-bottom:8px;cursor:pointer"><small>0–60 / 0–100 / 0–200 км/ч (нужен параметр «Скорость»). Нажмите: подробности ›</small>
@@ -146,15 +130,10 @@ input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radi
     <div class="row"><button id="alAdd" class="sec">+ Добавить условие</button></div>
   </details>
 </section>
-
 <section id="tab-diagnostics" class="tab-panel" role="tabpanel">
   <h2>Ошибки OBD-II</h2>
   <div class="row"><button id="bRead" class="sec" disabled>Прочитать коды</button><button id="bClear" class="danger" disabled>Стереть коды</button></div>
   <div id="dtc"></div>
-  <details><summary>История Freeze Frame (Стоп-кадры)</summary>
-    <div class="row" style="margin-top:6px"><button id="bFfClr" class="sec">Очистить историю стоп-кадров</button></div>
-    <div id="ffHist" style="font:12px ui-monospace,monospace;margin-top:6px"></div>
-  </details>
   <h2>Блоки (CAN/UDS)</h2>
   <div class="row"><button id="bScan" class="sec" disabled>Найти блоки</button></div>
   <div id="mods"></div><div id="udsOut"></div>
@@ -163,7 +142,6 @@ input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radi
     <div id="report"></div>
   </details>
 </section>
-
 <section id="tab-blocks" class="tab-panel" role="tabpanel">
   <h2>Блок</h2>
   <div class="row"><select id="bmSel" style="flex:1;min-width:0"></select></div>
@@ -174,77 +152,62 @@ input:not([type=checkbox]){font:inherit;border:1px solid var(--line);border-radi
   <div class="row"><input id="bmDid" placeholder="параметр (DID), напр. F190" autocapitalize="characters"><button id="bmRead" class="sec">Прочитать (22)</button></div>
   <div id="bmOut"></div>
   <h2>Копии параметров</h2>
-  <div class="panel-note">Каждое успешное чтение параметра сохраняется здесь автоматически.</div>
+  <div class="panel-note">Каждое успешное чтение параметра сохраняется здесь автоматически: это резервная копия перед любыми изменениями.</div>
   <div class="row"><button id="bmCsv" class="sec">Экспорт CSV</button><button id="bmCopClr" class="sec">Очистить</button></div>
   <div id="bmCopies"></div>
   <h2>Профили машин</h2>
-  <div class="panel-note">Профиль (JSON) описывает блоки, параметры и процедуры конкретной модели.</div>
+  <div class="panel-note">Профиль (JSON) описывает блоки, параметры и процедуры конкретной модели. Свои данные добавляете вы сами.</div>
   <div class="row"><select id="prSel" style="flex:1;min-width:0"></select><button id="prEx" class="sec">Пример</button><button id="prDel" class="sec">Удалить</button></div>
   <div class="row"><input type="file" id="prFile" accept=".json,application/json"><button id="prAddT" class="sec">Добавить из текста</button></div>
   <textarea id="prTxt" placeholder="Вставьте JSON профиля"></textarea>
   <div id="prView" style="margin-top:8px"></div>
   <h2>Сервисное меню</h2>
+  <div class="panel-note">Процедуры из ваших профилей, сгруппированные по назначению: сервисные сбросы, прокачка, тесты исполнительных механизмов, адаптации. Готовых процедур под конкретные машины в приложении нет: их добавляют вы по документации.</div>
   <div id="svcMenu"></div>
   <details id="expDet" style="margin-top:18px"><summary style="color:var(--danger);font-weight:600">⚠ Экспериментально</summary>
-    <div class="warn">Запись параметров и сервисные процедуры могут вывести блок из строя.</div>
+    <div class="warn">Запись параметров и сервисные процедуры могут вывести блок из строя или сбросить настройки. Только при заряженном аккумуляторе или с зарядным устройством, зажигание включено, адаптер не вынимать. Перед записью приложение само читает и сохраняет текущее значение. Доступ по seed/key (27) не реализован, защищённые блоки ответят отказом. Прошивка (сервисы 34–38) заблокирована. Вы отвечаете за последствия.</div>
     <label style="display:block;margin:8px 0"><input type="checkbox" id="expOn"> Я понимаю риск, включить экспериментальные функции</label>
     <div id="expBox" style="display:none">
       <h2>Запись параметра (2E)</h2>
       <div class="row"><input id="wDid" placeholder="DID, напр. 0600" autocapitalize="characters"><input id="wVal" placeholder="новое значение (hex)" autocapitalize="characters"></div>
       <div class="row"><label><input type="checkbox" id="wSess" checked> расширенная сессия (10 03) перед записью</label></div>
       <div class="row"><button id="wGo" class="danger">Записать (с копией и проверкой)</button></div>
+      <div class="panel-note">Длина нового значения должна совпадать с текущей. Откат: кнопка «↩ записать» у сохранённой копии.</div>
       <h2>Цепочка команд (UDS)</h2>
-      <textarea id="chTxt" placeholder="По команде в строке, hex"></textarea>
+      <textarea id="chTxt" placeholder="По команде в строке, hex. Например:&#10;1003&#10;3E00"></textarea>
       <div class="row" style="margin-top:6px"><button id="chS1" class="sec">10 03</button><button id="chS2" class="sec">3E 00</button><button id="chS3" class="sec">27 01 (seed)</button></div>
       <div class="row"><button id="chGo" class="danger">Выполнить цепочку</button></div>
       <h2>Сохранить цепочку как процедуру</h2>
-      <div class="row"><input id="spName" placeholder="Название"><select id="spCat"><option value="service">Сервисный сброс</option><option value="fuel">Прокачка / топливо</option><option value="actuator">Тест исполнительных</option><option value="adapt">Адаптации</option><option value="other">Прочее</option></select></div>
+      <div class="row"><input id="spName" placeholder="Название, напр. Сброс сервиса масла"><select id="spCat"><option value="service">Сервисный сброс</option><option value="fuel">Прокачка / топливо</option><option value="actuator">Тест исполнительных</option><option value="adapt">Адаптации</option><option value="other">Прочее</option></select></div>
       <div class="row"><button id="spSave" class="sec">Сохранить в профиль</button></div>
     </div>
   </details>
 </section>
-
 <section id="tab-tools" class="tab-panel" role="tabpanel">
-  <h2>Резервное копирование и настройки</h2>
-  <div class="row">
-    <button id="bExportAll" class="sec">📥 Экспорт настроек (JSON)</button>
-    <input type="file" id="fImportAll" accept=".json" style="display:none">
-    <button id="bImportAll" class="sec">📤 Импорт настроек</button>
-  </div>
-  <h2>Shift Light (Индикатор переключения)</h2>
-  <div class="row">
-    <input id="shiftRpm" type="number" placeholder="Порог оборотов (напр. 4200)">
-    <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="shiftOn"> Вкл Shift Light</label>
-  </div>
-  <h2>Тип двигателя (для расчёта расхода)</h2>
-  <div class="row">
-    <select id="fuelType">
-      <option value="diesel">Дизель (14.5:1 AFR)</option>
-      <option value="petrol">Бензин (14.7:1 AFR)</option>
-    </select>
-  </div>
   <h2>Запись параметров</h2>
   <div class="row"><button id="bRec" class="sec" disabled>● Запись</button><button id="bCsv" class="sec" disabled>Сохранить CSV</button><button id="bLog" class="sec">Сохранить лог</button></div>
+  <div class="panel-note">CSV содержит выбранные параметры и временные отметки. Лог содержит обмен с адаптером.</div>
   <h2>Словарь ошибок</h2>
-  <textarea id="dcTxt" placeholder="P0123;Описание"></textarea>
+  <div class="panel-note">Свои расшифровки кодов поверх встроенных. Строки вида <code>P0123;Описание</code> (разделитель ; , или табуляция) или JSON {"P0123":"Описание"}. Используйте тексты, на которые у вас есть права.</div>
+  <textarea id="dcTxt" placeholder="P0123;Датчик положения дросселя: высокий сигнал"></textarea>
   <div class="row" style="margin-top:6px"><input type="file" id="dcFile" accept=".csv,.txt,.json"><button id="dcAdd" class="sec">Добавить</button><button id="dcClr" class="sec">Очистить словарь</button></div>
   <div class="panel-note" id="dcInfo"></div>
   <h2>Автомобиль</h2>
-  <div class="row"><input id="carName" placeholder="Название авто, напр. BMW E46 330d"></div>
+  <div class="row"><input id="carName" placeholder="Название авто (необязательно), например BMW E46 330d"></div>
+  <div class="panel-note">Показывается вверху. Модель по OBD-II определить нельзя: из VIN берутся марка и примерный год, если ЭБУ отдаёт VIN.</div>
   <h2>HUD</h2>
   <div class="row"><input id="hudPad" type="number" inputmode="numeric" placeholder="Отступ снизу, px (по умолч. 88)"></div>
+  <div class="panel-note">Отступ под нижнюю панель браузера Bluefy. Если HUD обрезается снизу — увеличьте, если снизу пусто — уменьшите.</div>
   <h2>Терминал ELM327</h2>
-  <div class="row"><input id="tIn" placeholder="ATDP или 0100" autocapitalize="characters" autocomplete="off"><button id="tSend" class="sec" disabled>Отправить</button></div>
+  <div class="row"><input id="tIn" placeholder="например ATDP или 0100" autocapitalize="characters" autocomplete="off"><button id="tSend" class="sec" disabled>Отправить</button></div>
   <div id="tOut"></div>
   <h2>Технический лог</h2><details><summary>Показать лог обмена</summary><pre id="log"></pre></details>
 </section>
 </main>
-
 <div id="task"><div class="box"><div class="hd"><div id="taskSpin" class="spin"></div><div id="taskTitle">Операция</div></div>
 <div id="taskTxt"></div><div id="taskBar"><i></i></div><div class="row"><button id="taskBtn" class="sec">Скрыть</button></div></div></div>
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div></div>
-
 <script>
 (() => {
 const $ = s => document.querySelector(s);
@@ -261,7 +224,7 @@ async function shareText(name, text) {
     const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (ios && navigator.share && navigator.canShare && navigator.canShare({files: [f]})) {
       await navigator.share({files: [f], title: name});
-      status('Файл передан в меню отправки.');
+      status('Файл передан в системное меню отправки. Выберите Telegram, если он доступен.');
       return;
     }
   } catch (e) {
@@ -271,7 +234,7 @@ async function shareText(name, text) {
   const url = URL.createObjectURL(f), a = document.createElement('a');
   a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 30000);
-  status('Файл скачан.');
+  status('Файл скачан. Откройте его и отправьте через Telegram.');
 }
 let taskOn = false, taskCancel = false, taskKind = '', taskT = 0, conn = {s: 'idle', t: 'Не подключено'}, volt = null, lat = 0, rateTxt = '— зап/с', lastV = 0, softDisc = false;
 const status = m => { $('#status').textContent = m; if (taskOn) $('#taskTxt').textContent = m; };
@@ -301,29 +264,17 @@ const errText = e => (e && (e.name || e.message)) ? ((e.name || '') + ': ' + (e.
 const M = (pid, t, u, f, k) => ({pid, t, u, f, k: k || String(pid)});
 const w = (b, i) => b[i] * 256 + b[i + 1];
 const s16 = (b, i) => { const v = w(b, i); return v > 32767 ? v - 65536 : v; };
-
-// Функция расчета расхода топлива по MAF (или подмена 0x5E)
-function calcFuelFlow(b) {
-  const mafGps = w(b, 0) / 100;
-  const fuelType = $('#fuelType') ? $('#fuelType').value : 'diesel';
-  const afr = fuelType === 'diesel' ? 14.5 : 14.7;
-  const density = fuelType === 'diesel' ? 835 : 750; // г/л
-  // л/ч = (г/с * 3600) / (AFR * плотность)
-  return (mafGps * 3600) / (afr * density);
-}
-
 const METRICS = [
   M(0x04, 'Нагрузка двигателя', '%', b => b[0] * 100 / 255),
   M(0x05, 'Температура ОЖ', '°C', b => b[0] - 40),
   M(0x0A, 'Давление топлива (манометр)', 'кПа', b => b[0] * 3),
   M(0x0B, 'Давление во впуске (абс.)', 'кПа', b => b[0]),
-  M(0x0B, 'Наддув (избыточное)', 'кПа', b => b[0] - 101.3, 'boost'),
+  M(0x0B, 'Наддув (избыточное, от 101 кПа)', 'кПа', b => b[0] - 101.3, 'boost'),
   M(0x0C, 'Обороты', 'об/мин', b => w(b, 0) / 4),
   M(0x0D, 'Скорость', 'км/ч', b => b[0]),
   M(0x0E, 'Угол опережения', '°', b => b[0] / 2 - 64),
   M(0x0F, 'Темп. впуска', '°C', b => b[0] - 40),
   M(0x10, 'Расход воздуха', 'г/с', b => w(b, 0) / 100),
-  M(0x10, 'Расход топлива (расчёт по MAF)', 'л/ч', b => calcFuelFlow(b), 'calc_lph'),
   M(0x11, 'Положение дросселя', '%', b => b[0] * 100 / 255),
   M(0x1F, 'Время работы двигателя', 'с', b => w(b, 0)),
   M(0x22, 'Давление в рампе (отн. впуска)', 'кПа', b => w(b, 0) * 0.079),
@@ -339,7 +290,7 @@ const METRICS = [
   M(0x5A, 'Положение педали (отн.)', '%', b => b[0] * 100 / 255),
   M(0x5C, 'Температура масла', '°C', b => b[0] - 40),
   M(0x5D, 'Угол начала впрыска', '°', b => w(b, 0) / 128 - 210),
-  M(0x5E, 'Расход топлива (PID 5E)', 'л/ч', b => w(b, 0) / 20),
+  M(0x5E, 'Расход топлива', 'л/ч', b => w(b, 0) / 20),
   M(0x62, 'Момент двигателя (факт.)', '%', b => b[0] - 125),
   M(0x73, 'Давление выхлопа (ряд 1)', 'кПа', b => w(b, 1) / 10),
   M(0x78, 'Темп. выхлопа (ряд 1, датчик 1)', '°C', b => w(b, 1) / 10 - 40, '781'),
@@ -387,11 +338,11 @@ const SERVICES = [U('fff0'), U('ffe0'), U('ffe5'), U('18f0'),
   'e7810a71-73ae-499d-8c15-faa9aef0c3f2', '49535343-fe7d-4ae5-8fa9-9fafd205e455'];
 
 let wch = null, nch = null, buf = '', pending = null, running = false, action = null, active = [], avail = [];
-let sel = new Set(['4', '5', '11', 'boost', '12', '13', '15', '16', '66', '92', 'calc_lph']);
+let sel = new Set(['4', '5', '11', 'boost', '12', '13', '15', '16', '66', '92']);
 try { const j = JSON.parse(localStorage.getItem('sel')); if (Array.isArray(j)) sel = new Set(j); } catch (e) {}
 function refresh() { active = avail.filter(m => sel.has(m.k)); render(); }
 function pickUI() {
-  const b = $('#pick'); b.innerHTML = '<small>показ / запись / HUD</small>';
+  const b = $('#pick'); b.innerHTML = '<small>показ / запись / HUD (если запись не отмечена, пишутся все показываемые)</small>';
   avail.forEach(m => {
     const l = document.createElement('label'); l.style.display = 'block'; l.style.padding = '4px 0';
     const mkc = (set, key) => {
@@ -402,6 +353,7 @@ function pickUI() {
     l.append(mkc(sel, 'sel'), ' ', mkc(recSet, 'rec'), ' ', mkc(hudSet, 'hud'), ' ' + m.t + ' (' + m.u + ')'); b.appendChild(l);
   });
 }
+
 
 function onData(e) {
   buf += new TextDecoder().decode(e.target.value);
@@ -444,7 +396,7 @@ async function send(cmd, to = 5000) {
   try { return await send0(cmd, to); }
   catch (e) {
     if (!gattErr(e) || !dev || userStop) throw e;
-    log('! ' + errText(e) + ' → переподключаю GATT'); setConn('wait', 'Сбой записи в адаптер, переподключаю…');
+    log('! ' + errText(e) + ' → переподключаю GATT и повторяю'); setConn('wait', 'Сбой записи в адаптер, переподключаю…');
     await hardReset(); return await send0(cmd, to);
   }
 }
@@ -471,7 +423,6 @@ async function supported(to = 20000) {
   return s;
 }
 
-// Расширенная база DTC (OBD + VAG / BMW / MB / Ford)
 const DESC = {
 P0016:'Рассогласование коленвала и распредвала',P0087:'Низкое давление в топливной рампе',P0088:'Слишком высокое давление в топливной рампе',P0089:'Регулятор давления топлива: неисправность',
 P0100:'Датчик расхода воздуха (MAF): цепь',P0101:'MAF: сигнал вне диапазона',P0102:'MAF: низкий сигнал',P0103:'MAF: высокий сигнал',
@@ -486,13 +437,7 @@ P0420:'Катализатор: эффективность ниже порога'
 P0500:'Датчик скорости автомобиля',P0560:'Напряжение бортсети: неисправность',P0562:'Низкое напряжение бортсети',P0563:'Высокое напряжение бортсети',P0571:'Выключатель стоп-сигнала: цепь',
 P0600:'Ошибка CAN-связи между блоками',P0601:'Ошибка памяти ЭБУ (контрольная сумма)',P0602:'Ошибка программирования ЭБУ',P0606:'Неисправность процессора ЭБУ',P0620:'Генератор: цепь управления',P0670:'Блок управления свечами накала',
 P0700:'Неисправность системы управления АКПП',P0715:'Датчик частоты вращения входного вала АКПП',P0720:'Датчик частоты вращения выходного вала АКПП',P0730:'Неверное передаточное число АКПП',P0741:'Блокировка гидротрансформатора: не включается',P0750:'Соленоид переключения A (АКПП)',P0755:'Соленоид переключения B (АКПП)',
-P2002:'Сажевый фильтр (DPF): эффективность ниже порога',
-P242F:'DPF: ограничение потока - накопление золы',
-P2015:'Датчик положения заслонок впускного коллектора (VAG/BMW)',
-P2452:'DPF: цепь датчика перепада давления',
-P00BD:'MAF A: поток слишком высокий',
-P008700:'[VAG] Низкое давление в рампе',
-U0100:'Нет связи с блоком двигателя',U0101:'Нет связи с блоком АКПП',U0121:'Нет связи с блоком ABS',U0140:'Нет связи с блоком кузова',U0155:'Нет связи с панелью приборов'
+P2002:'Сажевый фильтр (DPF): эффективность ниже порога',U0100:'Нет связи с блоком двигателя',U0101:'Нет связи с блоком АКПП',U0121:'Нет связи с блоком ABS',U0140:'Нет связи с блоком кузова',U0155:'Нет связи с панелью приборов'
 };
 let userDesc = {};
 try { userDesc = JSON.parse(localStorage.getItem('dtcDict')) || {}; } catch (e) {}
@@ -524,45 +469,19 @@ function decodeDTC(h) {
   return 'PCBU'[v >> 14] + ((v >> 12) & 3) + (v & 0xFFF).toString(16).toUpperCase().padStart(3, '0');
 }
 
-let ffHistory = [];
-try { const j = JSON.parse(localStorage.getItem('ffHist')); if (Array.isArray(j)) ffHistory = j; } catch (e) {}
-
-function renderFfHist() {
-  const box = $('#ffHist'); if (!box) return; box.innerHTML = '';
-  if (!ffHistory.length) { box.textContent = 'Сохранённых стоп-кадров нет.'; return; }
-  ffHistory.forEach((item, i) => {
-    const d = document.createElement('div'); d.className = 'prm';
-    d.innerHTML = '<b>' + fmtDT(item.t) + ' — Ошибка: ' + (item.code || 'Неизвестно') + '</b><br>' + item.rows.join('<br>');
-    box.appendChild(d);
-  });
-}
-
 async function readDTC() {
   const out = new Set();
   for (const l of await send('03', 10000)) {
     let h = l.replace(/\s/g, '');
     if (!h.startsWith('43')) continue;
     h = h.slice(2);
-    if (h.length % 4 === 2) h = h.slice(2);
+    if (h.length % 4 === 2) h = h.slice(2); // CAN добавляет байт-счётчик, K-line (E46) нет
     for (let i = 0; i + 4 <= h.length; i += 4) { const c = decodeDTC(h.substr(i, 4)); if (c) out.add(c); }
   }
   const box = $('#dtc');
   box.innerHTML = '';
   if (!out.size) box.textContent = 'Ошибок нет';
   [...out].sort().forEach(c => box.appendChild(dtcRow(c)));
-
-  // Авто-чтение и логирование Freeze Frame при наличии ошибок
-  if (out.size) {
-    try {
-      const ff = await freeze();
-      if (ff && ff.code) {
-        ffHistory.unshift({t: Date.now(), code: ff.code, rows: ff.rows});
-        ffHistory = ffHistory.slice(0, 20);
-        try { localStorage.setItem('ffHist', JSON.stringify(ffHistory)); } catch (e) {}
-        renderFfHist();
-      }
-    } catch (e) {}
-  }
 }
 
 async function restore() {
@@ -595,7 +514,7 @@ function showMods(list) {
 }
 async function scanMods() {
   const found = [];
-  $('#mods').textContent = 'Поиск блоков…';
+  $('#mods').textContent = 'Поиск блоков… до 2 минут, не закрывайте страницу.';
   try {
     for (const c of ['ATSP6', 'ATH1', 'ATST19']) await send(c, 5000);
     for (let id = 0x700; id <= 0x7FF && running && !taskCancel; id++) {
@@ -626,7 +545,8 @@ async function udsDTC(m, mask) {
         const c = decodeDTC(h.substr(i, 4));
         if (c) rows.push({c, x: h.substr(i + 4, 2) + ' / статус ' + h.substr(i + 6, 2)});
       }
-      o.textContent = nm + ': ' + (rows.length ? rows.length + ' кодов' : 'ошибок нет');
+      o.textContent = nm + ': ' + (rows.length ? rows.length + ' кодов' : 'ошибок нет') +
+        (raw.some(l => /BUFFER/.test(l)) ? '\n⚠ список обрезан буфером адаптера, нажмите «Активные»' : '');
       rows.forEach(e => o.appendChild(dtcRow(e.c, e.x)));
     } else o.textContent = nm + ': ответ ' + (h || 'нет данных');
   } catch (e) { o.textContent = 'Ошибка: ' + errText(e); }
@@ -687,20 +607,11 @@ let recOn = false, recSet = new Set(), recRows = [], recT0 = 0, recCols = [], re
 try { const j = JSON.parse(localStorage.getItem('rec')); if (Array.isArray(j)) recSet = new Set(j); } catch (e) {}
 const unitOf = m => { const L = UNITS[m.u]; return L ? L[(unitSel[m.k] || 0) % L.length] : [m.u, v => v, 1]; };
 
-function exportGraphPng(m) {
-  const cv = $('#g' + m.k);
-  if (!cv) return;
-  const link = document.createElement('a');
-  link.download = 'graph-' + m.k + '-' + Date.now() + '.png';
-  link.href = cv.toDataURL('image/png');
-  link.click();
-}
-
 function render() {
   const g = $('#grid'); g.innerHTML = '';
   active.forEach(m => {
     const c = document.createElement('div'); c.className = 'card' + (graphOn.has(m.k) ? ' wide' : '');
-    c.innerHTML = '<small></small><div class="cv"><b id="v' + m.k + '">—</b><span id="u' + m.k + '"></span><i class="gb">📈</i><i class="gb-export" style="font-style:normal;cursor:pointer;margin-left:4px" title="Сохранить PNG">💾</i></div><small id="m' + m.k + '"></small><canvas id="g' + m.k + '"></canvas>';
+    c.innerHTML = '<small></small><div class="cv"><b id="v' + m.k + '">—</b><span id="u' + m.k + '"></span><i class="gb">📈</i></div><small id="m' + m.k + '"></small><canvas id="g' + m.k + '"></canvas>';
     c.querySelector('small').textContent = m.t;
     c.querySelector('canvas').style.display = graphOn.has(m.k) ? 'block' : 'none';
     c.querySelector('b').onclick = () => {
@@ -710,11 +621,9 @@ function render() {
       paint(m);
     };
     c.querySelector('.gb').onclick = () => { if (graphOn.has(m.k)) graphOn.delete(m.k); else graphOn.add(m.k); render(); };
-    c.querySelector('.gb-export').onclick = () => exportGraphPng(m);
     g.appendChild(c); paint(m);
   });
 }
-
 function paint(m) {
   const v = last[m.k];
   if (v === undefined) return;
@@ -745,7 +654,7 @@ function drawGraph(m) {
 let demo = false, demoT0 = 0, fakeHdr = '7DF';
 const HX = a => a.map(x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0').toUpperCase()).join('');
 const hexAscii = t => [...t].map(ch => ch.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')).join('');
-const DEMO_PIDS = [0x04, 0x05, 0x0B, 0x0C, 0x0D, 0x0F, 0x10, 0x11, 0x1F, 0x21, 0x30, 0x31, 0x4D, 0x4E, 0x7A, 0x7C];
+const DEMO_PIDS = [0x04, 0x05, 0x0B, 0x0C, 0x0D, 0x0F, 0x10, 0x11, 0x1F, 0x21, 0x30, 0x31, 0x4D, 0x4E];
 function demoState() {
   const t = ((performance.now() - demoT0) / 1000) % 60;
   let speed = 0, phase = 'idle';
@@ -783,9 +692,7 @@ function demoVal(pid) {
     0x0D: [Math.round(d.speed)], 0x0F: [70],
     0x10: [mafRaw >> 8, mafRaw & 255], 0x11: [Math.round(d.throttle * 255 / 100)],
     0x1F: [0, Math.floor(d.t)], 0x21: [0, 12], 0x30: [5],
-    0x31: [0, 150], 0x4D: [0, 3], 0x4E: [0, 200],
-    0x7A: [0, 0, 150, 0, 50, 0, 30], // DPF pressures
-    0x7C: [0, 1, 144, 1, 200]        // DPF temps
+    0x31: [0, 150], 0x4D: [0, 3], 0x4E: [0, 200]
   };
   return vals[pid];
 }
@@ -881,7 +788,7 @@ function dvUpdate() {
   const d = drag, now = performance.now(), sp = last['13'];
   const hasRes = MARKS.some(x => d.res[x] !== undefined);
   $('#dvState').textContent = d.s === 'run' ? ((now - d.t0) / 1000).toFixed(1) + ' с' : hasRes ? 'Готово' : 'Готов к старту';
-  $('#dvSub').textContent = d.s === 'run' ? 'Разгон идёт. Скорость ' + (sp === undefined ? '—' : sp.toFixed(0)) + ' км/ч' : hasRes ? 'Заезд завершён.' : (avail.some(m => m.k === '13') ? 'Остановитесь (0 км/ч) и трогайтесь.' : 'Нет параметра «Скорость».');
+  $('#dvSub').textContent = d.s === 'run' ? 'Разгон идёт. Скорость ' + (sp === undefined ? '—' : sp.toFixed(0)) + ' км/ч' : hasRes ? 'Заезд завершён (остановка). Следующий старт: с места, скорость должна быть 0.' : (avail.some(m => m.k === '13') ? 'Остановитесь (0 км/ч) и трогайтесь: отсчёт начнётся сам.' : 'Нет параметра «Скорость»: разгон не считается.');
   let rows = '<tr><th>Отрезок</th><th>Сейчас</th><th>Лучший</th></tr>';
   MARKS.forEach(x => { rows += '<tr><td>0–' + x + ' км/ч</td><td>' + (d.res[x] !== undefined ? d.res[x].toFixed(2) + ' с' : '—') + '</td><td>' + (dragBest[x] !== undefined ? dragBest[x].toFixed(2) + ' с' : '—') + '</td></tr>'; });
   if (d.res[100] !== undefined && d.res[200] !== undefined) rows += '<tr><td>100–200 км/ч</td><td>' + (d.res[200] - d.res[100]).toFixed(2) + ' с</td><td></td></tr>';
@@ -895,7 +802,8 @@ function dvUpdate() {
   $('#dvChart').innerHTML = svg;
   DVK.forEach(k => { const m = avail.find(x => x.k === k), el = $('#dl' + k); if (!m || !el || last[k] === undefined) return; const [u, f, dd] = unitOf(m); el.textContent = f(last[k]).toFixed(dd); $('#dlu' + k).textContent = u; });
   const dt = d.sdt ? Math.round(d.sdt) : null;
-  $('#dvInfo').textContent = 'Точность замеров зависит от частоты опроса OBD. Сейчас замер скорости раз в ' + (dt ? dt + ' мс.' : '—');
+  $('#dvInfo').textContent = 'Как считается: старт фиксируется, когда скорость стала больше 0 после остановки (время старта — середина между последним замером «0» и первым замером движения). Контрольные точки берутся по скорости из OBD с линейной интерполяцией между замерами. ' +
+    'Сейчас замер скорости раз в ' + (dt ? dt + ' мс, точность времени примерно ±' + (dt / 2000).toFixed(2) + ' с' : '—') + '. Чем меньше параметров выбрано в «Мониторе», тем чаще замеры. Скорость OBD округлена до 1 км/ч и может отставать от спидометра. Остальные показатели (обороты, наддув, нагрузка, температуры) не влияют на расчёт, они для анализа заезда и сохраняются в истории.';
   let h = '<tr><th>Дата</th>' + MARKS.map(x => '<th>0–' + x + '</th>').join('') + '<th>Макс км/ч</th><th>Обороты</th><th>Наддув</th><th>Темп. впуска</th></tr>';
   dragHist.forEach(r => { h += '<tr><td>' + fmtDT(r.t) + '</td>' + MARKS.map(x => '<td>' + (r.res[x] !== undefined ? r.res[x].toFixed(2) : '—') + '</td>').join('') + '<td>' + (r.vmax != null ? r.vmax.toFixed(0) : '—') + '</td><td>' + (r.rpm ? r.rpm.toFixed(0) : '—') + '</td><td>' + (r.boost != null ? (r.boost / 100).toFixed(2) + ' бар' : '—') + '</td><td>' + (r.intake != null ? r.intake.toFixed(0) + ' °C' : '—') + '</td></tr>'; });
   $('#dvHist').innerHTML = dragHist.length ? h : '<tr><td>Заездов пока нет.</td></tr>';
@@ -921,7 +829,7 @@ function renderAlarms() {
     src.forEach(m => { const o = document.createElement('option'); o.value = m.k; o.textContent = m.t; sl.appendChild(o); });
     sl.value = a.k && seen.has(a.k) ? a.k : (src[0] ? src[0].k : '');
     const c = document.createElement('select'); c.className = 'alC';
-    [['gt', 'выше'], ['lt', 'ниже']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; c.appendChild(o); }); c.value = a.c || 'gt';
+    [['gt', 'выше'], ['ni', 'ниже']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; c.appendChild(o); }); c.value = a.c || 'gt';
     const v = document.createElement('input'); v.className = 'alV'; v.type = 'number'; v.step = 'any'; v.placeholder = 'порог'; v.value = a.v;
     const l = document.createElement('label'); const on = document.createElement('input'); on.type = 'checkbox'; on.className = 'alOn'; on.checked = !!a.on; l.append(on, ' вкл');
     const x = document.createElement('button'); x.className = 'sec'; x.textContent = '✕';
@@ -949,24 +857,6 @@ function checkAlarm(m, v) {
   });
 }
 
-function checkShiftLight(m, v) {
-  if (m.k !== '12') return;
-  const shiftOn = $('#shiftOn') && $('#shiftOn').checked;
-  const shiftRpm = $('#shiftRpm') ? parseFloat($('#shiftRpm').value) : 0;
-  if (shiftOn && shiftRpm > 0 && v >= shiftRpm) {
-    const flash = $('#shiftFlash');
-    flash.style.display = 'block';
-    setTimeout(() => { flash.style.display = 'none'; }, 180);
-    beep();
-  }
-}
-
-function updateDpfWidget() {
-  if (last['7a1'] !== undefined) $('#dpfDiff').textContent = (last['7a1'] / 1).toFixed(2);
-  if (last['7c1'] !== undefined) $('#dpfTin').textContent = last['7c1'].toFixed(0);
-  if (last['7c2'] !== undefined) $('#dpfTout').textContent = last['7c2'].toFixed(0);
-}
-
 function show(m, v) {
   last[m.k] = v;
   const h = hist[m.k] || (hist[m.k] = []), now = performance.now();
@@ -976,8 +866,6 @@ function show(m, v) {
   if (m.k === '13') { dragStep(v, now); tripStep(v, now); }
   sessMetric(m, v); dragPeak(m, v); if (dvOpen) dvSched();
   checkAlarm(m, v);
-  checkShiftLight(m, v);
-  updateDpfWidget();
   if (recOn && recCols.some(c => c.m.k === m.k)) recUpdated.add(m.k);
 }
 function recordCycle() {
@@ -1002,7 +890,7 @@ function tickRate() {
 }
 
 let gen = 0, dev = null, userStop = false, reconnecting = false, multi = false, protoName = '';
-let mm = {}, hudSet = new Set(), recHead = [];
+let mm = [], hudSet = new Set(), recHead = [];
 try { const j = JSON.parse(localStorage.getItem('hud')); if (Array.isArray(j)) hudSet = new Set(j); } catch (e) {}
 try { const j = JSON.parse(localStorage.getItem('recBackup')); if (j && j.rows && j.rows.length) { recHead = j.head; recRows = j.rows; } } catch (e) {}
 const savedProto = () => { try { return localStorage.getItem('proto') || '0'; } catch (e) { return '0'; } };
@@ -1134,7 +1022,7 @@ async function readPids(g) {
   }
   if (out.length < g.length) {
     const o2 = []; for (const p of g) { const b = await bytes(p); if (b && b.length) o2.push([p, b]); }
-    if (o2.length) { multi = false; log('пакетный опрос отключён'); }
+    if (o2.length) { multi = false; log('пакетный опрос не поддерживается, отключён'); }
     return o2;
   }
   return out;
@@ -1185,14 +1073,14 @@ async function report() {
   const pv = async pid => { const b = await bytes(pid), m = METRICS.find(x => x.pid === pid); try { return b && b.length && m ? m.f(b) : undefined; } catch (e) { return undefined; } };
   put('ОТЧЁТ OBD · ' + new Date().toLocaleString()); put('Протокол: ' + protoName);
   const odo = $('#odo').value.trim();
-  put('Одометр: ' + (odo ? odo + ' км (введён вручную)' : 'не указан'));
+  put('Одометр: ' + (odo ? odo + ' км (введён вручную)' : 'не указан (стандартный OBD-II одометр не отдаёт)'));
   let vin = ''; try { vin = await mode09('02'); } catch (e) {}
   put('VIN: ' + (vin || 'ЭБУ не отдал'));
   try { const c = await mode09('04'); if (c) put('Калибровка: ' + c); } catch (e) {}
   put('\n— Состояние —');
   const R = await readiness().catch(() => null);
   if (R) {
-    put('Лампа Check Engine: ' + (R.mil ? 'ГОРИТ' : 'не горит') + ' · кодов: ' + R.count);
+    put('Лампа Check Engine: ' + (R.mil ? 'ГОРИТ' : 'не горит') + ' · кодов по данным ЭБУ: ' + R.count);
     put('Мониторы готовности: ' + (R.mons.length ? R.mons.map(x => x[0] + (x[1] ? ' ✓' : ' ✗')).join(', ') : 'нет данных'));
   } else put('Мониторы готовности: нет данных');
   put('\n— Ошибки —');
@@ -1203,23 +1091,26 @@ async function report() {
   if (ff) { put('Стоп-кадр (' + ff.code + '):'); ff.rows.forEach(r => put('  ' + r)); }
   put('\n— Пробег и сброс ошибок —');
   const d21 = await pv(0x21), w30 = await pv(0x30), d31 = await pv(0x31), t4d = await pv(0x4D), t4e = await pv(0x4E), t1f = await pv(0x1F);
-  [['Пробег с лампой', d21, 'км'], ['Пробег после сброса', d31, 'км'], ['Прогревов после сброса', w30, ''],
-   ['Время работы с лампой', t4d, 'мин'], ['Время после сброса', t4e, 'мин'], ['Время работы ДВС', t1f === undefined ? t1f : t1f / 60, 'мин']]
+  [['Пробег с горящей лампой', d21, 'км'], ['Пробег после сброса ошибок', d31, 'км'], ['Прогревов после сброса', w30, ''],
+   ['Время работы с лампой', t4d, 'мин'], ['Время после сброса ошибок', t4e, 'мин'], ['Время работы двигателя', t1f === undefined ? t1f : t1f / 60, 'мин']]
     .forEach(([n, v, u]) => put(n + ': ' + (v === undefined ? 'не поддерживается' : Math.round(v) + (u ? ' ' + u : ''))));
   put('\n— Текущие значения —');
   active.forEach(m => { if (last[m.k] !== undefined) { const [u, f, d] = unitOf(m); put(m.t + ': ' + f(last[m.k]).toFixed(d) + ' ' + u); } });
   const N = [];
   if (R && R.mil) N.push('Лампа Check Engine горит.');
-  if (d31 !== undefined && d31 < 100) N.push('После сброса ошибок пройдено всего ' + Math.round(d31) + ' км.');
-  if (w30 !== undefined && w30 < 5) N.push('Мало прогревов после сброса (' + w30 + ').');
+  if (d31 !== undefined && d31 < 100) N.push('После последнего сброса ошибок пройдено всего ' + Math.round(d31) + ' км: коды могли стирать недавно (или отключали АКБ).');
+  if (w30 !== undefined && w30 < 5) N.push('Мало прогревов после сброса (' + w30 + '): признак недавнего сброса.');
+  if (R && R.mons.filter(x => !x[1]).length >= 2) N.push('Несколько мониторов не готовы: типично после недавнего стирания кодов или отключения АКБ.');
+  if (d21 !== undefined && d21 > 0) N.push('Лампа горела на пробеге ' + Math.round(d21) + ' км.');
   put('\n— Заметки —');
-  (N.length ? N : ['Явных признаков недавнего сброса не найдено.']).forEach(x => put('• ' + x));
+  (N.length ? N : ['Явных признаков сброса или активных ошибок не найдено.']).forEach(x => put('• ' + x));
+  put('Это признаки, а не доказательство: часть ЭБУ не отдаёт эти данные, а пробег нужно сверять с историей автомобиля.');
 }
 
 let outSel = '#udsOut', foundMods = [], profiles = [], copies = [];
 try { const j = JSON.parse(localStorage.getItem('profiles')); if (Array.isArray(j)) profiles = j; } catch (e) {}
 try { const j = JSON.parse(localStorage.getItem('copies')); if (Array.isArray(j)) copies = j; } catch (e) {}
-const NRC = {'10': 'общая ошибка', '11': 'сервис не поддерживается', '12': 'подфункция не поддерживается', '13': 'неверная длина запроса', '22': 'условия не выполнены', '24': 'неверная последовательность', '31': 'параметр вне диапазона', '33': 'нужен доступ (security access)', '35': 'неверный ключ', '36': 'исчерпаны попытки', '37': 'таймер не истёк', '72': 'ошибка записи', '7E': 'не поддерживается в этой сессии', '7F': 'сервис не поддерживается в этой сессии'};
+const NRC = {'10': 'общая ошибка', '11': 'сервис не поддерживается', '12': 'подфункция не поддерживается', '13': 'неверная длина запроса', '22': 'условия не выполнены', '24': 'неверная последовательность', '31': 'параметр не найден / вне диапазона', '33': 'нужен доступ (security access)', '35': 'неверный ключ', '36': 'исчерпаны попытки', '37': 'подождите, таймер не истёк', '72': 'ошибка записи', '7E': 'не поддерживается в этой сессии', '7F': 'сервис не поддерживается в этой сессии'};
 const BLOCKED_SVC = ['34', '35', '36', '37', '38', '3D'];
 const hexNorm = t => String(t || '').replace(/[\s,:]/g, '').toUpperCase();
 const hexOk = t => /^([0-9A-F]{2})+$/.test(t);
@@ -1235,13 +1126,13 @@ async function ud(hex, to = 6000) {
 }
 function bmMod() {
   const req = hexNorm($('#bmReq').value), resp = hexNorm($('#bmResp').value);
-  if (!/^[0-9A-F]{3}$/.test(req) || !/^[0-9A-F]{3}$/.test(resp)) { status('Укажите адреса блока: 3 hex-символа.'); return null; }
+  if (!/^[0-9A-F]{3}$/.test(req) || !/^[0-9A-F]{3}$/.test(resp)) { status('Укажите адреса блока: по 3 hex-символа, например 7E0 и 7E8.'); return null; }
   return {req, resp};
 }
 const bmOut = t => { $('#bmOut').textContent = t; };
 function runAct(fn, selfRestore, title) {
   if (!running) { status('Сначала подключитесь к автомобилю.'); return; }
-  if (action) { status('Подождите: операция выполняется.'); return; }
+  if (action) { status('Подождите: предыдущая операция ещё выполняется.'); return; }
   status('Выполняю операцию…');
   action = {t: 'fn', title, fn: async () => {
     try { await fn(); } catch (e) { if (/отключено/.test(errText(e))) throw e; bmOut('Ошибка: ' + errText(e)); log('! ' + errText(e)); }
@@ -1262,7 +1153,7 @@ async function readDid(m, did, note) {
 const showVal = (hex) => 'hex: ' + spaced(hex) + '\nascii: ' + toAscii(hex) + (hex.length <= 8 ? '\nчисло: ' + parseInt(hex || '0', 16) : '');
 function bmRead(did, labelName) {
   const m = bmMod(); did = hexNorm(did); if (!m) return;
-  if (!/^[0-9A-F]{4}$/.test(did)) { status('DID — 4 hex-символа.'); return; }
+  if (!/^[0-9A-F]{4}$/.test(did)) { status('DID — 4 hex-символа, например F190.'); return; }
   runAct(async () => {
     await udsSetup(m); const x = await readDid(m, did);
     bmOut((MODN[m.req] || m.req) + ' · ' + did + (labelName ? ' (' + labelName + ')' : '') + '\n' + (x.hex !== undefined ? showVal(x.hex) + '\nкопия сохранена' : 'не прочитано: ' + x.err));
@@ -1306,8 +1197,8 @@ function copiesUI() {
 const guessResp = req => { const o = foundMods.concat(profiles.flatMap(p => p.modules || [])).find(m => m.req === req); return o ? o.resp : (req.startsWith('7E') ? '7E' + (parseInt(req[2], 16) + 8).toString(16).toUpperCase() : ''); };
 function voltOk() {
   const v = last['66'];
-  if (v === undefined) return confirm('Напряжение бортсети не читается. Убедитесь, что АКБ заряжена. Продолжить?');
-  if (v < 12.0) { alert('Напряжение ' + v.toFixed(1) + ' В — слишком низкое.'); return false; }
+  if (v === undefined) return confirm('Напряжение бортсети не читается. Убедитесь, что аккумулятор заряжен или подключено зарядное. Продолжить?');
+  if (v < 12.0) { alert('Напряжение ' + v.toFixed(1) + ' В — слишком низкое. Подключите зарядное устройство.'); return false; }
   return true;
 }
 async function chain(m, steps, title) {
@@ -1316,7 +1207,7 @@ async function chain(m, steps, title) {
   for (const st of steps) {
     const r = await ud(st, 8000);
     out.push('→ ' + spaced(st) + '\n← ' + (r.h ? spaced(r.h) : '') + '  [' + r.text + ']'); bmOut(out.join('\n'));
-    if (!r.pos) { out.push('\nОстановлено.'); break; }
+    if (!r.pos) { out.push('\nОстановлено: ответ не положительный.'); break; }
     await sleep(120);
   }
   bmOut(out.join('\n'));
@@ -1325,49 +1216,49 @@ function checkSteps(steps) {
   const bad = steps.find(x => !hexOk(x) || x.length < 2);
   if (bad !== undefined) return 'Некорректная команда: ' + bad;
   const blk = steps.find(x => BLOCKED_SVC.includes(x.slice(0, 2)));
-  if (blk) return 'Команда ' + blk + ' заблокирована.';
+  if (blk) return 'Команда ' + blk + ' заблокирована: прошивка через приложение запрещена.';
   return '';
 }
 function runSteps(m, steps, title, risky) {
   const e = checkSteps(steps); if (e) { alert(e); return; }
-  if (risky && !expOn()) { alert('Включите экспериментальные функции.'); return; }
+  if (risky && !expOn()) { alert('Включите экспериментальные функции внизу вкладки.'); return; }
   if (risky && !voltOk()) return;
-  if (risky) { const a = prompt((title || 'Цепочка') + '\nБлок ' + m.req + '→' + m.resp + '\nДля запуска введите ВЫПОЛНИТЬ'); if (a !== 'ВЫПОЛНИТЬ') return; }
+  if (risky) { const a = prompt((title || 'Цепочка') + '\nБлок ' + m.req + '→' + m.resp + '\n' + steps.map(spaced).join('\n') + '\n\nДля запуска введите ВЫПОЛНИТЬ'); if (a !== 'ВЫПОЛНИТЬ') return; }
   runAct(() => chain(m, steps, title), false, title || 'Процедура');
 }
 function writeDid(m, did, val) {
   if (!expOn()) { alert('Включите экспериментальные функции.'); return; }
   did = hexNorm(did); val = hexNorm(val);
-  if (!m || !m.resp) { status('Выберите блок.'); return; }
-  if (!/^[0-9A-F]{4}$/.test(did) || !hexOk(val)) { status('Неверные данные.'); return; }
+  if (!m || !m.resp) { status('Не определён адрес ответа блока: выберите блок.'); return; }
+  if (!/^[0-9A-F]{4}$/.test(did) || !hexOk(val)) { status('DID — 4 hex-символа, значение — hex чётной длины.'); return; }
   if (!voltOk()) return;
   runAct(async () => {
     await udsSetup(m);
     const old = await readDid(m, did, 'перед записью');
-    if (old.hex === undefined) { bmOut('Текущее значение не прочитано.'); return; }
-    if (old.hex.length !== val.length) { bmOut('Длина не совпадает.'); return; }
-    if (old.hex === val) { bmOut('Значение уже установлено.'); return; }
-    const a = prompt('Блок ' + m.req + ', DID ' + did + '\nДля записи введите ЗАПИСАТЬ');
+    if (old.hex === undefined) { bmOut('Запись отменена: текущее значение не прочитано (' + old.err + ').'); return; }
+    if (old.hex.length !== val.length) { bmOut('Запись отменена: длина нового значения (' + val.length / 2 + ' байт) не совпадает с текущей (' + old.hex.length / 2 + ' байт).'); return; }
+    if (old.hex === val) { bmOut('Значение уже такое. Запись не нужна.'); return; }
+    const a = prompt('Блок ' + m.req + ', параметр ' + did + '\nСейчас: ' + spaced(old.hex) + '\nНовое:  ' + spaced(val) + '\nКопия текущего значения сохранена.\n\nДля записи введите ЗАПИСАТЬ');
     if (a !== 'ЗАПИСАТЬ') { bmOut('Отменено.'); return; }
     const out = ['Блок ' + m.req + ' · ' + did, 'было:  ' + spaced(old.hex)];
-    if ($('#wSess').checked) { const r = await ud('1003', 6000); out.push('10 03: ' + r.text); if (!r.pos) { bmOut(out.join('\n')); return; } }
+    if ($('#wSess').checked) { const r = await ud('1003', 6000); out.push('10 03: ' + r.text); if (!r.pos) { out.push('Запись отменена.'); bmOut(out.join('\n')); return; } }
     const w = await ud('2E' + did + val, 10000); out.push('2E: ' + w.text);
     if (w.pos) {
       const chk = await readDid(m, did, 'после записи');
-      out.push('стало: ' + (chk.hex !== undefined ? spaced(chk.hex) : chk.err), chk.hex === val ? '✔ записано' : '⚠ значение не совпало.');
-    }
+      out.push('стало: ' + (chk.hex !== undefined ? spaced(chk.hex) : chk.err), chk.hex === val ? '✔ записано и проверено' : '⚠ значение не совпало, проверьте блок. Прежнее значение — в копиях.');
+    } else if (w.nrc === '33') out.push('Нужен доступ по seed/key: в приложении не реализован.');
     bmOut(out.join('\n'));
-  }, false, 'Запись ' + did);
+  }, false, 'Запись параметра ' + did);
 }
-const EXAMPLE = {name: 'Пример (только чтение)', note: '', modules: [{name: 'Двигатель', req: '7E0', resp: '7E8',
-  dids: [{id: 'F190', name: 'VIN'}, {id: 'F187', name: 'Номер детали'}],
-  actions: [{name: 'Tester Present', steps: ['3E00'], risky: false}]}]};
+const EXAMPLE = {name: 'Пример (только чтение)', note: 'Замените адреса и параметры на данные вашей машины', modules: [{name: 'Двигатель', req: '7E0', resp: '7E8',
+  dids: [{id: 'F190', name: 'VIN'}, {id: 'F187', name: 'Номер детали'}, {id: 'F188', name: 'Версия ПО'}, {id: 'F18C', name: 'Серийный номер'}],
+  actions: [{name: 'Проверка связи (tester present)', steps: ['3E00'], risky: false}]}]};
 function profileAdd(obj) {
   try {
-    if (!obj || typeof obj.name !== 'string' || !Array.isArray(obj.modules)) throw new Error('нужны name и modules');
+    if (!obj || typeof obj.name !== 'string' || !Array.isArray(obj.modules)) throw new Error('нужны поля name и modules');
     const clean = {name: obj.name.slice(0, 60), note: String(obj.note || '').slice(0, 300), modules: obj.modules.map(m => {
       const req = hexNorm(m.req), resp = hexNorm(m.resp);
-      if (!/^[0-9A-F]{3}$/.test(req) || !/^[0-9A-F]{3}$/.test(resp)) throw new Error('адреса по 3 hex');
+      if (!/^[0-9A-F]{3}$/.test(req) || !/^[0-9A-F]{3}$/.test(resp)) throw new Error('адреса блока: по 3 hex-символа');
       return {name: String(m.name || req).slice(0, 60), req, resp,
         dids: (m.dids || []).map(d => ({id: hexNorm(d.id), name: String(d.name || '').slice(0, 60)})).filter(d => /^[0-9A-F]{4}$/.test(d.id)),
         actions: (m.actions || []).map(a => ({name: String(a.name || 'Действие').slice(0, 80), note: String(a.note || '').slice(0, 300), risky: a.risky !== false, cat: ['service', 'fuel', 'actuator', 'adapt', 'other'].includes(a.cat) ? a.cat : 'other', steps: (a.steps || []).map(hexNorm)}))};
@@ -1375,7 +1266,7 @@ function profileAdd(obj) {
     clean.modules.forEach(m => m.actions.forEach(a => { const e = checkSteps(a.steps); if (e) throw new Error(a.name + ': ' + e); }));
     profiles = profiles.filter(p => p.name !== clean.name); profiles.push(clean); saveLS('profiles', profiles);
     profilesUI(profiles.length - 1); status('Профиль «' + clean.name + '» добавлен.');
-  } catch (e) { alert('Ошибка: ' + (e.message || e)); }
+  } catch (e) { alert('Профиль не добавлен: ' + (e.message || e)); }
 }
 function profilesUI(idx) {
   const sl = $('#prSel'); sl.innerHTML = '';
@@ -1383,13 +1274,13 @@ function profilesUI(idx) {
   if (idx !== undefined) sl.value = idx;
   const box = $('#prView'); box.innerHTML = '';
   const pr = profiles[sl.value | 0];
-  if (!pr) { box.innerHTML = '<div class="panel-note">Профилей нет.</div>'; bmSelUI(); return; }
+  if (!pr) { box.innerHTML = '<div class="panel-note">Профилей нет. Нажмите «Пример», чтобы увидеть формат.</div>'; bmSelUI(); return; }
   if (pr.note) { const n = document.createElement('div'); n.className = 'panel-note'; n.textContent = pr.note; box.appendChild(n); }
   pr.modules.forEach(m => {
     const d = document.createElement('div'); d.className = 'prm';
     const h = document.createElement('div'); h.textContent = m.name + ' · ' + m.req + '→' + m.resp; h.style.fontWeight = '600'; d.appendChild(h);
     const mk = (txt, cls, fn) => { const b = document.createElement('button'); b.className = cls; b.textContent = txt; b.onclick = fn; d.appendChild(b); };
-    mk('Выбрать блок', 'sec', () => { $('#bmReq').value = m.req; $('#bmResp').value = m.resp; status('Выбран блок ' + m.req); });
+    mk('Выбрать блок', 'sec', () => { $('#bmReq').value = m.req; $('#bmResp').value = m.resp; status('Выбран блок ' + m.req + '→' + m.resp); });
     m.dids.forEach(x => mk(x.name || x.id, 'sec', () => { $('#bmReq').value = m.req; $('#bmResp').value = m.resp; bmRead(x.id, x.name); }));
     m.actions.forEach(a => mk((a.risky ? '⚠ ' : '') + a.name, a.risky ? 'danger' : 'sec', () => runSteps({req: m.req, resp: m.resp}, a.steps, a.name, a.risky)));
     box.appendChild(d);
@@ -1398,12 +1289,12 @@ function profilesUI(idx) {
 }
 function initBlocks() {
   $('#bmSel').onchange = () => { const m = bmOpts[$('#bmSel').value]; if (m) { $('#bmReq').value = m.req; $('#bmResp').value = m.resp; } };
-  $('#bmInfo').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsInfo(m); }, true, 'Идентификация ' + m.req); };
-  $('#bmDtc').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsDTC(m, 'FF'); }, true, 'Ошибки ' + m.req); };
+  $('#bmInfo').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsInfo(m); }, true, 'Идентификация блока ' + m.req); };
+  $('#bmDtc').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsDTC(m, 'FF'); }, true, 'Чтение ошибок блока ' + m.req); };
   $('#bmClr').onclick = () => {
     const m = bmMod(); if (!m) return;
-    if (!confirm('Стереть ошибки в блоке ' + m.req + '?')) return;
-    runAct(async () => { await udsSetup(m); const r = await ud('14FFFFFF', 10000); bmOut(m.req + ': ' + r.text); }, false, 'Стирание ошибок ' + m.req);
+    if (!confirm('Стереть ошибки и стоп-кадры в блоке ' + (MODN[m.req] || m.req) + ' (' + m.req + ')? Сначала можно прочитать их кнопкой «Ошибки блока».')) return;
+    runAct(async () => { await udsSetup(m); const r = await ud('14FFFFFF', 10000); bmOut((MODN[m.req] || m.req) + ': стирание ошибок — ' + r.text); }, false, 'Стирание ошибок блока ' + m.req);
   };
   $('#bmRead').onclick = () => bmRead($('#bmDid').value);
   $('#bmCsv').onclick = () => {
@@ -1411,28 +1302,28 @@ function initBlocks() {
     const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
     shareText('obd-copies.csv', '\uFEFF' + [['Время', 'VIN', 'Блок', 'Параметр', 'Hex', 'ASCII', 'Примечание'], ...copies.map(c => [new Date(c.t).toLocaleString('ru-RU'), c.vin, c.req, c.did, c.hex, c.ascii, c.note])].map(r => r.map(q).join(',')).join('\r\n'));
   };
-  $('#bmCopClr').onclick = () => { if (copies.length && confirm('Удалить копии?')) { copies = []; saveLS('copies', copies); copiesUI(); } };
+  $('#bmCopClr').onclick = () => { if (copies.length && confirm('Удалить все копии параметров?')) { copies = []; saveLS('copies', copies); copiesUI(); } };
   $('#prSel').onchange = () => profilesUI();
   $('#prEx').onclick = () => profileAdd(EXAMPLE);
-  $('#prDel').onclick = () => { const i = $('#prSel').value | 0; if (profiles[i] && confirm('Удалить профиль?')) { profiles.splice(i, 1); saveLS('profiles', profiles); profilesUI(); } };
-  $('#prAddT').onclick = () => { try { profileAdd(JSON.parse($('#prTxt').value)); $('#prTxt').value = ''; } catch (e) { alert('Не JSON: ' + e.message); } };
-  $('#prFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { profileAdd(JSON.parse(r.result)); } catch (x) { alert('Не JSON: ' + x.message); } }; r.readAsText(f); e.target.value = ''; };
+  $('#prDel').onclick = () => { const i = $('#prSel').value | 0; if (profiles[i] && confirm('Удалить профиль «' + profiles[i].name + '»?')) { profiles.splice(i, 1); saveLS('profiles', profiles); profilesUI(); } };
+  $('#prAddT').onclick = () => { try { profileAdd(JSON.parse($('#prTxt').value)); $('#prTxt').value = ''; } catch (e) { alert('Это не JSON: ' + e.message); } };
+  $('#prFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { profileAdd(JSON.parse(r.result)); } catch (x) { alert('Это не JSON: ' + x.message); } }; r.readAsText(f); e.target.value = ''; };
   $('#expOn').onchange = () => { $('#expBox').style.display = expOn() ? 'block' : 'none'; copiesUI(); };
   $('#wGo').onclick = () => { const m = bmMod(); if (m) writeDid(m, $('#wDid').value, $('#wVal').value); };
   $('#chS1').onclick = () => { $('#chTxt').value = '1003'; };
   $('#chS2').onclick = () => { $('#chTxt').value = '3E00'; };
   $('#chS3').onclick = () => { $('#chTxt').value = '1003\n2701'; };
-  $('#chGo').onclick = () => { const m = bmMod(); if (!m) return; const st = $('#chTxt').value.split('\n').map(hexNorm).filter(Boolean); if (!st.length) { status('Введите команды.'); return; } runSteps(m, st, 'Цепочка', true); };
+  $('#chGo').onclick = () => { const m = bmMod(); if (!m) return; const st = $('#chTxt').value.split('\n').map(hexNorm).filter(Boolean); if (!st.length) { status('Введите команды.'); return; } runSteps(m, st, 'Цепочка команд', true); };
   $('#spSave').onclick = () => {
     const m = bmMod(), name = $('#spName').value.trim(), steps = $('#chTxt').value.split('\n').map(hexNorm).filter(Boolean);
-    if (!m || !name || !steps.length) { status('Заполните поля.'); return; }
+    if (!m || !name || !steps.length) { status('Укажите блок, название и команды цепочки.'); return; }
     const e = checkSteps(steps); if (e) { alert(e); return; }
     let pr = profiles[$('#prSel').value | 0];
     if (!pr) { pr = {name: 'Мои процедуры', note: '', modules: []}; profiles.push(pr); }
     let md = pr.modules.find(x => x.req === m.req && x.resp === m.resp);
     if (!md) { md = {name: MODN[m.req] || m.req, req: m.req, resp: m.resp, dids: [], actions: []}; pr.modules.push(md); }
     md.actions.push({name, note: '', risky: true, cat: $('#spCat').value, steps}); saveLS('profiles', profiles);
-    profilesUI(profiles.indexOf(pr)); $('#spName').value = ''; status('Сохранено.');
+    profilesUI(profiles.indexOf(pr)); $('#spName').value = ''; status('Процедура «' + name + '» сохранена в профиль «' + pr.name + '».');
   };
   profilesUI(); copiesUI(); bmSelUI();
 }
@@ -1464,14 +1355,14 @@ let forceRe = false, wakeFn = null, pollState = '';
 const nap = ms => new Promise(r => { const t = setTimeout(() => { wakeFn = null; r(); }, ms); wakeFn = () => { clearTimeout(t); wakeFn = null; r(); }; });
 async function recover(my, forced) {
   for (let i = 1; running && my === gen; i++) {
-    status('Связь с ЭБУ: ' + (forced ? 'обновление' : 'ожидание') + ' (' + i + ')…'); log('recover ' + i); setConn('wait', 'ЭБУ не отвечает (' + i + ')');
+    status('Связь с ЭБУ: ' + (forced ? 'обновление' : 'ожидание') + ' (попытка ' + i + ')…'); log('recover ' + i); setConn('wait', 'ЭБУ не отвечает: ' + (forced ? 'обновляю связь' : 'жду') + ' (' + i + ')');
     pollState = 'recover';
     try {
       if (dev && dev.gatt && !dev.gatt.connected) await openGatt();
       const saved = savedProto();
       for (const c of ['ATZ', 'ATE0', 'ATL0', 'ATS0', 'ATH0', 'ATAT2', 'ATSP' + saved]) await send(c, c === 'ATZ' ? 6000 : 3000);
       const b = await bytes(0, /[6-9]/.test(saved) ? 5000 : 15000);
-      if (b && b.length >= 4) { pollState = ''; setConn('ok', 'Связь с ЭБУ есть'); status('Связь восстановлена'); log('recover ok'); return true; }
+      if (b && b.length >= 4) { pollState = ''; setConn('ok', 'Связь с ЭБУ есть'); status('Связь восстановлена' + (protoName ? ' · ' + protoName : '')); log('recover ok'); return true; }
     } catch (e) { if (/отключено/.test(errText(e))) { pollState = ''; throw e; } log('! ' + errText(e)); if (gattErr(e)) { try { await hardReset(); } catch (x) { log('! ' + errText(x)); } } }
     pollState = '';
     if (!running || my !== gen) break;
@@ -1480,8 +1371,8 @@ async function recover(my, forced) {
   return false;
 }
 function forceRefresh() {
-  if (demo) { status('В демо-режиме не требуется.'); return; }
-  if (reconnecting) { status('Подключаюсь…'); if (wakeFn) wakeFn(); return; }
+  if (demo) { status('В демо-режиме связь обновлять не нужно.'); return; }
+  if (reconnecting) { status('Подключаюсь сейчас…'); if (wakeFn) wakeFn(); return; }
   if (running) {
     forceRe = true; status('Обновляю связь…');
     if (pending && pollState) { clearTimeout(pending.t); const p = pending; pending = null; p.rej(new Error('обновление связи')); }
@@ -1490,10 +1381,10 @@ function forceRefresh() {
   }
   if (dev) {
     userStop = false; status('Подключение…');
-    openGatt().then(() => run()).catch(e => { status('Ошибка: ' + errText(e)); log('! ' + errText(e)); });
+    openGatt().then(() => run()).catch(e => { status('Ошибка: ' + errText(e) + '. Нажмите «Подключить адаптер».'); log('! ' + errText(e)); });
     return;
   }
-  status('Нажмите «Подключить адаптер».');
+  status('Сначала нажмите «Подключить адаптер».');
 }
 
 async function run() {
@@ -1505,30 +1396,25 @@ async function run() {
     status('Инициализация адаптера…');
     const saved = savedProto();
     for (const c of ['ATZ', 'ATE0', 'ATL0', 'ATS0', 'ATH0', 'ATAT2', 'ATSP' + saved]) await send(c, c === 'ATZ' ? 8000 : 5000);
-    status('Связь с ЭБУ (до 10 с)…');
+    status('Связь с ЭБУ (на K-line до 10 с)…');
     const probe = async (to) => { try { return await supported(to); } catch (e) { if (!running || my !== gen || /отключено/.test(errText(e))) throw e; log('! ' + errText(e)); return new Set(); } };
     const fastTo = /[6-9]/.test(saved) ? 6000 : 20000;
     let sup = await probe(fastTo);
     if (!sup.size && saved !== '0') { await send('ATSP0', 5000); sup = await probe(20000); }
     for (let n = 1; !sup.size && running && my === gen; n++) {
-      status('ЭБУ не отвечает (попытка ' + n + '). Проверьте зажигание!'); log('ждём ЭБУ ' + n);
+      status('ЭБУ не отвечает (попытка ' + n + '). Включите зажигание. «Остановить» — отмена.'); log('ждём ЭБУ ' + n);
       pollState = 'recover'; await nap(1500); if (!running || my !== gen) break;
       try { if (n % 3 === 0) { for (const c of ['ATZ', 'ATE0', 'ATL0', 'ATS0', 'ATH0', 'ATAT2', 'ATSP0']) await send(c, c === 'ATZ' ? 6000 : 3000); } } catch (e) { if (/отключено/.test(errText(e))) throw e; }
       sup = await probe(fastTo === 6000 ? 6000 : 20000); pollState = '';
     }
     pollState = '';
-    if (!sup.size) { 
-      if (my === gen) { running = false; buttons(); } 
-      let failMsg = 'ЭБУ не ответил.\n\nПодсказка:\n1. Включите зажигание.\n2. Старые машины (K-line / ISO9141) могут отвечать до 15 секунд.\n3. Для VAG/BMW проверьте протокол в настройках адаптера (ISO9141-2 или KWP2000).';
-      if (taskOn && taskKind === 'connect') taskEnd(failMsg, true); 
-      setConn('idle', 'Не подключено'); 
-      return; 
-    }
+    if (!sup.size) { if (my === gen) { running = false; buttons(); } if (taskOn && taskKind === 'connect') taskEnd('ЭБУ не ответил. Зажигание включено?', true); setConn('idle', 'Не подключено'); return; }
     avail = METRICS.filter(m => sup.has(m.pid)); pickUI(); fillAlarm(); refresh();
     protoName = (await send('ATDP', 3000)).join(' ');
     multi = /CAN/.test(protoName);
-    status('Протокол: ' + protoName);
+    status('Протокол: ' + protoName + (multi ? ' · пакетный опрос' : ''));
     try { await detectCar(); } catch (e) { if (!running || my !== gen) throw e; }
+    status('Протокол: ' + protoName + (multi ? ' · пакетный опрос' : ''));
     if (!demo) {
       const n = ((await send('ATDPN', 3000))[0] || '').replace(/^A/, '');
       if (/^[1-9A-C]$/i.test(n)) { try { localStorage.setItem('proto', n.toUpperCase()); } catch (e) {} }
@@ -1570,12 +1456,12 @@ async function run() {
       recordCycle();
       tickRate();
       if (action === 'read') { action = null; taskShow('Чтение кодов ошибок'); try { await readDTC(); taskEnd('Готово'); } catch (e) { taskEnd(errText(e), true); throw e; } }
-      else if (action === 'clear') { action = null; taskShow('Стирание кодов ошибок'); try { await send('04', 10000); $('#dtc').textContent = 'Коды стёрты.'; taskEnd('Коды стёрты'); } catch (e) { taskEnd(errText(e), true); throw e; } }
+      else if (action === 'clear') { action = null; taskShow('Стирание кодов ошибок'); try { await send('04', 10000); $('#dtc').textContent = 'Коды стёрты. Нажмите «Прочитать коды» для проверки.'; taskEnd('Коды стёрты'); } catch (e) { taskEnd(errText(e), true); throw e; } }
       if (action && action.t) { const a = action; action = null; await doExt(a); }
       await sleep(20);
     }
   } catch (e) { if (my === gen && !reconnecting) { status('Ошибка: ' + errText(e)); log('! ' + errText(e)); } }
-  if (taskOn && taskKind === 'connect') taskEnd(userStop ? 'Отменено.' : ($('#status').textContent || 'Сбой подключения'), !userStop);
+  if (taskOn && taskKind === 'connect') taskEnd(userStop ? 'Отменено.' : ($('#status').textContent || 'Не удалось подключиться'), !userStop);
   if (my === gen) { running = false; demo = false; buttons(); if (!reconnecting) { sessEnd(); setConn('idle', 'Не подключено'); } }
 }
 
@@ -1596,40 +1482,40 @@ async function openGatt() {
   const pick = (arr, keys) => { for (const k of keys) { const f = arr.find(c => c.uuid.toLowerCase().includes(k)); if (f) return f; } return arr[0]; };
   wch = pick(writes, ['8841', 'fff2', 'ffe1', 'bef8d6c9']);
   nch = pick(notifs, ['1e4d', 'fff1', 'ffe1', 'bef8d6c9']);
-  if (!nch || !wch) throw new Error('не найден канал ELM327');
+  if (!nch || !wch) throw new Error('не найден канал ELM327 (смотрите лог)');
   log('канал: notify ' + nch.uuid + ', write ' + wch.uuid);
   for (const c of notifs) {
     try { await c.startNotifications(); c.addEventListener('characteristicvaluechanged', onData); }
     catch (e) { log('notify ' + c.uuid + ': ' + errText(e)); }
   }
-  await sleep(300); setConn('busy', 'Адаптер на связи…');
+  await sleep(300); setConn('busy', 'Адаптер на связи, опрос ЭБУ…');
 }
 
 async function onDisc() {
   if (softDisc) return;
-  running = false; setConn('bad', 'Связь потеряна');
+  running = false; setConn('bad', 'Связь с адаптером потеряна');
   if (pending) { clearTimeout(pending.t); const p = pending; pending = null; p.rej(new Error('отключено')); }
   if (userStop || demo || reconnecting) { buttons(); status('Адаптер отключился.'); return; }
   reconnecting = true; buttons();
   for (let i = 1; i <= 40 && !userStop; i++) {
-    status('Связь потеряна, переподключение ' + i + '/40…'); log('reconnect ' + i);
+    status('Связь потеряна, переподключение ' + i + '/40… «Обновить связь» — повторить сразу'); log('reconnect ' + i);
     try { await nap(i === 1 ? 1000 : 3000); if (userStop) break; await openGatt(); reconnecting = false; run(); return; } catch (e) { log('! ' + errText(e)); }
   }
-  reconnecting = false; buttons(); status(userStop ? 'Остановлено.' : 'Не удалось переподключиться.');
+  reconnecting = false; buttons(); status(userStop ? 'Остановлено.' : 'Не удалось переподключиться. Нажмите «Обновить связь» или «Подключить адаптер».');
 }
 
 async function connect() {
   demo = false; userStop = false; taskShow('Подключение к адаптеру', 'connect');
-  if (!navigator.bluetooth) { status('Web Bluetooth недоступен.'); return; }
+  if (!navigator.bluetooth) { status('Web Bluetooth недоступен. Откройте страницу в браузере Bluefy.'); return; }
   try {
-    if (dev && dev.gatt) { try { log('повторное подключение к ' + dev.name); if (dev.gatt.connected) await dropGatt(); await openGatt(); run(); return; } catch (e) { log('! ' + errText(e)); } }
+    if (dev && dev.gatt) { try { log('повторное подключение к ' + dev.name); if (dev.gatt.connected) await dropGatt(); await openGatt(); run(); return; } catch (e) { log('! ' + errText(e) + ' — выбираем устройство заново'); } }
     log('запрос устройства…');
     dev = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: SERVICES});
     dev.addEventListener('gattserverdisconnected', onDisc);
     log('выбрано: ' + dev.name);
     await openGatt();
     run();
-  } catch (e) { taskEnd('Ошибка: ' + errText(e), true); setConn('idle', 'Не подключено'); status('Ошибка: ' + errText(e)); log('! ' + errText(e)); }
+  } catch (e) { taskEnd('Ошибка подключения: ' + errText(e), true); setConn('idle', 'Не подключено'); status('Ошибка: ' + errText(e)); log('! ' + errText(e)); }
 }
 
 $('#bConn').onclick = () => { unlockAudio(); connect(); };
@@ -1639,9 +1525,9 @@ $('#bRefresh').onclick = forceRefresh;
 $('#bRead').onclick = () => { action = 'read'; };
 $('#bClear').onclick = () => { if (confirm('Стереть коды ошибок?')) action = 'clear'; };
 $('#bLog').onclick = saveLog;
-$('#bDemo').onclick = () => { unlockAudio(); demo = true; demoT0 = performance.now(); status('Демо-режим'); run(); };
+$('#bDemo').onclick = () => { unlockAudio(); demo = true; demoT0 = performance.now(); demoCache = null; demoCacheAt = 0; status('Демо-режим: данные имитируются'); run(); };
 $('#dragCard').onclick = e => { if (e.target.id !== 'bDrag') openDrag(); };
-$('#bDrag').onclick = () => { drag = {s: 'idle', t0: 0, pt: 0, pv: 0, res: {}}; dragBest = {}; dragText = ''; $('#dragR').textContent = 'Готов к старту'; };
+$('#bDrag').onclick = () => { drag = {s: 'idle', t0: 0, pt: 0, pv: 0, res: {}}; dragBest = {}; dragText = ''; $('#dragR').textContent = 'Готов к старту: остановитесь и тронитесь'; };
 $('#alAdd').onclick = () => { const src = avail.length ? avail : METRICS; alarms.push({k: src[0].k, c: 'gt', v: '', on: true}); saveAlarms(); renderAlarms(); };
 window.addEventListener('load', () => {
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -1649,7 +1535,7 @@ window.addEventListener('load', () => {
 });
 $('#bTg').onclick = async () => {
   const lines = active.map(m => { const [u, f, d] = unitOf(m); return m.t + ': ' + (last[m.k] === undefined ? '—' : f(last[m.k]).toFixed(d) + ' ' + u); });
-  const txt = ['OBD — ' + new Date().toLocaleString(), dragText, alarmText, ...lines].filter(Boolean).join('\n');
+  const txt = ['OBD — ' + new Date().toLocaleString(), 'Режим: ' + (demo ? 'ДЕМО (имитация)' : 'подключение к автомобилю'), dragText, alarmText, ...lines].filter(Boolean).join('\n');
   await shareText('obd-live-report.txt', txt);
 };
 $('#bRec').onclick = () => {
@@ -1669,12 +1555,12 @@ $('#bHud').onclick = openHud;
 $('#hudPad').value = (() => { try { return localStorage.getItem('hudPad') || ''; } catch (e) { return ''; } })();
 $('#hudPad').addEventListener('input', () => { try { localStorage.setItem('hudPad', $('#hudPad').value); } catch (e) {} layoutHud(); });
 $('#bSessEnd').onclick = () => { sessEnd(); };
-$('#bSessClr').onclick = () => { if (sessions.length && confirm('Удалить сохранённые сеансы?')) { sessions = []; sessSave(); sessList(); } };
+$('#bSessClr').onclick = () => { if (sessions.length && confirm('Удалить все сохранённые сеансы?')) { sessions = []; sessSave(); sessList(); } };
 $('#bSessCsv').onclick = () => {
-  if (!sessions.length) { status('Нет сеансов.'); return; }
+  if (!sessions.length) { status('Нет сохранённых сеансов.'); return; }
   const csvCell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-  const head = ['Начало', 'Конец', 'Км', 'В пути, мин', 'В движении, мин', 'Ср. скорость', 'Макс скорость', 'Макс обороты', 'Макс ОЖ', 'Макс наддув', 'Демо'];
-  const rows = sessions.map(x => [new Date(x.t0).toLocaleString('ru-RU'), new Date(x.t1).toLocaleString('ru-RU'), x.km.toFixed(2), (x.dur / 60).toFixed(1), (x.mv / 60).toFixed(1), sessAvg(x).toFixed(1), x.max.toFixed(0), x.rpm.toFixed(0), x.cool == null ? '' : x.cool.toFixed(0), x.boost == null ? '' : (x.boost / 100).toFixed(2), x.demo ? 'да' : '']);
+  const head = ['Начало', 'Конец', 'Км', 'В пути, мин', 'В движении, мин', 'Ср. скорость в движении, км/ч', 'Ср. скорость общая, км/ч', 'Макс скорость, км/ч', 'Макс обороты', 'Макс темп ОЖ, °C', 'Макс наддув, бар', 'Демо'];
+  const rows = sessions.map(x => [new Date(x.t0).toLocaleString('ru-RU'), new Date(x.t1).toLocaleString('ru-RU'), x.km.toFixed(2), (x.dur / 60).toFixed(1), (x.mv / 60).toFixed(1), sessAvg(x).toFixed(1), sessAvgAll(x).toFixed(1), x.max.toFixed(0), x.rpm.toFixed(0), x.cool == null ? '' : x.cool.toFixed(0), x.boost == null ? '' : (x.boost / 100).toFixed(2), x.demo ? 'да' : '']);
   shareText('obd-sessions.csv', '\uFEFF' + [head, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n'));
 };
 $('#hud').onclick = () => { $('#hud').style.display = 'none'; $('#hudGrid').innerHTML = ''; };
@@ -1682,66 +1568,6 @@ $('#bPk').onclick = () => { mm = {}; active.forEach(m => { const e = $('#m' + m.
 $('#bTrip').onclick = () => { trip = {km: 0, mv: 0, max: 0, pv: 0, pt: 0, g: 0}; $('#tripR').textContent = '—'; };
 $('#bRep').onclick = () => { action = {t: 'report'}; };
 $('#bRepS').onclick = () => { shareText('obd-report.txt', $('#report').textContent); };
-
-$('#bFfClr').onclick = () => {
-  if (confirm('Очистить историю стоп-кадров?')) {
-    ffHistory = [];
-    try { localStorage.removeItem('ffHist'); } catch(e) {}
-    renderFfHist();
-  }
-};
-renderFfHist();
-
-$('#bToggleDpf').onclick = () => {
-  const el = $('#dpfContent');
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
-};
-
-// Экспорт / Импорт настроек JSON
-$('#bExportAll').onclick = () => {
-  const exportData = {
-    profiles: profiles,
-    copies: copies,
-    dtcDict: userDesc,
-    alarms: alarms,
-    sel: [...sel],
-    units: unitSel,
-    shiftRpm: $('#shiftRpm').value,
-    shiftOn: $('#shiftOn').checked,
-    fuelType: $('#fuelType').value,
-    carName: $('#carName').value
-  };
-  shareText('obdnopro-backup.json', JSON.stringify(exportData, null, 2));
-};
-
-$('#bImportAll').onclick = () => $('#fImportAll').click();
-$('#fImportAll').onchange = e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    try {
-      const data = JSON.parse(r.result);
-      if (data.profiles) { profiles = data.profiles; saveLS('profiles', profiles); }
-      if (data.copies) { copies = data.copies; saveLS('copies', copies); }
-      if (data.dtcDict) { userDesc = data.dtcDict; saveLS('dtcDict', userDesc); }
-      if (data.alarms) { alarms = data.alarms; saveAlarms(); }
-      if (data.sel) { sel = new Set(data.sel); saveLS('sel', [...sel]); }
-      if (data.units) { unitSel = data.units; saveLS('units', unitSel); }
-      if (data.shiftRpm) { $('#shiftRpm').value = data.shiftRpm; localStorage.setItem('shiftRpm', data.shiftRpm); }
-      if (data.shiftOn !== undefined) { $('#shiftOn').checked = data.shiftOn; localStorage.setItem('shiftOn', data.shiftOn); }
-      if (data.fuelType) { $('#fuelType').value = data.fuelType; localStorage.setItem('fuelType', data.fuelType); }
-      if (data.carName) { $('#carName').value = data.carName; localStorage.setItem('carName', data.carName); }
-      alert('Настройки и данные успешно импортированы!');
-      location.reload();
-    } catch(err) {
-      alert('Ошибка импорта JSON: ' + err.message);
-    }
-  };
-  r.readAsText(f);
-  e.target.value = '';
-};
-
 function activateTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => {
     const on = b.dataset.tab === name;
@@ -1767,14 +1593,6 @@ $('#dcAdd').onclick = () => { dcAdd($('#dcTxt').value); $('#dcTxt').value = ''; 
 $('#dcClr').onclick = () => { if (confirm('Очистить свой словарь ошибок?')) { userDesc = {}; try { localStorage.removeItem('dtcDict'); } catch (e) {} dcInfo(); } };
 $('#dcFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => dcAdd(String(r.result)); r.readAsText(f); e.target.value = ''; };
 dcInfo();
-
-$('#shiftRpm').value = localStorage.getItem('shiftRpm') || '';
-$('#shiftOn').checked = localStorage.getItem('shiftOn') === 'true';
-$('#fuelType').value = localStorage.getItem('fuelType') || 'diesel';
-$('#shiftRpm').addEventListener('input', () => localStorage.setItem('shiftRpm', $('#shiftRpm').value));
-$('#shiftOn').addEventListener('change', () => localStorage.setItem('shiftOn', $('#shiftOn').checked));
-$('#fuelType').addEventListener('change', () => localStorage.setItem('fuelType', $('#fuelType').value));
-
 $('#carName').value = (() => { try { return localStorage.getItem('carName') || ''; } catch (e) { return ''; } })();
 $('#carName').addEventListener('input', () => { try { localStorage.setItem('carName', $('#carName').value.trim()); } catch (e) {} carShow(); });
 carShow(); initBlocks();
