@@ -1698,7 +1698,7 @@ $('#dcClr').onclick = () => { if (confirm('Clear your DTC dictionary?')) { userD
 $('#dcFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => dcAdd(String(r.result)); r.readAsText(f); e.target.value = ''; };
 dcInfo();
 
-  // --- СТРИМИНГОВЫЙ ПАРСЕР ДЛЯ БОЛЬШОЙ БАЗЫ DTC ---
+  // --- СТРИМИНГОВЫЙ ПАРСЕР ДЛЯ БОЛЬШОЙ БАЗЫ DTC (ФОРМАТ ОБЪЕКТОВ) ---
   $('#bigDtcFile').onchange = e => {
     const f = e.target.files[0];
     if (!f) return;
@@ -1718,20 +1718,28 @@ dcInfo();
         const text = e.target.result;
         buffer += text;
         
-        const regex = /"([PCBU][0-9A-F]{4})"\s*:\s*"((?:[^"\\]|\\.)*)"/gi;
+        // Ищем объекты: "code": "B0001", ... "title": { "en": "...", ... "de": "..." }
+        const regex = /"code"\s*:\s*"([A-Z0-9]{5})"[\s\S]*?"title"\s*:\s*\{\s*"en"\s*:\s*"([^"]+)"[\s\S]*?"de"\s*:\s*"([^"]+)"/gi;
         
         let match;
         let lastIndex = 0;
         
         while ((match = regex.exec(buffer)) !== null) {
             const code = match[1].toUpperCase();
-            let desc = match[2].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-            if (desc.length > 200) desc = desc.slice(0, 200) + '...';
-            userDesc[code] = desc;
+            const enDesc = match[2].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+            const deDesc = match[3] ? match[3].replace(/\\"/g, '"').replace(/\\\\/g, '\\') : '';
+            
+            // Формируем текст для словаря. Основной - английский, немецкий в скобках.
+            let finalDesc = enDesc;
+            if (deDesc) finalDesc += ' (DE: ' + deDesc + ')';
+            if (finalDesc.length > 200) finalDesc = finalDesc.slice(0, 200) + '...';
+            
+            userDesc[code] = finalDesc;
             addedCount++;
             lastIndex = regex.lastIndex;
         }
         
+        // Удаляем из буфера то, что уже обработали
         buffer = buffer.slice(lastIndex);
         offset += text.length;
         
@@ -1775,14 +1783,14 @@ dcInfo();
     readNext();
   };
 
-$('#carName').value = (() => { try { return localStorage.getItem('carName') || ''; } catch (e) { return ''; } })();
-$('#carName').addEventListener('input', () => { try { localStorage.setItem('carName', $('#carName').value.trim()); } catch (e) {} carShow(); });
-carShow(); initBlocks();
-$('#bScan').onclick = () => { action = {t: 'scan'}; };
-$('#tSend').onclick = () => { const v = $('#tIn').value.trim(); if (v) { action = {t: 'term', cmd: v}; $('#tIn').value = ''; } };
-log('browser: ' + navigator.userAgent.slice(0, 90));
-buttons();
-applyLanguage(currentLang); // Применяем язык при загрузке
+  $('#carName').value = (() => { try { return localStorage.getItem('carName') || ''; } catch (e) { return ''; } })();
+  $('#carName').addEventListener('input', () => { try { localStorage.setItem('carName', $('#carName').value.trim()); } catch (e) {} carShow(); });
+  carShow(); initBlocks();
+  $('#bScan').onclick = () => { action = {t: 'scan'}; };
+  $('#tSend').onclick = () => { const v = $('#tIn').value.trim(); if (v) { action = {t: 'term', cmd: v}; $('#tIn').value = ''; } };
+  log('browser: ' + navigator.userAgent.slice(0, 90));
+  buttons();
+  applyLanguage(currentLang); // Применяем язык при загрузке
 })();
 </script>
 </body>
