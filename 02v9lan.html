@@ -1558,7 +1558,7 @@ function applyLanguage(lang) {
   try { localStorage.setItem('appLang', lang); } catch(e) {}
   document.documentElement.lang = lang;
   
-  // 1. Translate static elements
+  // 1. Перевод элементов с атрибутом data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (el.tagName === 'INPUT' && el.type !== 'button') {
@@ -1568,29 +1568,63 @@ function applyLanguage(lang) {
     }
   });
 
-  // 2. Update dynamic elements (buttons, headers) by ID
-  const ids = {
+  // 2. Перевод кнопок по их ID (самый надежный способ)
+  const idTranslations = {
     'bConn': 'connect', 'bDemo': 'demo', 'bStop': 'stop', 'bRefresh': 'refresh',
     'bHud': 'hud', 'bPk': 'resetPeaks', 'bTg': 'sendTg', 'bRead': 'readDtc', 'bClear': 'clearDtc',
-    'bScan': 'scanMods', 'bmInfo': 'ident', 'bmDtc': 'blockDtc', 'bmClr': 'clearBlockDtc',
-    'bRec': recOn ? 'stop' : 'record' // Needs dynamic handling
+    'bScan': 'scanMods', 'bLog': 'logBtn', 'bRec': 'recBtn', 
+    'bSessEnd': 'btnClose', 'bSessCsv': 'btnExport', 'bSessClr': 'btnClear',
+    'bmInfo': 'ident', 'bmDtc': 'blockDtc', 'bmClr': 'clearBlockDtc',
+    'prEx': 'btnAdd', 'prDel': 'btnDelete', 'dcAdd': 'btnAdd', 'dcClr': 'btnClear',
+    'bmCsv': 'btnExport', 'bmCopClr': 'btnClear', 'bRepS': 'btnSave'
   };
-  // Basic mapping for buttons that don't use data-i18n attribute
-  $('#bConn').textContent = t('connect');
-  $('#bDemo').textContent = t('demo');
-  $('#bStop').textContent = t('stop');
-  $('#bRefresh').textContent = t('refresh');
-  $('#bHud').textContent = t('hud');
-  $('#bPk').textContent = t('resetPeaks');
-  $('#bTg').textContent = t('sendTg');
-  $('#bRead').textContent = t('readDtc');
-  $('#bClear').textContent = t('clearDtc');
-  $('#bScan').textContent = t('scanMods');
-  $('#bmInfo').textContent = t('ident');
-  $('#bmDtc').textContent = t('blockDtc');
-  $('#bmClr').textContent = t('clearBlockDtc');
   
-  // 3. Update tab labels
+  for (const [id, key] of Object.entries(idTranslations)) {
+    const el = $('#' + id);
+    if (el) el.textContent = t(key);
+  }
+
+  // 3. Перевод заголовков (H2)
+  const h2Translations = {
+    'Автомобиль': 'carTitle', 'Vehicle': 'carTitle', 'Fahrzeug': 'carTitle',
+    'HUD': 'hudTitle',
+    'Терминал ELM327': 'termTitle', 'ELM327 Terminal': 'termTitle', 'ELM327-Terminal': 'termTitle',
+    'Технический лог': 'logTitle', 'Technical Log': 'logTitle', 'Technisches Log': 'logTitle',
+    'Запись параметров': 'recTitle', 'Parameter Logging': 'recTitle', 'Parameteraufzeichnung': 'recTitle',
+    'Словарь ошибок': 'dictTitle', 'DTC Dictionary': 'dictTitle', 'DTC-Wörterbuch': 'dictTitle',
+    'Настройки': 'settings', 'Settings': 'settings', 'Einstellungen': 'settings',
+    'Разгон': 'dragTitle', 'Acceleration': 'dragTitle', 'Beschleunigung': 'dragTitle',
+    'Статистика поездки': 'tripStats', 'Trip Stats': 'tripStats', 'Fahrtstatistik': 'tripStats',
+    'Сеансы поездок': 'tripSess', 'Trip Sessions': 'tripSess', 'Fahrtsitzungen': 'tripSess'
+  };
+  
+  document.querySelectorAll('h2').forEach(h => {
+    const cleanText = h.textContent.replace(/[^\w\sА-Яа-яЁё]/g, '').trim();
+    for (const [ruText, key] of Object.entries(h2Translations)) {
+      if (cleanText === ruText || cleanText === t(key)) {
+        h.textContent = t(key);
+        break;
+      }
+    }
+  });
+
+  // 4. Перевод Placeholder'ов (текст внутри полей)
+  const placeholders = {
+    'carName': 'carPlaceholder', 'hudPad': 'hudPlaceholder', 'tIn': 'termPlaceholder'
+  };
+  for (const [id, key] of Object.entries(placeholders)) {
+    const el = $('#' + id);
+    if (el) el.placeholder = t(key);
+  }
+
+  // 5. Перевод подсказок (panel-note)
+  document.querySelectorAll('.panel-note').forEach(note => {
+    const txt = note.textContent;
+    if (txt.includes('Свои расшифровки') || txt.includes('Your own DTC')) note.textContent = t('dictNote');
+    else if (txt.includes('CSV содержит') || txt.includes('CSV contains')) note.textContent = t('recNote');
+  });
+
+  // 6. Перевод вкладок
   const tabBtns = document.querySelectorAll('.tab-btn');
   if (tabBtns.length === 5) {
     tabBtns[0].textContent = t('tabMonitor');
@@ -1600,16 +1634,16 @@ function applyLanguage(lang) {
     tabBtns[4].textContent = t('tabTools');
   }
 
-  // 4. Rebuild METRICS with new language and update UI
+  // 7. Обновление динамических данных (графики, метрики)
   buildMetrics();
-  refresh(); // Re-renders grid
+  refresh();
   if (avail.length) {
     pickUI();
     renderAlarms();
     if (dvOpen) openDrag();
   }
   
-  // 5. Update status bar
+  // 8. Обновление статусов
   sbUI();
   sessUI();
   sessList();
@@ -1617,6 +1651,7 @@ function applyLanguage(lang) {
   profilesUI();
   carShow();
   recUI();
+  dcInfo(); 
 }
 
 $('#langSelect').value = currentLang;
@@ -1685,7 +1720,7 @@ document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', (
 try { const savedTab = localStorage.getItem('obdTab'); if (savedTab && document.getElementById('tab-' + savedTab)) activateTab(savedTab); } catch (e) {}
 
 recUI(); renderAlarms(); sessUI(); sessList();
-function dcInfo() { const el = $('#dcInfo'); if (el) el.textContent = 'Dictionary size: ' + Object.keys(userDesc).length + ' codes.'; }
+function dcInfo() { const el = $('#dcInfo'); if (el) el.textContent = t('dbSize') + Object.keys(userDesc).length + t('codes'); }
 function dcAdd(txt) {
   let n = 0;
   try { const j = JSON.parse(txt); Object.keys(j).forEach(k => { if (/^[PCBU][0-9A-F]{4}$/i.test(k)) { userDesc[k.toUpperCase()] = String(j[k]).slice(0, 200); n++; } }); }
