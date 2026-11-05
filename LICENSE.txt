@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2026 Stanislav Bosovyk / OBDnoPRO Project. All rights reserved.
+ * 
+ * NOTICE: All information contained herein is, and remains the property of 
+ * the copyright holder. The intellectual and technical concepts contained 
+ * herein are proprietary and protected by trade secret or copyright law.
+ * Disassembly, decompilation, reverse engineering, or redistribution of this 
+ * software or its underlying diagnostic databases without prior written 
+ * permission is strictly prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+ */
