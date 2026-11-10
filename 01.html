@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TXT → JSON (DTC)</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--ok:#2e9e4f;--line:#e3e5e9}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#1a1d23;--text:#eceff4;--muted:#9aa3b2;--accent:#5b9dff;--danger:#ef6b6b;--ok:#5fd07f;--line:#2a2e36}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 6px}
+h2{font-size:13px;margin:18px 0 6px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+textarea{font:13px/1.35 ui-monospace,Menlo,Consolas,monospace;width:100%;min-height:220px;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--text);resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+button{font:inherit;border:0;border-radius:10px;padding:10px 16px;background:var(--accent);color:#fff;cursor:pointer}
+button.sec{background:var(--card);color:var(--text);border:1px solid var(--line)}
+button:disabled{opacity:.4;cursor:default}
+label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:14px}
+input[type=text],select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--card);color:var(--text)}
+#drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;margin-bottom:8px}
+#drop.over{border-color:var(--accent);color:var(--accent);background:rgba(91,157,255,.08)}
+#stats{font-size:13px;color:var(--muted);margin:8px 0}
+#stats b{color:var(--text)}
+#out{font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;max-height:400px;overflow:auto;white-space:pre;word-break:break-all}
+#skipped{font-size:12px;color:var(--danger);max-height:160px;overflow:auto;font-family:ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px}
+.flex{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:820px){.flex{grid-template-columns:1fr}}
+.hint{font-size:13px;color:var(--muted);margin:6px 0}
+code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:.9em}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 20px;border-radius:10px;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<main>
+<h1>TXT → JSON (DTC)</h1>
+<p class="hint">Строки вида <code>P0123;Описание</code>. Разделитель — <code>;</code>, <code>,</code>, таб или <code>|</code>. Строки, начинающиеся с <code>#</code> или <code>//</code>, игнорируются.</p>
+
+<div class="flex">
+<div>
+  <h2>1. Вход</h2>
+  <div id="drop">Перетащите .txt / .csv сюда<br>или нажмите, чтобы выбрать файл
+    <input type="file" id="file" accept=".txt,.csv,.tsv,text/plain" style="display:none">
+  </div>
+  <textarea id="input" placeholder="P0123;Датчик положения дросселя: высокий сигнал
+P0171;Система слишком бедная (банк 1)
+P0300;Множественные пропуски зажигания"></textarea>
+  <div class="row">
+    <button id="paste" class="sec">Вставить из буфера</button>
+    <button id="example" class="sec">Пример</button>
+    <button id="clear" class="sec">Очистить</button>
+  </div>
+</div>
+
+<div>
+  <h2>2. Настройки</h2>
+  <div class="row">
+    <label><input type="checkbox" id="unique" checked> Убирать дубликаты</label>
+    <label><input type="checkbox" id="sort" checked> Сортировать по коду</label>
+  </div>
+  <div class="row">
+    <span style="font-size:14px">Формат:</span>
+    <select id="format">
+      <option value="map">Словарь {"P0123":"Описание"}</option>
+      <option value="array">Массив [{"code":"P0123","title":"..."}]</option>
+      <option value="compact">Компактный (без пробелов)</option>
+    </select>
+  </div>
+  <div class="row">
+    <span style="font-size:14px">Поле описания:</span>
+    <input type="text" id="descKey" value="title" style="width:100px">
+  </div>
+  <div class="hint" id="formatHint"></div>
+
+  <h2>3. Результат</h2>
+  <div id="stats">— вставьте текст или файл —</div>
+  <div id="out">—</div>
+  <div class="row">
+    <button id="copy">Копировать</button>
+    <button id="download" class="sec">Скачать .json</button>
+  </div>
+
+  <h2>Пропущенные строки</h2>
+  <div id="skipped">—</div>
+</div>
+</div>
+</main>
+<div class="toast" id="toast">Готово</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const state = {items: []};
+
+// --- парсер ---
+function parse(text) {
+  const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/);
+  const re = /^\s*"?([A-Za-z][0-9A-Za-z]{4})"?\s*[;,\t|]\s*"?(.*?)"?\s*$/;
+  const items = [], skipped = [], seen = new Set();
+  const unique = $('#unique').checked;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (/^[#\/]/.test(line)) continue; // комментарий
+    const m = line.match(re);
+    if (!m) { skipped.push({line: raw, why: 'нет разделителя или неверный код'}); continue; }
+    const code = m[1].toUpperCase();
+    const desc = m[2].replace(/^"(.*)"$/, '$1').trim();
+    if (!desc) { skipped.push({line: raw, why: 'пустое описание'}); continue; }
+    if (unique && seen.has(code)) { skipped.push({line: raw, why: 'дубликат ' + code}); continue; }
+    seen.add(code);
+    items.push({code, desc});
+  }
+  if ($('#sort').checked) items.sort((a, b) => a.code.localeCompare(b.code));
+  return {items, skipped};
+}
+
+function toJson() {
+  const fmt = $('#format').value;
+  const dk = ($('#descKey').value.trim() || 'title');
+  let data;
+  if (fmt === 'map') {
+    data = {};
+    for (const it of state.items) data[it.code] = it.desc;
+  } else {
+    data = state.items.map(it => ({code: it.code, [dk]: it.desc}));
+  }
+  return JSON.stringify(data, null, fmt === 'compact' ? 0 : 2);
+}
+
+// --- UI ---
+function refresh() {
+  const text = $('#input').value;
+  const r = parse(text);
+  state.items = r.items;
+  const parsed = r.items.length, skipped = r.skipped.length;
+
+  if (!text.trim()) {
+    $('#stats').textContent = '— вставьте текст или файл —';
+  } else {
+    $('#stats').innerHTML = 'Распознано: <b>' + parsed + '</b> · пропущено: <b>' + skipped + '</b>';
+  }
+
+  const full = parsed ? toJson() : '—';
+  const max = 120000;
+  $('#out').textContent = full.length > max
+    ? full.slice(0, max) + '\n\n… (обрезано в превью, полный файл — по кнопке «Скачать»)'
+    : full;
+
+  $('#skipped').textContent = skipped
+    ? r.skipped.map(s => s.line + '   ← ' + s.why).join('\n')
+    : '—';
+
+  $('#copy').disabled = !parsed;
+  $('#download').disabled = !parsed;
+
+  $('#formatHint').textContent = $('#format').value === 'map'
+    ? 'Подходит для «Словаря ошибок» (textarea в инструментах OBDnoPRO).'
+    : 'Подходит для «Импорта большой базы ошибок» (bigDtcFile в OBDnoPRO).';
+}
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+// --- чтение файла с авто-кодировкой ---
+function readFileSmart(f, cb) {
+  const r1 = new FileReader();
+  r1.onload = () => {
+    const s = String(r1.result);
+    const bad = (s.match(/\uFFFD/g) || []).length;
+    if (bad > Math.max(2, s.length * 0.01)) {
+      const r2 = new FileReader();
+      r2.onload = () => cb(String(r2.result));
+      r2.onerror = () => cb(s);
+      try { r2.readAsText(f, 'windows-1251'); } catch (e) { cb(s); }
+    } else cb(s);
+  };
+  r1.onerror = () => cb('');
+  r1.readAsText(f, 'utf-8');
+}
+
+$('#input').addEventListener('input', refresh);
+$('#unique').addEventListener('change', refresh);
+$('#sort').addEventListener('change', refresh);
+$('#format').addEventListener('change', refresh);
+$('#descKey').addEventListener('input', refresh);
+
+$('#file').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  readFileSmart(f, s => { $('#input').value = s; refresh(); });
+  e.target.value = '';
+});
+
+const drop = $('#drop');
+drop.addEventListener('click', () => $('#file').click());
+['dragover', 'dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => {
+  const f = e.dataTransfer.files[0]; if (!f) return;
+  readFileSmart(f, s => { $('#input').value = s; refresh(); });
+});
+
+$('#paste').addEventListener('click', async () => {
+  try { $('#input').value = await navigator.clipboard.readText(); refresh(); }
+  catch (e) { toast('Нет доступа к буферу обмена'); }
+});
+
+$('#clear').addEventListener('click', () => { $('#input').value = ''; refresh(); });
+
+$('#example').addEventListener('click', () => {
+  $('#input').value = [
+    '# пример: разные разделители',
+    'P0123;Датчик положения дросселя: высокий сигнал',
+    'P0171;Система слишком бедная (банк 1)',
+    'P0300;Случайные/множественные пропуски зажигания',
+    'P0420,Эффективность катализатора ниже порога',
+    'U0100\tПотеря связи с ECM/PCM',
+    'B1234|Неисправность подушки водителя',
+    'P0123;Дубликат — будет отброшен',
+    'некорректная строка без кода',
+  ].join('\n');
+  refresh();
+});
+
+$('#copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(toJson()); toast('Скопировано'); }
+  catch (e) { toast('Не удалось скопировать'); }
+});
+
+$('#download').addEventListener('click', () => {
+  const blob = new Blob([toJson()], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dtc.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+
+refresh();
+})();
+</script>
+</body>
+</html>
