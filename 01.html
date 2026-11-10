@@ -63,7 +63,7 @@
   .btn{
     font:inherit; font-weight:600; font-size:14px; padding:9px 16px; border-radius:9px;
     border:1px solid var(--border); background:var(--panel); color:var(--text);
-    cursor:pointer; transition:.15s;
+    cursor:pointer; transition:.15s; position:relative;
   }
   .btn:hover:not(:disabled){border-color:var(--accent); color:#fff}
   .btn:disabled{opacity:.45; cursor:not-allowed}
@@ -71,9 +71,23 @@
   .btn.primary:hover:not(:disabled){background:var(--accent)}
   .btn.ghost{background:transparent}
 
+  .btn[data-state="working"]{background:var(--accent); border-color:var(--accent); color:#fff; cursor:wait}
+  .btn[data-state="done"]{background:var(--ok); border-color:var(--ok); color:#fff}
+  .btn[data-state="error"]{background:var(--err); border-color:var(--err); color:#fff}
+
+  .status{
+    padding:10px 14px; border-radius:9px; font-size:13px; font-family:var(--mono);
+    margin:12px 0 0; background:var(--panel); border-left:3px solid var(--border);
+    color:var(--muted); transition: background .15s, color .15s, border-color .15s;
+  }
+  .status.loading{background:#16202e; color:#58a6ff; border-left-color:var(--accent)}
+  .status.ok{background:#12261e; color:#3fb950; border-left-color:var(--ok)}
+  .status.err{background:#2d1618; color:#f85149; border-left-color:var(--err)}
+  .status.warn{background:#2d2416; color:#d29922; border-left-color:var(--warn)}
+
   .output-head{
     display:flex; justify-content:space-between; align-items:center; gap:14px;
-    flex-wrap:wrap; margin:18px 0 10px;
+    flex-wrap:wrap; margin:14px 0 10px;
   }
   .stats{color:var(--muted); font-size:13px}
   .actions{display:flex; gap:10px; flex-wrap:wrap}
@@ -162,6 +176,8 @@
 
     <div class="log" id="fileLog"></div>
 
+    <div class="status" id="jsonStatus">Готов к работе. Загрузите файлы.</div>
+
     <div class="output-head">
       <span class="stats" id="jsonStats"></span>
       <div class="actions">
@@ -214,6 +230,8 @@ software: INPA, ISTA, Carly
 
     <ul class="errors" id="textErrors"></ul>
 
+    <div class="status" id="textStatus">Вставьте текст и нажмите «Разобрать».</div>
+
     <div class="output-head">
       <span class="stats" id="textStats"></span>
       <div class="actions">
@@ -238,6 +256,16 @@ software: INPA, ISTA, Carly
   const splitList = v => v.split(',').map(s => s.trim()).filter(Boolean);
   const truncate = (s, n = 48) => s.length > n ? s.slice(0, n - 1) + '…' : s;
   const noKaEnabled = () => $('#optNoKa').checked;
+  const fmtKB = n => (n / 1024).toFixed(1) + ' КБ';
+
+  /* ---------- Статусная строка ---------- */
+  const ICONS = { info:'ℹ', loading:'⏳', ok:'✓', err:'✗', warn:'⚠' };
+  function setStatus(type, message, targetId = 'jsonStatus') {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    el.className = 'status' + (type ? ' ' + type : '');
+    el.textContent = (ICONS[type] || '') + ' ' + message;
+  }
 
   /* ---------- Удаление грузинского (ka) ---------- */
   function stripKa(entry) {
@@ -248,7 +276,6 @@ software: INPA, ISTA, Carly
     });
     return clone;
   }
-
   function maybeStripKa(list) {
     return noKaEnabled() ? list.map(stripKa) : list;
   }
@@ -261,20 +288,9 @@ software: INPA, ISTA, Carly
     });
   });
 
-  /* ---------- Утилиты ---------- */
-  function download(filename, text) {
-    const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
+  /* ---------- Копирование ---------- */
   async function copyText(text, btn) {
+    if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -284,7 +300,7 @@ software: INPA, ISTA, Carly
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand('copy');
+      try { document.execCommand('copy'); } catch {}
       ta.remove();
     }
     const old = btn.textContent;
@@ -293,17 +309,100 @@ software: INPA, ISTA, Carly
     setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1300);
   }
 
+  /* ---------- Скачивание ---------- */
+  function validateJson(text) {
+    try {
+      JSON.parse(text);
+      return null;
+    } catch (e) {
+      return e.message;
+    }
+  }
+
+  function safeDownload(filename, text, btn, statusId) {
+    // Валидация до блокировки кнопки
+    if (!text || !text.trim()) {
+      setStatus('err', 'Нет данных для скачивания — сначала загрузите/разберите файлы.', statusId);
+      return;
+    }
+    const jsonErr = validateJson(text);
+    if (jsonErr) {
+      setStatus('err', 'Внутренний JSON невалиден: ' + jsonErr, statusId);
+      return;
+    }
+    if (btn.dataset.state === 'working') return;
+
+    const originalText = btn.textContent;
+    const sizeKB = fmtKB(text.length);
+
+    btn.dataset.state = 'working';
+    btn.disabled = true;
+    btn.textContent = 'Скачивается…';
+    setStatus('loading', `Передача ${filename} (${sizeKB}) браузеру…`, statusId);
+
+    try {
+      // Создание и клик СИНХРОННО в user gesture — иначе браузер может блокировать
+      const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+      if (!blob.size) throw new Error('пустой Blob');
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      a.style.position = 'fixed';
+      a.style.left = '-9999px';
+      a.style.top = '0';
+      document.body.appendChild(a);
+
+      // Клик (поддержка старых браузеров через dispatchEvent)
+      if (typeof a.click === 'function') {
+        a.click();
+      } else {
+        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      }
+
+      // Не удаляем ссылку мгновенно — даём браузеру время начать скачивание
+      setTimeout(() => {
+        try { a.remove(); } catch {}
+        try { URL.revokeObjectURL(url); } catch {}
+      }, 5000);
+
+      btn.dataset.state = 'done';
+      btn.textContent = 'Скачано ✓';
+      setStatus('ok', `Файл ${filename} (${sizeKB}) отправлен в загрузки.`, statusId);
+
+      setTimeout(() => {
+        btn.dataset.state = '';
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 2000);
+
+    } catch (err) {
+      console.error('[download]', err);
+      btn.dataset.state = 'error';
+      btn.textContent = 'Ошибка';
+      setStatus('err', 'Не удалось скачать: ' + err.message, statusId);
+      setTimeout(() => {
+        btn.dataset.state = '';
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 2500);
+    }
+  }
+
   /* ================================================================
      РЕЖИМ 1 — загрузка TXT/JSON-файлов
      ================================================================ */
   const fileState = { entries: [], files: 0 };
   let jsonOutText = '';
+  let isProcessing = false;
 
   const fileInput = $('#fileInput');
   const drop = $('#drop');
   const fileLog = $('#fileLog');
 
-  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('click', () => { if (!isProcessing) fileInput.click(); });
 
   ['dragenter', 'dragover'].forEach(ev =>
     drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('dragover'); }));
@@ -312,6 +411,7 @@ software: INPA, ISTA, Carly
   drop.addEventListener('drop', e => {
     e.preventDefault();
     drop.classList.remove('dragover');
+    if (isProcessing) return;
     const files = Array.from((e.dataTransfer && e.dataTransfer.files) || []);
     if (files.length) ingestFiles(files);
   });
@@ -352,23 +452,47 @@ software: INPA, ISTA, Carly
   }
 
   async function ingestFiles(files) {
-    for (const file of files) {
-      try {
-        const text = await file.text();
-        const { data, warning } = parseJsonLoose(text);
-        const codes = extractCodes(data).filter(
-          c => c && typeof c === 'object' && typeof c.code === 'string'
-        );
-        if (!codes.length) throw new Error('нет корректных записей с полем "code"');
-        codes.forEach(entry => fileState.entries.push({ data: entry, source: file.name }));
-        fileState.files += 1;
-        log(`✓ ${file.name} — ${codes.length} код(ов)${warning ? ' · ' + warning : ''}`,
-            warning ? 'warn' : 'ok');
-      } catch (err) {
-        log(`✗ ${file.name}: ${err.message}`, 'err');
+    if (isProcessing) return;
+    isProcessing = true;
+    setStatus('loading', `Чтение ${files.length} файл(ов)…`);
+    await new Promise(r => setTimeout(r, 30));
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setStatus('loading', `Файл ${i + 1}/${files.length}: ${file.name} — чтение…`);
+        try {
+          const text = await file.text();
+
+          setStatus('loading', `Файл ${i + 1}/${files.length}: ${file.name} — разбор JSON…`);
+          await new Promise(r => setTimeout(r, 0));
+
+          const { data, warning } = parseJsonLoose(text);
+          const raw = extractCodes(data);
+          const codes = raw.filter(c => c && typeof c === 'object' && typeof c.code === 'string');
+
+          if (!codes.length) {
+            const sample = raw[0];
+            if (sample && typeof sample === 'object' && !('code' in sample)) {
+              throw new Error('в записях нет поля "code" (похож на формат obd-trouble-codes — он не поддерживается)');
+            }
+            throw new Error('нет корректных записей с полем "code"');
+          }
+
+          codes.forEach(entry => fileState.entries.push({ data: entry, source: file.name }));
+          fileState.files += 1;
+          log(`✓ ${file.name} — ${codes.length} код(ов)${warning ? ' · ' + warning : ''}`,
+              warning ? 'warn' : 'ok');
+        } catch (err) {
+          log(`✗ ${file.name}: ${err.message}`, 'err');
+        }
+        // Отдаём UI перерисоваться между файлами
+        await new Promise(r => setTimeout(r, 0));
       }
+    } finally {
+      isProcessing = false;
+      renderFiles();
     }
-    renderFiles();
   }
 
   function renderFiles() {
@@ -389,7 +513,12 @@ software: INPA, ISTA, Carly
     }
     if (sort) list.sort((a, b) => String(a.code).localeCompare(String(b.code)));
 
-    list = maybeStripKa(list);
+    try {
+      list = maybeStripKa(list);
+    } catch (e) {
+      setStatus('err', 'Ошибка при обработке записей: ' + e.message);
+      return;
+    }
 
     const payload = asArray ? list : { codes: list };
     jsonOutText = list.length ? JSON.stringify(payload, null, 2) : '';
@@ -397,33 +526,47 @@ software: INPA, ISTA, Carly
     $('#jsonOut').textContent = jsonOutText || '// пока ничего не загружено';
 
     $('#jsonStats').textContent = list.length
-      ? `${list.length} код(ов) · файлов: ${fileState.files} · ${(jsonOutText.length / 1024).toFixed(1)} КБ${dupNote}${strip ? ' · ka удалён' : ''}`
+      ? `${list.length} код(ов) · файлов: ${fileState.files} · ${fmtKB(jsonOutText.length)}${dupNote}${strip ? ' · ka удалён' : ''}`
       : '';
 
-    $('#btnDownloadJson').disabled = !list.length;
-    $('#btnCopyJson').disabled = !list.length;
+    const hasData = list.length > 0;
+    $('#btnDownloadJson').disabled = !hasData;
+    $('#btnCopyJson').disabled = !hasData;
+
+    // Статус — только если сейчас не идёт загрузка/скачивание
+    const btnState = $('#btnDownloadJson').dataset.state;
+    if (!isProcessing && btnState !== 'working' && btnState !== 'done' && btnState !== 'error') {
+      if (hasData) {
+        setStatus('ok', `Готово: ${list.length} код(ов). Нажмите «Скачать codes.json».`);
+      } else if (fileState.files > 0) {
+        setStatus('warn', 'Файлы загружены, но не найдено ни одного кода. Проверьте формат.');
+      } else {
+        setStatus('info', 'Готов к работе. Загрузите файлы.');
+      }
+    }
   }
 
   ['optDedupe', 'optSort'].forEach(id => $('#' + id).addEventListener('change', renderFiles));
   $('#outFormat').addEventListener('change', renderFiles);
 
-  // Переключение "удалять ka" — обновляет оба режима
   $('#optNoKa').addEventListener('change', () => {
     renderFiles();
-    // если в текстовом режиме уже что-то разобрано — перестроим
     if ($('#textOut').textContent !== '// результат появится здесь') {
       $('#btnParseText').click();
     }
   });
 
   $('#btnClearFiles').addEventListener('click', () => {
+    if (isProcessing) return;
     fileState.entries = [];
     fileState.files = 0;
     fileLog.textContent = '';
     renderFiles();
   });
 
-  $('#btnDownloadJson').addEventListener('click', () => download('codes.json', jsonOutText));
+  $('#btnDownloadJson').addEventListener('click', e => {
+    safeDownload('codes.json', jsonOutText, e.currentTarget, 'jsonStatus');
+  });
   $('#btnCopyJson').addEventListener('click', e => copyText(jsonOutText, e.currentTarget));
 
   /* ================================================================
@@ -515,31 +658,47 @@ software: INPA, ISTA, Carly
   }
 
   $('#btnParseText').addEventListener('click', () => {
-    const { entries, errors } = parseTextFormat($('#textInput').value);
+    setStatus('loading', 'Разбор текста…', 'textStatus');
+    try {
+      const { entries, errors } = parseTextFormat($('#textInput').value);
 
-    const errList = $('#textErrors');
-    errList.textContent = '';
-    errors.forEach(msg => {
-      const li = document.createElement('li');
-      li.textContent = msg;
-      errList.appendChild(li);
-    });
+      const errList = $('#textErrors');
+      errList.textContent = '';
+      errors.forEach(msg => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        errList.appendChild(li);
+      });
 
-    const strip = noKaEnabled();
-    const finalList = maybeStripKa(entries);
+      const strip = noKaEnabled();
+      const finalList = maybeStripKa(entries);
 
-    textOutText = finalList.length ? JSON.stringify({ codes: finalList }, null, 2) : '';
+      textOutText = finalList.length ? JSON.stringify({ codes: finalList }, null, 2) : '';
 
-    $('#textOut').textContent = textOutText || '// добавьте текст и нажмите «Разобрать»';
+      $('#textOut').textContent = textOutText || '// добавьте текст и нажмите «Разобрать»';
 
-    $('#textStats').textContent = finalList.length
-      ? `${finalList.length} код(ов) · ${(textOutText.length / 1024).toFixed(1)} КБ` +
-        (errors.length ? ` · предупреждений: ${errors.length}` : '') +
-        (strip ? ' · ka удалён' : '')
-      : (errors.length ? `ошибок: ${errors.length}` : '');
+      $('#textStats').textContent = finalList.length
+        ? `${finalList.length} код(ов) · ${fmtKB(textOutText.length)}` +
+          (errors.length ? ` · предупреждений: ${errors.length}` : '') +
+          (strip ? ' · ka удалён' : '')
+        : (errors.length ? `ошибок: ${errors.length}` : '');
 
-    $('#btnDownloadText').disabled = !textOutText;
-    $('#btnCopyText').disabled = !textOutText;
+      const hasData = finalList.length > 0;
+      $('#btnDownloadText').disabled = !hasData;
+      $('#btnCopyText').disabled = !hasData;
+
+      if (hasData) {
+        const warnPart = errors.length ? ` · предупреждений: ${errors.length}` : '';
+        setStatus('ok', `Разобрано: ${finalList.length} код(ов)${warnPart}. Нажмите «Скачать codes.json».`, 'textStatus');
+      } else if (errors.length) {
+        setStatus('err', `Не удалось разобрать: ${errors.length} ошибок. Смотрите список ниже.`, 'textStatus');
+      } else {
+        setStatus('warn', 'Пустой ввод. Вставьте текст в формате «=== КОД ===».', 'textStatus');
+      }
+    } catch (e) {
+      console.error('[parseText]', e);
+      setStatus('err', 'Ошибка разбора: ' + e.message, 'textStatus');
+    }
   });
 
   const SAMPLE = `# Блок начинается с "=== КОД ==="
@@ -589,9 +748,12 @@ software: INPA, ISTA, Carly, MHD`;
     textOutText = '';
     $('#btnDownloadText').disabled = true;
     $('#btnCopyText').disabled = true;
+    setStatus('info', 'Вставьте текст и нажмите «Разобрать».', 'textStatus');
   });
 
-  $('#btnDownloadText').addEventListener('click', () => download('codes.json', textOutText));
+  $('#btnDownloadText').addEventListener('click', e => {
+    safeDownload('codes.json', textOutText, e.currentTarget, 'textStatus');
+  });
   $('#btnCopyText').addEventListener('click', e => copyText(textOutText, e.currentTarget));
 
   /* ---------- init ---------- */
