@@ -12,38 +12,31 @@
     --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  }
+  body{margin:0; background:var(--bg); color:var(--text);
+    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;}
   .app{max-width:1100px; margin:0 auto; padding:28px 20px 60px}
   header h1{margin:0 0 6px; font-size:24px; letter-spacing:.2px}
   header p{margin:0 0 22px; color:var(--muted); font-size:14px}
 
-  .toolbar{
-    display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+  .toolbar{display:flex; gap:14px; align-items:center; flex-wrap:wrap;
     background:var(--panel); border:1px solid var(--border); border-radius:12px;
-    padding:10px 14px; margin-bottom:18px;
-  }
-  .toolbar .label{color:var(--muted); font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.5px}
+    padding:10px 14px; margin-bottom:18px;}
+  .toolbar .label{color:var(--muted); font-size:13px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.5px}
   .toolbar .check{margin-left:auto}
 
   .tabs{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap}
-  .tab{
-    background:var(--panel); color:var(--muted); border:1px solid var(--border);
-    padding:9px 16px; border-radius:999px; cursor:pointer; font-size:14px; font-weight:600;
-  }
+  .tab{background:var(--panel); color:var(--muted); border:1px solid var(--border);
+    padding:9px 16px; border-radius:999px; cursor:pointer; font-size:14px; font-weight:600;}
   .tab:hover{color:var(--text)}
   .tab.active{background:var(--accent2); border-color:var(--accent2); color:#fff}
 
   .panel{display:none}
   .panel.active{display:block}
 
-  .drop{
-    border:2px dashed var(--border); border-radius:14px; padding:34px 20px;
+  .drop{border:2px dashed var(--border); border-radius:14px; padding:34px 20px;
     text-align:center; color:var(--muted); cursor:pointer; transition:.15s;
-    background:var(--panel);
-  }
+    background:var(--panel);}
   .drop:hover, .drop.dragover{border-color:var(--accent); color:var(--text); background:#182030}
   .drop strong{color:var(--text)}
   .drop-icon{font-size:26px; margin-bottom:8px; color:var(--accent)}
@@ -52,63 +45,49 @@
   code{font-family:var(--mono); font-size:.92em; background:#1c2129; padding:1px 5px; border-radius:5px}
 
   .row{display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin:16px 0}
-  .check{display:flex; gap:7px; align-items:center; color:var(--muted); font-size:14px; cursor:pointer; user-select:none}
+  .check{display:flex; gap:7px; align-items:center; color:var(--muted); font-size:14px;
+    cursor:pointer; user-select:none}
   .check input{accent-color:var(--accent); width:16px; height:16px}
   .field{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px}
-  .field select{
-    background:var(--panel2); color:var(--text); border:1px solid var(--border);
-    border-radius:7px; padding:6px 8px; font:inherit; font-size:13px;
-  }
+  .field select{background:var(--panel2); color:var(--text); border:1px solid var(--border);
+    border-radius:7px; padding:6px 8px; font:inherit; font-size:13px;}
 
-  .btn{
-    font:inherit; font-weight:600; font-size:14px; padding:9px 16px; border-radius:9px;
+  .btn{font:inherit; font-weight:600; font-size:14px; padding:9px 16px; border-radius:9px;
     border:1px solid var(--border); background:var(--panel); color:var(--text);
-    cursor:pointer; transition:.15s; position:relative;
-  }
+    cursor:pointer; transition:.15s; position:relative;}
   .btn:hover:not(:disabled){border-color:var(--accent); color:#fff}
   .btn:disabled{opacity:.45; cursor:not-allowed}
   .btn.primary{background:var(--accent2); border-color:var(--accent2); color:#fff}
   .btn.primary:hover:not(:disabled){background:var(--accent)}
   .btn.ghost{background:transparent}
-
   .btn[data-state="working"]{background:var(--accent); border-color:var(--accent); color:#fff; cursor:wait}
   .btn[data-state="done"]{background:var(--ok); border-color:var(--ok); color:#fff}
   .btn[data-state="error"]{background:var(--err); border-color:var(--err); color:#fff}
 
-  .status{
-    padding:10px 14px; border-radius:9px; font-size:13px; font-family:var(--mono);
+  .status{padding:10px 14px; border-radius:9px; font-size:13px; font-family:var(--mono);
     margin:12px 0 0; background:var(--panel); border-left:3px solid var(--border);
-    color:var(--muted); transition: background .15s, color .15s, border-color .15s;
-  }
+    color:var(--muted); transition: background .15s, color .15s, border-color .15s;}
   .status.loading{background:#16202e; color:#58a6ff; border-left-color:var(--accent)}
   .status.ok{background:#12261e; color:#3fb950; border-left-color:var(--ok)}
   .status.err{background:#2d1618; color:#f85149; border-left-color:var(--err)}
   .status.warn{background:#2d2416; color:#d29922; border-left-color:var(--warn)}
 
-  .output-head{
-    display:flex; justify-content:space-between; align-items:center; gap:14px;
-    flex-wrap:wrap; margin:14px 0 10px;
-  }
+  .output-head{display:flex; justify-content:space-between; align-items:center; gap:14px;
+    flex-wrap:wrap; margin:14px 0 10px;}
   .stats{color:var(--muted); font-size:13px}
   .actions{display:flex; gap:10px; flex-wrap:wrap}
 
-  pre.code{
-    background:var(--panel2); border:1px solid var(--border); border-radius:12px;
+  pre.code{background:var(--panel2); border:1px solid var(--border); border-radius:12px;
     padding:16px; margin:0; max-height:460px; overflow:auto; font-family:var(--mono);
-    font-size:12.5px; line-height:1.55; color:#c9d1d9; white-space:pre;
-  }
+    font-size:12.5px; line-height:1.55; color:#c9d1d9; white-space:pre;}
 
-  textarea{
-    width:100%; min-height:260px; resize:vertical; background:var(--panel2);
+  textarea{width:100%; min-height:260px; resize:vertical; background:var(--panel2);
     color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px;
-    font-family:var(--mono); font-size:13px; line-height:1.55;
-  }
+    font-family:var(--mono); font-size:13px; line-height:1.55;}
   textarea:focus{outline:none; border-color:var(--accent)}
 
-  .errors{
-    list-style:none; margin:12px 0 0; padding:0; font-size:13px;
-    color:var(--err); font-family:var(--mono);
-  }
+  .errors{list-style:none; margin:12px 0 0; padding:0; font-size:13px;
+    color:var(--err); font-family:var(--mono);}
   .errors:empty{display:none}
   .errors li{padding:4px 0; border-bottom:1px dashed #3a1d1d}
 
@@ -119,15 +98,12 @@
   .log div.err{color:var(--err)}
   .log div.warn{color:var(--warn)}
 
-  details.format{
-    background:var(--panel); border:1px solid var(--border); border-radius:12px;
-    padding:12px 16px; margin-bottom:16px; font-size:14px;
-  }
+  details.format{background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    padding:12px 16px; margin-bottom:16px; font-size:14px;}
   details.format summary{cursor:pointer; color:var(--muted); font-weight:600}
   details.format summary:hover{color:var(--text)}
-  details.format pre{
-    font-family:var(--mono); font-size:12.5px; overflow:auto; color:#c9d1d9; margin:12px 0 0;
-  }
+  details.format pre{font-family:var(--mono); font-size:12.5px; overflow:auto;
+    color:#c9d1d9; margin:12px 0 0;}
 
   footer{margin-top:34px; color:var(--muted); font-size:12.5px; text-align:center}
 </style>
@@ -137,7 +113,7 @@
 
   <header>
     <h1>TXT → JSON конвертер</h1>
-    <p>Диагностические коды BMW (DTC). Всё выполняется локально в браузере — файлы никуда не отправляются.</p>
+    <p>Диагностические коды BMW + OBD-II. Всё выполняется локально в браузере — файлы никуда не отправляются.</p>
   </header>
 
   <div class="toolbar">
@@ -152,18 +128,16 @@
     <button class="tab" data-tab="text">Структурированный текст → JSON</button>
   </nav>
 
-  <!-- ============ MODE 1 ============ -->
   <section class="panel active" id="panel-files">
-
     <div class="drop" id="drop">
       <div class="drop-icon">⬆</div>
       <div><strong>Перетащите .txt или .json файлы</strong> сюда или нажмите, чтобы выбрать</div>
-      <div class="hint">Поддерживаются файлы с массивом <code>[...]</code> или объектом <code>{"codes":[...]}</code></div>
+      <div class="hint">Поддерживаются: <code>{"codes":[...]}</code>, <code>[...]</code> и OBD-II формат <code>[{"P0100":"P0101","Base":"Actual"}]</code></div>
     </div>
     <input type="file" id="fileInput" accept=".txt,.json,text/plain,application/json" multiple hidden />
 
     <div class="row">
-      <label class="check"><input type="checkbox" id="optDedupe" checked /> Удалять дубликаты по коду</label>
+      <label class="check"><input type="checkbox" id="optDedupe" checked /> Удалять дубликаты (приоритет полным записям)</label>
       <label class="check"><input type="checkbox" id="optSort" /> Сортировать по коду</label>
       <label class="field">Формат вывода:
         <select id="outFormat">
@@ -175,7 +149,6 @@
     </div>
 
     <div class="log" id="fileLog"></div>
-
     <div class="status" id="jsonStatus">Готов к работе. Загрузите файлы.</div>
 
     <div class="output-head">
@@ -188,18 +161,14 @@
     <pre class="code" id="jsonOut">// пока ничего не загружено</pre>
   </section>
 
-  <!-- ============ MODE 2 ============ -->
   <section class="panel" id="panel-text">
-
     <details class="format">
       <summary>Формат входного текста (нажмите, чтобы раскрыть)</summary>
       <pre>=== P0100 ===
 title.en: Mass Air Flow (MAF) Sensor Circuit Malfunction
 title.ru: Неисправность цепи датчика расхода воздуха
-title.ka: მასის საჰაერო ნაკადის (MAF) სენსორის წრედის გაუმართაობა
 description.en: Problem with the MAF sensor circuit.
 description.ru: Проблема с цепью датчика массового расхода воздуха.
-description.ka: პრობლემა MAF სენსორის წრედში.
 solution.en: Check wiring                      ← можно повторять, соберётся в массив
 solution.ru: Проверить проводку
 models: E46, E90, E60, F10                     ← список через запятую
@@ -209,14 +178,7 @@ severity: Medium
 software: INPA, ISTA, Carly
 
 === P0171 ===
-...следующий блок...
-
-Правила:
-• блок начинается со строки  === КОД ===
-• строка «ключ: значение»
-• комментарии: строки, начинающиеся с # или //
-• ключи: title.<en|ru|ka>, description.<en|ru|ka>, solution.<en|ru|ka>,
-  models, engines, category, severity, software</pre>
+...следующий блок...</pre>
     </details>
 
     <textarea id="textInput" spellcheck="false"
@@ -229,7 +191,6 @@ software: INPA, ISTA, Carly
     </div>
 
     <ul class="errors" id="textErrors"></ul>
-
     <div class="status" id="textStatus">Вставьте текст и нажмите «Разобрать».</div>
 
     <div class="output-head">
@@ -258,7 +219,6 @@ software: INPA, ISTA, Carly
   const noKaEnabled = () => $('#optNoKa').checked;
   const fmtKB = n => (n / 1024).toFixed(1) + ' КБ';
 
-  /* ---------- Статусная строка ---------- */
   const ICONS = { info:'ℹ', loading:'⏳', ok:'✓', err:'✗', warn:'⚠' };
   function setStatus(type, message, targetId = 'jsonStatus') {
     const el = document.getElementById(targetId);
@@ -276,9 +236,7 @@ software: INPA, ISTA, Carly
     });
     return clone;
   }
-  function maybeStripKa(list) {
-    return noKaEnabled() ? list.map(stripKa) : list;
-  }
+  const maybeStripKa = list => noKaEnabled() ? list.map(stripKa) : list;
 
   /* ---------- Табы ---------- */
   $$('.tab').forEach(tab => {
@@ -291,36 +249,26 @@ software: INPA, ISTA, Carly
   /* ---------- Копирование ---------- */
   async function copyText(text, btn) {
     if (!text) return;
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
+    try { await navigator.clipboard.writeText(text); }
+    catch {
       const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
       try { document.execCommand('copy'); } catch {}
       ta.remove();
     }
     const old = btn.textContent;
-    btn.textContent = 'Скопировано ✓';
-    btn.disabled = true;
+    btn.textContent = 'Скопировано ✓'; btn.disabled = true;
     setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1300);
   }
 
   /* ---------- Скачивание ---------- */
   function validateJson(text) {
-    try {
-      JSON.parse(text);
-      return null;
-    } catch (e) {
-      return e.message;
-    }
+    try { JSON.parse(text); return null; }
+    catch (e) { return e.message; }
   }
 
   function safeDownload(filename, text, btn, statusId) {
-    // Валидация до блокировки кнопки
     if (!text || !text.trim()) {
       setStatus('err', 'Нет данных для скачивания — сначала загрузите/разберите файлы.', statusId);
       return;
@@ -334,61 +282,102 @@ software: INPA, ISTA, Carly
 
     const originalText = btn.textContent;
     const sizeKB = fmtKB(text.length);
-
     btn.dataset.state = 'working';
     btn.disabled = true;
     btn.textContent = 'Скачивается…';
     setStatus('loading', `Передача ${filename} (${sizeKB}) браузеру…`, statusId);
 
     try {
-      // Создание и клик СИНХРОННО в user gesture — иначе браузер может блокировать
       const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
       if (!blob.size) throw new Error('пустой Blob');
-
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.rel = 'noopener';
-      a.style.position = 'fixed';
-      a.style.left = '-9999px';
-      a.style.top = '0';
+      a.href = url; a.download = filename; a.rel = 'noopener';
+      a.style.position = 'fixed'; a.style.left = '-9999px'; a.style.top = '0';
       document.body.appendChild(a);
-
-      // Клик (поддержка старых браузеров через dispatchEvent)
-      if (typeof a.click === 'function') {
-        a.click();
-      } else {
-        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-      }
-
-      // Не удаляем ссылку мгновенно — даём браузеру время начать скачивание
-      setTimeout(() => {
-        try { a.remove(); } catch {}
-        try { URL.revokeObjectURL(url); } catch {}
-      }, 5000);
+      if (typeof a.click === 'function') a.click();
+      else a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      setTimeout(() => { try { a.remove(); URL.revokeObjectURL(url); } catch {} }, 5000);
 
       btn.dataset.state = 'done';
       btn.textContent = 'Скачано ✓';
       setStatus('ok', `Файл ${filename} (${sizeKB}) отправлен в загрузки.`, statusId);
-
       setTimeout(() => {
-        btn.dataset.state = '';
-        btn.textContent = originalText;
-        btn.disabled = false;
+        btn.dataset.state = ''; btn.textContent = originalText; btn.disabled = false;
       }, 2000);
-
     } catch (err) {
       console.error('[download]', err);
       btn.dataset.state = 'error';
       btn.textContent = 'Ошибка';
       setStatus('err', 'Не удалось скачать: ' + err.message, statusId);
       setTimeout(() => {
-        btn.dataset.state = '';
-        btn.textContent = originalText;
-        btn.disabled = false;
+        btn.dataset.state = ''; btn.textContent = originalText; btn.disabled = false;
       }, 2500);
     }
+  }
+
+  /* ================================================================
+     НОРМАЛИЗАЦИЯ ФОРМАТОВ
+     ================================================================ */
+  function isCodeLike(s) {
+    return typeof s === 'string' && /^[PBCU]\d{4}$/i.test(s.trim());
+  }
+
+  function normalizeEntry(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+
+    // Уже стандартный формат BMW
+    if (typeof raw.code === 'string' && raw.code.trim()) return raw;
+
+    // OBD-II base format: { baseCode: actualCode, baseTitle: actualTitle }
+    const keys = Object.keys(raw);
+    const vals = Object.values(raw);
+    if (keys.length === 2 && isCodeLike(keys[0]) && isCodeLike(vals[0])) {
+      return {
+        code: String(vals[0]).trim().toUpperCase(),
+        baseCode: String(keys[0]).trim().toUpperCase(),
+        title:       { en: String(keys[1] || '').trim(), ru: '', ka: '' },
+        description: { en: String(vals[1] || '').trim(), ru: '', ka: '' },
+        solutions:   { en: [], ru: [], ka: [] },
+        applicableModels: [],
+        engineCodes: [],
+        category: 'OBD-II',
+        severity: 'Medium',
+        software: []
+      };
+    }
+    return null;
+  }
+
+  function normalizeList(rawList) {
+    const result = { entries: [], converted: 0, skipped: 0 };
+    for (const raw of rawList) {
+      const n = normalizeEntry(raw);
+      if (n) {
+        result.entries.push(n);
+        if (!raw.code) result.converted++;
+      } else {
+        result.skipped++;
+      }
+    }
+    return result;
+  }
+
+  // Насколько запись «богатая» — используется при дедупликации
+  function entryScore(entry) {
+    let s = 0;
+    const t = entry.title || {}, d = entry.description || {}, sol = entry.solutions || {};
+    if (t.en) s++; if (t.ru) s++; if (t.ka) s++;
+    if (d.en) s++; if (d.ru) s++; if (d.ka) s++;
+    if (Array.isArray(sol.en)) s += sol.en.length * 3;
+    if (Array.isArray(sol.ru)) s += sol.ru.length * 2;
+    if (Array.isArray(sol.ka)) s += sol.ka.length;
+    if (Array.isArray(entry.applicableModels)) s += entry.applicableModels.length * 2;
+    if (Array.isArray(entry.engineCodes))     s += entry.engineCodes.length * 2;
+    if (entry.category) s++;
+    if (entry.severity) s++;
+    if (Array.isArray(entry.software)) s += entry.software.length;
+    return s;
   }
 
   /* ================================================================
@@ -403,20 +392,17 @@ software: INPA, ISTA, Carly
   const fileLog = $('#fileLog');
 
   drop.addEventListener('click', () => { if (!isProcessing) fileInput.click(); });
-
   ['dragenter', 'dragover'].forEach(ev =>
     drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('dragover'); }));
   ['dragleave', 'dragend'].forEach(ev =>
     drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('dragover'); }));
   drop.addEventListener('drop', e => {
-    e.preventDefault();
-    drop.classList.remove('dragover');
+    e.preventDefault(); drop.classList.remove('dragover');
     if (isProcessing) return;
     const files = Array.from((e.dataTransfer && e.dataTransfer.files) || []);
     if (files.length) ingestFiles(files);
   });
-  ['dragover', 'drop'].forEach(ev =>
-    window.addEventListener(ev, e => e.preventDefault()));
+  ['dragover', 'drop'].forEach(ev => window.addEventListener(ev, e => e.preventDefault()));
 
   fileInput.addEventListener('change', e => {
     const files = Array.from(e.target.files || []);
@@ -433,15 +419,11 @@ software: INPA, ISTA, Carly
 
   function parseJsonLoose(text) {
     const clean = text.replace(/^\uFEFF/, '').trim();
-    try {
-      return { data: JSON.parse(clean) };
-    } catch (first) {
+    try { return { data: JSON.parse(clean) }; }
+    catch (first) {
       const fixed = clean.replace(/,\s*([}\]])/g, '$1');
-      try {
-        return { data: JSON.parse(fixed), warning: 'исправлены висячие запятые' };
-      } catch {
-        throw new Error(first.message);
-      }
+      try { return { data: JSON.parse(fixed), warning: 'исправлены висячие запятые' }; }
+      catch { throw new Error(first.message); }
     }
   }
 
@@ -463,30 +445,29 @@ software: INPA, ISTA, Carly
         setStatus('loading', `Файл ${i + 1}/${files.length}: ${file.name} — чтение…`);
         try {
           const text = await file.text();
-
           setStatus('loading', `Файл ${i + 1}/${files.length}: ${file.name} — разбор JSON…`);
           await new Promise(r => setTimeout(r, 0));
 
           const { data, warning } = parseJsonLoose(text);
           const raw = extractCodes(data);
-          const codes = raw.filter(c => c && typeof c === 'object' && typeof c.code === 'string');
+          const { entries: normalized, converted, skipped } = normalizeList(raw);
 
-          if (!codes.length) {
-            const sample = raw[0];
-            if (sample && typeof sample === 'object' && !('code' in sample)) {
-              throw new Error('в записях нет поля "code" (похож на формат obd-trouble-codes — он не поддерживается)');
-            }
-            throw new Error('нет корректных записей с полем "code"');
+          if (!normalized.length) {
+            throw new Error(`не удалось распознать ни одной записи (всего: ${raw.length})`);
           }
 
-          codes.forEach(entry => fileState.entries.push({ data: entry, source: file.name }));
+          normalized.forEach(entry => fileState.entries.push({ data: entry, source: file.name }));
           fileState.files += 1;
-          log(`✓ ${file.name} — ${codes.length} код(ов)${warning ? ' · ' + warning : ''}`,
-              warning ? 'warn' : 'ok');
+
+          const parts = [`${normalized.length} код(ов)`];
+          if (converted > 0) parts.push(`конвертировано из OBD-II: ${converted}`);
+          if (skipped > 0)   parts.push(`пропущено: ${skipped}`);
+          if (warning)       parts.push(warning);
+          log(`✓ ${file.name} — ${parts.join(' · ')}`,
+              (converted > 0 || skipped > 0) ? 'warn' : 'ok');
         } catch (err) {
           log(`✗ ${file.name}: ${err.message}`, 'err');
         }
-        // Отдаём UI перерисоваться между файлами
         await new Promise(r => setTimeout(r, 0));
       }
     } finally {
@@ -506,38 +487,45 @@ software: INPA, ISTA, Carly
 
     if (dedupe) {
       const map = new Map();
-      list.forEach(c => map.set(c.code, c));
+      list.forEach(c => {
+        const existing = map.get(c.code);
+        // Оставляем более «богатую» запись
+        if (!existing || entryScore(c) > entryScore(existing)) {
+          map.set(c.code, c);
+        }
+      });
       const removed = list.length - map.size;
       list = Array.from(map.values());
       if (removed > 0) dupNote = ` · удалено дубликатов: ${removed}`;
     }
     if (sort) list.sort((a, b) => String(a.code).localeCompare(String(b.code)));
 
-    try {
-      list = maybeStripKa(list);
-    } catch (e) {
+    try { list = maybeStripKa(list); }
+    catch (e) {
       setStatus('err', 'Ошибка при обработке записей: ' + e.message);
       return;
     }
 
     const payload = asArray ? list : { codes: list };
     jsonOutText = list.length ? JSON.stringify(payload, null, 2) : '';
-
     $('#jsonOut').textContent = jsonOutText || '// пока ничего не загружено';
 
+    const obdCount = list.filter(c => c.category === 'OBD-II').length;
     $('#jsonStats').textContent = list.length
-      ? `${list.length} код(ов) · файлов: ${fileState.files} · ${fmtKB(jsonOutText.length)}${dupNote}${strip ? ' · ka удалён' : ''}`
+      ? `${list.length} код(ов) · файлов: ${fileState.files} · ${fmtKB(jsonOutText.length)}${dupNote}` +
+        (obdCount > 0 ? ` · OBD-II: ${obdCount}` : '') +
+        (strip ? ' · ka удалён' : '')
       : '';
 
     const hasData = list.length > 0;
     $('#btnDownloadJson').disabled = !hasData;
     $('#btnCopyJson').disabled = !hasData;
 
-    // Статус — только если сейчас не идёт загрузка/скачивание
     const btnState = $('#btnDownloadJson').dataset.state;
-    if (!isProcessing && btnState !== 'working' && btnState !== 'done' && btnState !== 'error') {
+    if (!isProcessing && !['working','done','error'].includes(btnState)) {
       if (hasData) {
-        setStatus('ok', `Готово: ${list.length} код(ов). Нажмите «Скачать codes.json».`);
+        const extra = obdCount > 0 ? ` (в т.ч. OBD-II: ${obdCount})` : '';
+        setStatus('ok', `Готово: ${list.length} код(ов)${extra}. Нажмите «Скачать codes.json».`);
       } else if (fileState.files > 0) {
         setStatus('warn', 'Файлы загружены, но не найдено ни одного кода. Проверьте формат.');
       } else {
@@ -564,9 +552,8 @@ software: INPA, ISTA, Carly
     renderFiles();
   });
 
-  $('#btnDownloadJson').addEventListener('click', e => {
-    safeDownload('codes.json', jsonOutText, e.currentTarget, 'jsonStatus');
-  });
+  $('#btnDownloadJson').addEventListener('click', e =>
+    safeDownload('codes.json', jsonOutText, e.currentTarget, 'jsonStatus'));
   $('#btnCopyJson').addEventListener('click', e => copyText(jsonOutText, e.currentTarget));
 
   /* ================================================================
@@ -592,7 +579,6 @@ software: INPA, ISTA, Carly
     const errors = [];
     const entries = [];
     let cur = null;
-
     const lines = input.split(/\r?\n/);
 
     for (let i = 0; i < lines.length; i++) {
@@ -608,18 +594,15 @@ software: INPA, ISTA, Carly
         else { errors.push(`Строка ${i + 1}: пустой код в заголовке`); cur = null; }
         continue;
       }
-
       if (!cur) {
         errors.push(`Строка ${i + 1}: строка вне блока «=== КОД ===» — «${truncate(line)}»`);
         continue;
       }
-
       const sep = line.indexOf(':');
       if (sep < 1) {
         errors.push(`Строка ${i + 1}: ожидался формат «ключ: значение» — «${truncate(line)}»`);
         continue;
       }
-
       const key = line.slice(0, sep).trim().toLowerCase();
       const val = line.slice(sep + 1).trim();
       const dot = key.indexOf('.');
@@ -652,7 +635,6 @@ software: INPA, ISTA, Carly
         errors.push(`Строка ${i + 1}: неизвестный ключ «${key}»`);
       }
     }
-
     if (cur) entries.push(cur);
     return { entries, errors };
   }
@@ -661,7 +643,6 @@ software: INPA, ISTA, Carly
     setStatus('loading', 'Разбор текста…', 'textStatus');
     try {
       const { entries, errors } = parseTextFormat($('#textInput').value);
-
       const errList = $('#textErrors');
       errList.textContent = '';
       errors.forEach(msg => {
@@ -672,9 +653,7 @@ software: INPA, ISTA, Carly
 
       const strip = noKaEnabled();
       const finalList = maybeStripKa(entries);
-
       textOutText = finalList.length ? JSON.stringify({ codes: finalList }, null, 2) : '';
-
       $('#textOut').textContent = textOutText || '// добавьте текст и нажмите «Разобрать»';
 
       $('#textStats').textContent = finalList.length
@@ -702,38 +681,19 @@ software: INPA, ISTA, Carly
   });
 
   const SAMPLE = `# Блок начинается с "=== КОД ==="
-# Комментарии: строки, начинающиеся с # или //
 
 === P0100 ===
 title.en: Mass Air Flow (MAF) Sensor Circuit Malfunction
 title.ru: Неисправность цепи датчика расхода воздуха
-title.ka: მასის საჰაერო ნაკადის (MAF) სენსორის წრედის გაუმართაობა
 description.en: Problem with the MAF sensor circuit.
 description.ru: Проблема с цепью датчика массового расхода воздуха.
-description.ka: პრობლემა MAF სენსორის წრედში.
 solution.en: Check wiring connections to the MAF sensor
-solution.en: Clean the MAF sensor with a special cleaner
 solution.ru: Проверить соединения проводки к датчику MAF
-solution.ru: Очистить датчик MAF специальным очистителем
-solution.ka: შეამოწმეთ MAF სენსორის კავშირები
 models: E46, E90, E60, F10, F30, G20
-engines: N52, N54, N55, B58, M54, S54
+engines: N52, N54, N55, B58
 category: Engine
 severity: Medium
-software: INPA, ISTA, Carly
-
-=== P0171 ===
-title.en: Fuel System Too Lean (Bank 1)
-title.ru: Слишком бедная смесь (возможен подсос воздуха)
-description.en: Oxygen sensor detects a lean mixture on Bank 1.
-description.ru: Кислородный датчик фиксирует бедную смесь на Банке 1.
-solution.en: Check for vacuum leaks
-solution.ru: Проверить вакуумные утечки
-models: E46, E90, E60, F10, F30, G20
-engines: N52, N54, N55, B48, B58, M54
-category: Engine
-severity: Medium
-software: INPA, ISTA, Carly, MHD`;
+software: INPA, ISTA, Carly`;
 
   $('#btnSample').addEventListener('click', () => {
     $('#textInput').value = SAMPLE;
@@ -751,9 +711,8 @@ software: INPA, ISTA, Carly, MHD`;
     setStatus('info', 'Вставьте текст и нажмите «Разобрать».', 'textStatus');
   });
 
-  $('#btnDownloadText').addEventListener('click', e => {
-    safeDownload('codes.json', textOutText, e.currentTarget, 'textStatus');
-  });
+  $('#btnDownloadText').addEventListener('click', e =>
+    safeDownload('codes.json', textOutText, e.currentTarget, 'textStatus'));
   $('#btnCopyText').addEventListener('click', e => copyText(textOutText, e.currentTarget));
 
   /* ---------- init ---------- */
