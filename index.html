@@ -138,6 +138,8 @@ dialog.mdlg .mst.ok{color:#1f7a3a;border-color:#1f7a3a}dialog.mdlg .mst.bad{colo
 #toolsSub button.on{border-color:var(--accent)}
 @media print{body.print-report *{visibility:hidden}body.print-report #report,body.print-report #report *{visibility:visible}body.print-report #report{position:absolute;left:0;top:0;width:100%}}
 </style>
+ <link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1c69d4">
 </head>
 <body>
 <main>
@@ -4098,6 +4100,43 @@ $('#bMore').onclick = () => $('#moreRow').classList.toggle('on');
   r.oninput = () => { const v = parseInt(r.value); if (v >= 2000 && v <= 12000) { THR['12'] = [v, v + 1000]; try { localStorage.setItem('rpmWarn', String(v)); } catch (e) {} } };
 }
 })();
+</script>
+ <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      setInterval(() => reg.update(), 60000);
+
+      function askReload(worker) {
+        if (document.getElementById('updBar')) return;
+        const d = document.createElement('div');
+        d.id = 'updBar';
+        d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:200;background:#1c69d4;color:#fff;padding:10px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px';
+        d.innerHTML = '<span>Вышло обновление</span><button id="updBtn" style="background:#fff;color:#111;border:0;border-radius:8px;padding:6px 12px;font-weight:600">Обновить</button>';
+        document.body.appendChild(d);
+        document.getElementById('updBtn').onclick = () => {
+          if (worker) worker.postMessage({type: 'SKIP_WAITING'});
+          else location.reload();
+        };
+      }
+
+      if (reg.waiting) askReload(reg.waiting);
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) askReload(nw);
+        });
+      });
+
+      let done = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!done) { done = true; location.reload(); }
+      });
+    } catch (err) {}
+  });
+}
 </script>
 </body>
 </html>
