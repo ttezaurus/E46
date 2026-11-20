@@ -197,7 +197,7 @@ dialog.mdlg .mst.ok{color:#1f7a3a;border-color:#1f7a3a}dialog.mdlg .mst.bad{colo
   <div class="row"><button id="bRead" class="sec" disabled data-i18n="readDtc">Прочитать коды</button><button id="bClear" class="danger" disabled data-i18n="clearDtc">Стереть коды</button></div>
   <div id="dtc"></div>
   <div class="panel-note" data-i18n="stLegend"></div>
-  <details><summary data-i18n="reportTitle">Отчёт: перед покупкой / для себя</summary>
+  <details><summary data-i18n="reportTitle">Отчёт автомобиля</summary>
     <div class="row" style="margin-top:calc(8*var(--u))"><input id="odo" type="number" data-i18n="odoPh" placeholder="Одометр, км (вручную)"><button id="bRep" class="sec" disabled data-i18n="buildReport">Собрать отчёт</button><button id="bRepS" class="sec" data-i18n="saveReport">Сохранить отчёт</button></div>
     <div class="row"><button id="bPrint" class="sec" data-i18n="printReport">Печать / PDF</button></div>
     <div id="report"></div>
@@ -391,7 +391,7 @@ const LANG_BASE = {
   addAlarm: '+ Add condition',
   dtcTitle: 'OBD-II Fault Codes', readDtc: 'Read Codes', clearDtc: 'Clear Codes',
   modsTitle: 'Modules (CAN/UDS)', scanMods: 'Scan Modules',
-  reportTitle: 'Report: pre-purchase / personal', odoPh: 'Odometer, km (manual)',
+  reportTitle: 'Report car', odoPh: 'Odometer, km (manual)',
   buildReport: 'Build report', saveReport: 'Save report',
   blockTitle: 'Module', bmReqPh: 'request, e.g. 7E0', bmRespPh: 'response, e.g. 7E8',
   bmNote: 'Modules appear after "Scan modules" or from a profile. Address can be entered manually. Works on CAN 11-bit and 29-bit.',
@@ -611,7 +611,7 @@ const LANG_RU = {
   addAlarm: '+ Добавить условие',
   dtcTitle: 'Ошибки OBD-II', readDtc: 'Прочитать коды', clearDtc: 'Стереть коды',
   modsTitle: 'Блоки (CAN/UDS)', scanMods: 'Найти блоки',
-  reportTitle: 'Отчёт: перед покупкой / для себя', odoPh: 'Одометр, км (вручную)',
+  reportTitle: 'Отчёт автомобиля', odoPh: 'Одометр, км (вручную)',
   buildReport: 'Собрать отчёт', saveReport: 'Сохранить отчёт',
   blockTitle: 'Блок', bmReqPh: 'запрос, напр. 7E0', bmRespPh: 'ответ, напр. 7E8',
   bmNote: 'Блоки появляются после «Найти блоки» или из профиля. Адрес можно ввести вручную. Работает на CAN 11 и 29 бит.',
@@ -829,7 +829,7 @@ const LANG_DE = {
   addAlarm: '+ Bedingung hinzufügen',
   dtcTitle: 'OBD-II-Fehlercodes', readDtc: 'Codes lesen', clearDtc: 'Codes löschen',
   modsTitle: 'Module (CAN/UDS)', scanMods: 'Module scannen',
-  reportTitle: 'Bericht: vor dem Kauf / privat', odoPh: 'Kilometerstand, km (manuell)',
+  reportTitle: 'Bericht auto', odoPh: 'Kilometerstand, km (manuell)',
   buildReport: 'Bericht erstellen', saveReport: 'Bericht speichern',
   blockTitle: 'Modul', bmReqPh: 'Anfrage, z. B. 7E0', bmRespPh: 'Antwort, z. B. 7E8',
   bmNote: 'Module erscheinen nach «Module scannen» oder aus einem Profil. Adresse kann manuell eingegeben werden. Funktioniert bei CAN 11- und 29-Bit.',
