@@ -1,0 +1,19 @@
+name: latest-to-index
+on:
+  push:
+    paths: ['*v[0-9]*.html']
+permissions:
+  contents: write
+jobs:
+  idx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          f=$(ls | grep -E '^[0-9]*v[0-9]+\.html$' | sed -E 's/^([0-9]*v)([0-9]+)\.html$/\2 &/' | sort -n | tail -1 | cut -d' ' -f2)
+          echo "latest: $f"
+          cp "$f" index.html
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add index.html
+          git diff --cached --quiet || (git commit -m "index = $f" && git push)
