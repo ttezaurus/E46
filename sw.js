@@ -1,4 +1,4 @@
-const CACHE_NAME = 'obdnopro-02v40';
+const CACHE_NAME = 'obdnopro-02v47';
 const FILES_TO_CACHE = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
