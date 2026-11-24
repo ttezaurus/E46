@@ -178,7 +178,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
  .tabs button{text-align:center}
  .subbar{position:sticky;top:var(--sbh,0px);z-index:19;background:var(--bg)}
 }
-#topbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:calc(8*var(--u));margin:0 0 calc(8*var(--u))}
+#topbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:calc(8*var(--u));margin:0 0 calc(8*var(--u));background:var(--bg);padding:calc(4*var(--u)) 0 calc(6*var(--u))}
 #topbar #sbar{position:static;flex:1 1 calc(260*var(--u));min-width:0;margin:0}
 #topbar #ctl{margin:0;flex:0 0 auto}#topbar #ctl button{flex:none}
 .subbar{display:flex;gap:calc(6*var(--u));overflow-x:auto;margin:0 0 calc(10*var(--u));padding:calc(2*var(--u)) 0 calc(6*var(--u));-webkit-overflow-scrolling:touch}
@@ -301,7 +301,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <section id="tab-monitor" class="tab-panel active" role="tabpanel">
   <div class="row"><button id="bHud" class="sec" data-i18n="hud">HUD</button><button id="bPk" class="sec" data-i18n="resetPeaks">Сброс пиков</button><button id="bTg" class="sec" data-i18n="sendTg">📤 Поделиться</button></div>
   <div class="grid" id="grid"></div>
-  <details id="moreTiles"><summary data-i18n="tilesMore">Ещё параметры</summary><div class="grid" id="grid2" style="margin-top:calc(8*var(--u))"></div></details>
+  <div id="moreTiles"><div class="grid" id="grid2" style="margin-top:calc(8*var(--u))"></div></div>
   <div id="rate" style="color:var(--muted);font-size:calc(12*var(--u));margin:calc(6*var(--u)) 0"></div>
   <details><summary data-i18n="pickParams">Выбор параметров</summary><div id="pick"></div></details>
 </section>
@@ -1173,6 +1173,9 @@ Object.assign(LANG.ru, {drvCheck: 'В общий поиск ошибок (при
 Object.assign(LANG.en, {"dictAdd": "Add to dictionary", "dictAddTip": "Save your own description for this code", "dictPrompt": "Description for {c} (leave empty to delete):", "dictExport": "Export dictionary", "dictEmpty": "Dictionary is empty", "roMode": "Safe read-only mode (blocks clearing codes, writing and service commands)", "roBlocked": "Read-only mode is on: this command is blocked. Turn it off in Settings.", "roBadge": "🔒 READ-ONLY", "auditTitle": "Action log", "auditNote": "Every command that clears codes or changes data (clear, write, session change, reset) is saved here with time, vehicle, module, reply and voltage. Stored on this device only.", "auditEmpty": "No recorded actions yet.", "auditExp": "Export CSV", "auditClr": "Clear log", "auditClrConfirm": "Delete the whole action log?", "auditBlockedRo": "blocked (read-only)", "vehTitle": "Saved vehicle", "vehNone": "No saved modules for this VIN yet. Run \"Find modules\".", "vehSaved": "Saved: {n} modules, last scan {d}", "vehVerify": "Check saved modules", "vehVerifyTask": "Checking saved modules", "vehVerified": "Answered: {k} of {n}", "vehGone": "no answer: {l}", "vehName": "Vehicle name", "vehNamePrompt": "Vehicle name:", "vehDel": "Delete record", "vehDelConfirm": "Delete the saved record of this vehicle (modules, names, reports)?", "vehGarage": "Saved vehicles", "vehGarageNone": "No saved vehicles yet.", "vehRestored": "Saved modules loaded: {n} (not verified yet)", "vehCounts": "{m} modules · {r} reports", "modRename": "Rename module", "modRenamePrompt": "Name for module {r} (leave empty to reset):", "reportModsTitle": "Modules", "reportModsNone": "No modules found: run \"Find modules\" first.", "repHistTitle": "Report history", "repHistNone": "No saved reports for this vehicle yet.", "repHistShow": "Show", "repHistCmp": "Compare with latest", "repHistDel": "Delete", "repHistSame": "No differences.", "repHistDelConfirm": "Delete this report?", "thBuds": "BUDS"});
 Object.assign(LANG.ru, {"dictAdd": "В базу", "dictAddTip": "Сохранить своё описание этого кода", "dictPrompt": "Описание для {c} (пусто = удалить):", "dictExport": "Экспорт словаря", "dictEmpty": "Словарь пуст", "roMode": "Безопасное чтение (блокирует стирание кодов, запись и сервисные команды)", "roBlocked": "Включён режим только чтения: команда заблокирована. Выключите его в «Настройках».", "roBadge": "🔒 ТОЛЬКО ЧТЕНИЕ", "auditTitle": "Журнал действий", "auditNote": "Каждая команда, которая стирает коды или меняет данные (стирание, запись, смена сессии, сброс), сохраняется здесь со временем, автомобилем, блоком, ответом и напряжением. Хранится только на этом устройстве.", "auditEmpty": "Записей пока нет.", "auditExp": "Экспорт CSV", "auditClr": "Очистить журнал", "auditClrConfirm": "Удалить весь журнал действий?", "auditBlockedRo": "заблокировано (только чтение)", "vehTitle": "Сохранённый автомобиль", "vehNone": "Для этого VIN нет сохранённых блоков. Нажмите «Найти блоки».", "vehSaved": "Сохранено блоков: {n}, последний скан {d}", "vehVerify": "Проверить сохранённые блоки", "vehVerifyTask": "Проверка сохранённых блоков", "vehVerified": "Ответили: {k} из {n}", "vehGone": "нет ответа: {l}", "vehName": "Имя автомобиля", "vehNamePrompt": "Название автомобиля:", "vehDel": "Удалить запись", "vehDelConfirm": "Удалить сохранённую запись этого автомобиля (блоки, имена, отчёты)?", "vehGarage": "Сохранённые автомобили", "vehGarageNone": "Сохранённых автомобилей пока нет.", "vehRestored": "Загружены сохранённые блоки: {n} (ещё не проверены)", "vehCounts": "блоков: {m} · отчётов: {r}", "modRename": "Переименовать блок", "modRenamePrompt": "Название блока {r} (пусто = сбросить):", "reportModsTitle": "Блоки", "reportModsNone": "Блоки не найдены: сначала нажмите «Найти блоки».", "repHistTitle": "История отчётов", "repHistNone": "Для этого автомобиля сохранённых отчётов пока нет.", "repHistShow": "Показать", "repHistCmp": "Сравнить с последним", "repHistDel": "Удалить", "repHistSame": "Различий нет.", "repHistDelConfirm": "Удалить этот отчёт?", "thBuds": "BUDS"});
 Object.assign(LANG.de, {"dictAdd": "In Datenbank", "dictAddTip": "Eigene Beschreibung für diesen Code speichern", "dictPrompt": "Beschreibung für {c} (leer = löschen):", "dictExport": "Wörterbuch exportieren", "dictEmpty": "Wörterbuch ist leer", "roMode": "Sicherer Lesemodus (sperrt Löschen von Codes, Schreiben und Servicebefehle)", "roBlocked": "Lesemodus ist aktiv: Befehl gesperrt. In den Einstellungen ausschalten.", "roBadge": "🔒 NUR LESEN", "auditTitle": "Aktionsprotokoll", "auditNote": "Jeder Befehl, der Codes löscht oder Daten ändert (Löschen, Schreiben, Sitzungswechsel, Reset), wird hier mit Zeit, Fahrzeug, Steuergerät, Antwort und Spannung gespeichert. Nur auf diesem Gerät.", "auditEmpty": "Noch keine Einträge.", "auditExp": "CSV exportieren", "auditClr": "Protokoll leeren", "auditClrConfirm": "Gesamtes Aktionsprotokoll löschen?", "auditBlockedRo": "gesperrt (nur lesen)", "vehTitle": "Gespeichertes Fahrzeug", "vehNone": "Für diese FIN sind keine Steuergeräte gespeichert. „Steuergeräte suchen“ starten.", "vehSaved": "Gespeichert: {n} Steuergeräte, letzter Scan {d}", "vehVerify": "Gespeicherte Steuergeräte prüfen", "vehVerifyTask": "Gespeicherte Steuergeräte prüfen", "vehVerified": "Geantwortet: {k} von {n}", "vehGone": "keine Antwort: {l}", "vehName": "Fahrzeugname", "vehNamePrompt": "Fahrzeugname:", "vehDel": "Eintrag löschen", "vehDelConfirm": "Gespeicherten Eintrag dieses Fahrzeugs löschen (Steuergeräte, Namen, Berichte)?", "vehGarage": "Gespeicherte Fahrzeuge", "vehGarageNone": "Noch keine gespeicherten Fahrzeuge.", "vehRestored": "Gespeicherte Steuergeräte geladen: {n} (noch nicht geprüft)", "vehCounts": "{m} Steuergeräte · {r} Berichte", "modRename": "Steuergerät umbenennen", "modRenamePrompt": "Name für Steuergerät {r} (leer = zurücksetzen):", "reportModsTitle": "Steuergeräte", "reportModsNone": "Keine Steuergeräte gefunden: zuerst „Steuergeräte suchen“.", "repHistTitle": "Berichtsverlauf", "repHistNone": "Für dieses Fahrzeug gibt es noch keine gespeicherten Berichte.", "repHistShow": "Anzeigen", "repHistCmp": "Mit letztem vergleichen", "repHistDel": "Löschen", "repHistSame": "Keine Unterschiede.", "repHistDelConfirm": "Diesen Bericht löschen?", "thBuds": "BUDS"});
+Object.assign(LANG.en, {"metricO2b1s2": "O2 sensor B1S2 (voltage)", "metricO2b2s1": "O2 sensor B2S1 (voltage)", "metricO2b2s2": "O2 sensor B2S2 (voltage)", "metricLamB1S2": "Lambda B1S2", "metricLamB2S1": "Lambda B2S1", "metricLamB2S2": "Lambda B2S2", "metricLamEqB1S1": "Lambda B1S1 (wideband)", "metricLamEqB2S1": "Lambda B2S1 (wideband)", "metricEvapP": "EVAP system pressure", "metricEvapAbs": "EVAP pressure (absolute)", "metricCat21": "Catalyst temp. B2S1", "metricCat12": "Catalyst temp. B1S2", "metricCat22": "Catalyst temp. B2S2", "metricThrB": "Absolute throttle B", "metricThrC": "Absolute throttle C", "metricPedF": "Accelerator pedal F", "metricThrG": "Absolute throttle G", "metricStft3": "Secondary O2 short trim B1", "metricLtft3": "Secondary O2 long trim B1", "metricStft4": "Secondary O2 short trim B2", "metricLtft4": "Secondary O2 long trim B2", "metricHybBat": "Hybrid battery remaining", "metricMafA": "MAF sensor A", "metricTurboIn": "Turbo compressor inlet pressure", "metricCact": "Charge air temp. (sensor 1)", "metricManT": "Manifold surface temp.", "metricTqFric": "Friction torque", "metricFuelRateG": "Fuel rate", "metricExhFlow": "Exhaust flow", "metricGearRatio": "Transmission gear ratio", "unitPa": "Pa", "unitRatio": "×"});
+Object.assign(LANG.ru, {"metricO2b1s2": "Датчик O2 B1S2 (напряжение)", "metricO2b2s1": "Датчик O2 B2S1 (напряжение)", "metricO2b2s2": "Датчик O2 B2S2 (напряжение)", "metricLamB1S2": "Лямбда B1S2", "metricLamB2S1": "Лямбда B2S1", "metricLamB2S2": "Лямбда B2S2", "metricLamEqB1S1": "Лямбда B1S1 (широкополосный)", "metricLamEqB2S1": "Лямбда B2S1 (широкополосный)", "metricEvapP": "Давление системы EVAP", "metricEvapAbs": "Давление EVAP (абсолютное)", "metricCat21": "Темп. катализатора B2S1", "metricCat12": "Темп. катализатора B1S2", "metricCat22": "Темп. катализатора B2S2", "metricThrB": "Дроссель абсолютный B", "metricThrC": "Дроссель абсолютный C", "metricPedF": "Педаль газа F", "metricThrG": "Дроссель абсолютный G", "metricStft3": "Втор. O2 краткоср. коррекция B1", "metricLtft3": "Втор. O2 долгоср. коррекция B1", "metricStft4": "Втор. O2 краткоср. коррекция B2", "metricLtft4": "Втор. O2 долгоср. коррекция B2", "metricHybBat": "Остаток гибридной батареи", "metricMafA": "ДМРВ A", "metricTurboIn": "Давление на входе компрессора", "metricCact": "Темп. наддувочного воздуха (датчик 1)", "metricManT": "Темп. поверхности коллектора", "metricTqFric": "Момент трения", "metricFuelRateG": "Расход топлива", "metricExhFlow": "Расход выхлопных газов", "metricGearRatio": "Передаточное число КПП", "unitPa": "Па", "unitRatio": "×"});
+Object.assign(LANG.de, {"metricO2b1s2": "O2-Sensor B1S2 (Spannung)", "metricO2b2s1": "O2-Sensor B2S1 (Spannung)", "metricO2b2s2": "O2-Sensor B2S2 (Spannung)", "metricLamB1S2": "Lambda B1S2", "metricLamB2S1": "Lambda B2S1", "metricLamB2S2": "Lambda B2S2", "metricLamEqB1S1": "Lambda B1S1 (Breitband)", "metricLamEqB2S1": "Lambda B2S1 (Breitband)", "metricEvapP": "EVAP-Systemdruck", "metricEvapAbs": "EVAP-Druck (absolut)", "metricCat21": "Kat-Temp. B2S1", "metricCat12": "Kat-Temp. B1S2", "metricCat22": "Kat-Temp. B2S2", "metricThrB": "Drosselklappe absolut B", "metricThrC": "Drosselklappe absolut C", "metricPedF": "Fahrpedal F", "metricThrG": "Drosselklappe absolut G", "metricStft3": "Sek. O2 Kurzzeittrim B1", "metricLtft3": "Sek. O2 Langzeittrim B1", "metricStft4": "Sek. O2 Kurzzeittrim B2", "metricLtft4": "Sek. O2 Langzeittrim B2", "metricHybBat": "Hybridbatterie Restkapazität", "metricMafA": "Luftmassenmesser A", "metricTurboIn": "Verdichter-Eingangsdruck", "metricCact": "Ladelufttemp. (Sensor 1)", "metricManT": "Saugrohr-Oberflächentemp.", "metricTqFric": "Reibmoment", "metricFuelRateG": "Kraftstoffrate", "metricExhFlow": "Abgasdurchfluss", "metricGearRatio": "Getriebeübersetzung", "unitPa": "Pa", "unitRatio": "×"});
 Object.assign(LANG.ru, {thTitle: 'Оформление', thA76: 'A76 Tiefseeblau', thClassic: 'Классика', thGraphite: 'Графит', thLight: 'Светлая', thAccent: 'Свой акцент', thViewTbl: 'Параметры: таблица', thReset: 'Сбросить', thNote: 'Цвет акцента подстраивается, чтобы оставаться читаемым. Зелёный, оранжевый и красный статусы не меняются.'});
 Object.assign(LANG.en, {drvCheck: 'Include in main code search (drivetrain)', drvChecked: 'Drivetrain modules checked: {l}', drvHint: 'Drivetrain modules (gearbox, steering, ABS, transfer case, suspension) are added after a scan on the Service tab.'});
 Object.assign(LANG.en, {thTitle: 'Appearance', thA76: 'A76 Deep Sea Blue', thClassic: 'Classic', thGraphite: 'Graphite', thLight: 'Light', thAccent: 'Custom accent', thViewTbl: 'Parameters: table', thReset: 'Reset', thNote: 'The accent adjusts itself to stay readable. Green, orange and red status colors are fixed.'});
@@ -1331,7 +1334,37 @@ function buildMetrics() {
     M(0x30, 'metricWarmups', 'unitPcs', b => b[0]),
     M(0x31, 'metricDistClr', 'unitKm', b => w(b, 0)),
     M(0x4D, 'metricMilTime', 'unitMin', b => w(b, 0)),
-    M(0x4E, 'metricClrTime', 'unitMin', b => w(b, 0))
+    M(0x4E, 'metricClrTime', 'unitMin', b => w(b, 0)),
+    M(0x15, 'metricO2b1s2', 'unitV', b => b[0] / 200),
+    M(0x18, 'metricO2b2s1', 'unitV', b => b[0] / 200),
+    M(0x19, 'metricO2b2s2', 'unitV', b => b[0] / 200),
+    M(0x25, 'metricLamB1S2', 'unitLambda', b => w(b, 0) * 2 / 65536),
+    M(0x28, 'metricLamB2S1', 'unitLambda', b => w(b, 0) * 2 / 65536),
+    M(0x29, 'metricLamB2S2', 'unitLambda', b => w(b, 0) * 2 / 65536),
+    M(0x34, 'metricLamEqB1S1', 'unitLambda', b => w(b, 0) * 2 / 65536),
+    M(0x38, 'metricLamEqB2S1', 'unitLambda', b => w(b, 0) * 2 / 65536),
+    M(0x32, 'metricEvapP', 'unitPa', b => s16(b, 0) / 4),
+    M(0x53, 'metricEvapAbs', 'unitKpa', b => w(b, 0) / 200),
+    M(0x3D, 'metricCat21', 'unitC', b => w(b, 0) / 10 - 40),
+    M(0x3E, 'metricCat12', 'unitC', b => w(b, 0) / 10 - 40),
+    M(0x3F, 'metricCat22', 'unitC', b => w(b, 0) / 10 - 40),
+    M(0x47, 'metricThrB', 'unitPct', b => b[0] * 100 / 255),
+    M(0x48, 'metricThrC', 'unitPct', b => b[0] * 100 / 255),
+    M(0x4B, 'metricPedF', 'unitPct', b => b[0] * 100 / 255),
+    M(0x8D, 'metricThrG', 'unitPct', b => b[0] * 100 / 255),
+    M(0x55, 'metricStft3', 'unitPct', b => b[0] * 100 / 128 - 100),
+    M(0x56, 'metricLtft3', 'unitPct', b => b[0] * 100 / 128 - 100),
+    M(0x57, 'metricStft4', 'unitPct', b => b[0] * 100 / 128 - 100),
+    M(0x58, 'metricLtft4', 'unitPct', b => b[0] * 100 / 128 - 100),
+    M(0x5B, 'metricHybBat', 'unitPct', b => b[0] * 100 / 255),
+    M(0x66, 'metricMafA', 'unitGs', b => w(b, 1) / 32),
+    M(0x6F, 'metricTurboIn', 'unitKpa', b => b[1]),
+    M(0x77, 'metricCact', 'unitC', b => b[1] - 40),
+    M(0x84, 'metricManT', 'unitC', b => b[0] - 40),
+    M(0x8E, 'metricTqFric', 'unitPct', b => b[0] - 125),
+    M(0x9D, 'metricFuelRateG', 'unitGs', b => w(b, 0) / 50),
+    M(0x9E, 'metricExhFlow', 'unitKgH', b => w(b, 0) / 5),
+    M(0xA4, 'metricGearRatio', 'unitRatio', b => w(b, 2) / 1000)
   ];
 }
 buildMetrics();
@@ -1339,7 +1372,9 @@ buildMetrics();
 const PIDLEN = {0x01: 4, 0x04: 1, 0x05: 1, 0x0A: 1, 0x0B: 1, 0x0C: 2, 0x0D: 1, 0x0E: 1, 0x0F: 1, 0x10: 2, 0x11: 1, 0x1F: 2, 0x21: 2, 0x22: 2, 0x23: 2,
   0x2C: 1, 0x2D: 1, 0x30: 1, 0x31: 2, 0x33: 1, 0x3C: 2, 0x42: 2, 0x43: 2, 0x46: 1, 0x4D: 2, 0x4E: 2, 0x59: 2, 0x5A: 1, 0x5C: 1, 0x5D: 2, 0x5E: 2, 0x62: 1,
   0x73: 5, 0x78: 9, 0x7A: 7, 0x7C: 9, 0x06: 1, 0x07: 1, 0x08: 1, 0x09: 1, 0x14: 2, 0x24: 4, 0x2E: 1, 0x2F: 1, 0x44: 2, 0x45: 1, 0x49: 1, 0x4A: 1, 0x4C: 1,
-  0x52: 1, 0x61: 1, 0x63: 2, 0x67: 3, 0x68: 3, 0x70: 10, 0x74: 5, 0x83: 9, 0xA6: 4};
+  0x52: 1, 0x61: 1, 0x63: 2, 0x67: 3, 0x68: 3, 0x70: 10, 0x74: 5, 0x83: 9, 0xA6: 4,
+  0x15: 2, 0x18: 2, 0x19: 2, 0x25: 4, 0x28: 4, 0x29: 4, 0x34: 4, 0x38: 4, 0x32: 2, 0x53: 2, 0x3D: 2, 0x3E: 2, 0x3F: 2, 0x47: 1, 0x48: 1, 0x4B: 1, 0x8D: 1,
+  0x55: 2, 0x56: 2, 0x57: 2, 0x58: 2, 0x5B: 1, 0x66: 5, 0x6F: 3, 0x77: 5, 0x84: 1, 0x8E: 1, 0x9D: 4, 0x9E: 2, 0xA4: 4};
 const U = h => '0000' + h + '-0000-1000-8000-00805f9b34fb';
 const SERVICES = [U('fff0'), U('ffe0'), U('ffe5'), U('18f0'),
   'e7810a71-73ae-499d-8c15-faa9aef0c3f2', '49535343-fe7d-4ae5-8fa9-9fafd205e455'];
@@ -2328,7 +2363,7 @@ async function kwpDTC(emis) {
   for (let i = 0; i < n && 4 + i * 6 + 6 <= r.h.length; i++) {
     const q = r.h.substr(4 + i * 6, 6), hl = q.slice(0, 4).toUpperCase();
     if (hl === '0000') continue;
-    rows.push({raw: hl, ftb: '', obd: emis ? decodeDTC(hl) : null, st: q.slice(4), flags: 'KWP'});
+    rows.push({raw: hl, ftb: '', obd: decodeDTC(hl), st: q.slice(4), flags: 'KWP'}); // v51: 2 байта KWP = обычный код SAE (B1101, U1502…): поиск и словарь работают как для P-кодов
   }
   return rows;
 }
@@ -3303,7 +3338,7 @@ const toAscii = h => (h.match(/../g) || []).map(x => parseInt(x, 16)).map(c => c
 const spaced = h => (h.match(/../g) || []).join(' ');
 const expOn = () => $('#expOn').checked;
 const saveLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-const PEND_RE = /7F[0-9A-F]{2}78/, SAFE_RETRY = ['10', '18', '19', '22', '3E'];
+const PEND_RE = /7F[0-9A-F]{2}78/, SAFE_RETRY = ['10', '18', '19', '1A', '22', '3E'];
 // После 7F xx 78 блок «досчитывает»: повтор запроса каждые 0,8 с перезапускает расчёт (на Passat 12 повторов подряд не давали ответа), поэтому
 // сначала ждём запоздалый кадр (onData копит его в buf, пока нет активной команды), и лишь потом спрашиваем ещё раз (до 3 раз).
 async function lateLines(ms) {
@@ -3671,7 +3706,7 @@ function initBlocks() {
 
 // ===== VIN =====
 const WMI = {WBA: 'BMW', WBS: 'BMW M', WBY: 'BMW i', WMW: 'MINI', WVW: 'Volkswagen', WVG: 'Volkswagen', WV1: 'VW Commercial', WV2: 'VW Bus', WAU: 'Audi', WUA: 'Audi Sport', TRU: 'Audi', TMB: 'Škoda', VSS: 'SEAT',
-  WDB: 'Mercedes-Benz', WDC: 'Mercedes-Benz', WDD: 'Mercedes-Benz', WDF: 'Mercedes-Benz', W1K: 'Mercedes-Benz', W1N: 'Mercedes-Benz', WP0: 'Porsche', WF0: 'Ford', W0L: 'Opel', VF1: 'Renault', VF3: 'Peugeot', VF7: 'Citroën',
+  WDB: 'Mercedes-Benz', WDC: 'Mercedes-Benz', WDD: 'Mercedes-Benz', WME: 'smart', WDF: 'Mercedes-Benz', W1K: 'Mercedes-Benz', W1N: 'Mercedes-Benz', WP0: 'Porsche', WF0: 'Ford', W0L: 'Opel', VF1: 'Renault', VF3: 'Peugeot', VF7: 'Citroën',
   ZFA: 'Fiat', SAL: 'Land Rover', SAJ: 'Jaguar', YV1: 'Volvo', JTD: 'Toyota', JN1: 'Nissan', JHM: 'Honda', JMZ: 'Mazda', KMH: 'Hyundai', KNA: 'Kia', KND: 'Kia', XTA: 'LADA', UU1: 'Dacia'};
 let car = {vin: '', cal: '', mk: '', year: '', done: false};
 // ===== v51: безопасное чтение, журнал действий, записи автомобилей по VIN =====
@@ -3782,8 +3817,8 @@ async function reportMods(put) {
     catch (e) { if (fatalErr(e)) throw e; log('! report mod ' + m.req + ': ' + errText(e)); }
     put(nm + ' [' + m.req + '→' + m.resp + ']' + (m.info && m.info.length ? ' · ' + m.info.map(([k, v]) => AUTO_LBL[k] + ' ' + v).join(' · ') : '') + ' — ' + (rows === null ? t('modNoResp') : rows.length ? t('modCodes', {n: rows.length}) : t('modClean')));
     if (rows) {
-      await dbLookup(rows.map(e => e.raw));
-      rows.filter(e => !isNoiseDtc(e)).forEach(e => { const d = describe(e.raw); put('  0x' + e.raw + ' [' + rowNote(e) + ']' + (d === t('notInDatabase') ? '' : ' — ' + d)); });
+      await dbLookup(rows.map(e => e.obd || e.raw));
+      rows.filter(e => !isNoiseDtc(e)).forEach(e => { const d = describe(e.obd || e.raw); put('  ' + (e.obd || '0x' + e.raw) + ' [' + rowNote(e) + ']' + (d === t('notInDatabase') ? '' : ' — ' + d)); });
     }
   }
   try { await restoreFast(); } catch (e) { if (fatalErr(e)) throw e; }
@@ -3879,7 +3914,7 @@ async function detectCar() {
   if (car.vin) {
     car.mk = WMI[car.vin.slice(0, 3)] || '';
     const i = 'ABCDEFGHJKLMNPRSTVWXY123456789'.indexOf(car.vin[9]), cy = new Date().getFullYear();
-    if (i >= 0 && !/^(WD|W1)/.test(car.vin)) { // у Mercedes 10-й символ VIN не код года
+    if (i >= 0 && !/^(WD|W1|WME)/.test(car.vin)) { // у Mercedes и smart 10-й символ VIN не код года
       const c = [1980 + i, 2010 + i].filter(y => y <= cy + 1);
       car.year = c.length === 2 ? (/CAN/.test(protoName) || wwh || /[A-Z]/.test(car.vin[6]) ? c[1] : c[0]) : (c[0] || '');
     }
