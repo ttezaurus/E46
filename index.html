@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OBDnoPRO 02v50</title>
+<title>OBDnoPRO 02v51</title>
 <style>
 :root{--u:1px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
@@ -163,7 +163,6 @@ body.tbl .grid .card .gb{display:none}
 .thc{display:flex;align-items:center;gap:calc(8*var(--u));color:var(--muted);font-size:calc(14*var(--u))}
 .thc input[type=color]{width:calc(44*var(--u));height:calc(36*var(--u));padding:0;border:calc(1*var(--u)) solid var(--line);border-radius:calc(8*var(--u));background:var(--card)}
 #thRow button.on{border-color:var(--accent)}
-#moreTiles{display:none}
 #flags{display:flex;justify-content:flex-end;gap:calc(4*var(--u))}
 #flags button{padding:calc(3*var(--u)) calc(6*var(--u));font-size:calc(13*var(--u));min-width:0;line-height:1}
 .tabs button[aria-selected="true"]{background:var(--card)!important;color:var(--accent)!important;border:2px solid var(--accent)!important}
@@ -190,6 +189,34 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 .snapT td{padding:calc(3*var(--u)) calc(4*var(--u));border-bottom:calc(1*var(--u)) solid var(--line);vertical-align:top}
 .snapT td:nth-child(2){font-weight:600;white-space:nowrap}.snapT td:nth-child(3){color:var(--muted);font-size:calc(12*var(--u))}
 .snapT th{text-align:left;color:var(--muted);font-size:calc(12*var(--u));padding-top:calc(8*var(--u))}
+
+/* v51: BUDS skin, новые элементы */
+.robadge{font-size:calc(11*var(--u));font-weight:700;color:#101215;background:var(--accent);padding:calc(2*var(--u)) calc(8*var(--u));border-radius:calc(3*var(--u));letter-spacing:.08em;align-self:center}
+body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOne,body.ro .mdlg button.danger{opacity:.35}
+.aurow{font:calc(12*var(--u)) ui-monospace,Menlo,monospace;padding:calc(4*var(--u)) 0;border-bottom:calc(1*var(--u)) solid var(--line);word-break:break-all}
+.dbtn{padding:calc(2*var(--u)) calc(8*var(--u))!important;font-size:calc(12*var(--u))!important;margin-left:calc(6*var(--u));text-transform:none!important;letter-spacing:0!important;font-weight:600!important}
+#repDiff{white-space:pre-wrap;word-break:break-all;font:calc(12*var(--u)) ui-monospace,Menlo,monospace}
+#vehCard .row button,#garage .srow button{font-size:calc(13*var(--u))}
+:root[data-skin="buds"]{--rad:calc(3*var(--u))}
+:root[data-skin="buds"] body{font-family:"Barlow","Roboto Condensed","SF Pro Text",-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+:root[data-skin="buds"] button,:root[data-skin="buds"] input:not([type=checkbox]),:root[data-skin="buds"] select,:root[data-skin="buds"] textarea,:root[data-skin="buds"] .card,:root[data-skin="buds"] #sbar,:root[data-skin="buds"] .warn,:root[data-skin="buds"] dialog.mdlg,:root[data-skin="buds"] #task .box,:root[data-skin="buds"] .hc,:root[data-skin="buds"] .prm,:root[data-skin="buds"] #log{border-radius:var(--rad)}
+:root[data-skin="buds"] button{text-transform:uppercase;font-weight:700;letter-spacing:.06em;font-size:calc(13*var(--u))}
+:root[data-skin="buds"] button.sec{background:var(--row);border-color:var(--line)}
+:root[data-skin="buds"] button.danger{color:#fff}
+:root[data-skin="buds"] h1{text-transform:uppercase;letter-spacing:.16em;font-weight:800;border-left:calc(5*var(--u)) solid var(--accent);padding-left:calc(10*var(--u))}
+:root[data-skin="buds"] h2{text-transform:uppercase;letter-spacing:.1em;font-size:calc(13*var(--u));color:var(--muted);border-left:calc(3*var(--u)) solid var(--accent);padding-left:calc(8*var(--u))}
+:root[data-skin="buds"] #sbar{border-top:calc(2*var(--u)) solid var(--accent)}
+:root[data-skin="buds"] .tabs button{background:var(--row);color:var(--muted);border:calc(1*var(--u)) solid var(--line);font-size:calc(12*var(--u))}
+:root[data-skin="buds"] .tabs button[aria-selected="true"]{background:var(--accent);color:var(--acc-text);border-color:var(--accent)}
+:root[data-skin="buds"] .subbar button.on{background:var(--accent);color:var(--acc-text);border-color:var(--accent)}
+:root[data-skin="buds"] .card small{text-transform:uppercase;letter-spacing:.08em}
+:root[data-skin="buds"] .card b{font-weight:800}
+:root[data-skin="buds"] .card{border-top:calc(2*var(--u)) solid var(--line)}
+:root[data-skin="buds"] .card.mod{border-left:calc(3*var(--u)) solid var(--accent)}
+:root[data-skin="buds"] #vehCard{border-left:calc(3*var(--u)) solid var(--accent)}
+@media (min-width:600px){:root[data-skin="buds"] main{max-width:calc(1000*var(--u))}}
+@media (min-width:800px) and (orientation:landscape){:root[data-skin="buds"] .tabs button[aria-selected="true"]{box-shadow:inset calc(4*var(--u)) 0 0 var(--accent)}}
+@media (min-width:1100px){:root[data-skin="buds"] main{max-width:calc(1500*var(--u))}:root[data-skin="buds"] .grid{grid-template-columns:repeat(auto-fill,minmax(calc(230*var(--u)),1fr))}}
 </style>
  <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1c69d4">
@@ -197,6 +224,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 /* v46: темы. Применяются до отрисовки, без мигания. */
 (function(){
   var T={
+    buds:{d:1,bg:'#14161a',card:'#1f2227',row:'#262a30',text:'#f3f4f6',muted:'#9ea5ae',accent:'#ffcc00',line:'#333840',danger:'#ff5a4d',warn:'#ffa31a'},
     a76:{d:1,bg:'#0A162B',card:'#0F2342',row:'#13294D',text:'#E8EEF8',muted:'#9FB0CC',accent:'#3D7DEB',line:'#1B3760',danger:'#ef6b6b',warn:'#f0a020'},
     classic:{d:1,bg:'#0f1115',card:'#1a1d23',row:'#20242b',text:'#eceff4',muted:'#9aa3b2',accent:'#5b9dff',line:'#2a2e36',danger:'#ef6b6b',warn:'#f0a020'},
     graphite:{d:1,bg:'#1f1f1f',card:'#2e2e2e',row:'#363636',text:'#f1f1f1',muted:'#b4b4b4',accent:'#f5c518',line:'#3a3a3a',danger:'#ef6b6b',warn:'#f0a020'},
@@ -215,12 +243,12 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
   function get(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
   function set(k,v){try{if(v)localStorage.setItem(k,v);else localStorage.removeItem(k);}catch(e){}}
   function apply(){
-    var id=get('thId');if(!T[id])id='a76';
+    var id=get('thId');if(!T[id])id='buds';
     var th=T[id],custom=/^#[0-9a-fA-F]{6}$/.test(get('thAcc'))?get('thAcc'):'';
     var acc=custom?fit(custom,th.card,!!th.d):th.accent;
-    var txt=cr('#ffffff',acc)>=cr('#0A162B',acc)?'#ffffff':'#0A162B';
+    var txt=cr('#ffffff',acc)>=cr('#101215',acc)?'#ffffff':'#101215';
     var r=document.documentElement,st=r.style;
-    r.setAttribute('data-theme',th.d?'dark':'light');
+    r.setAttribute('data-theme',th.d?'dark':'light');r.setAttribute('data-skin',id==='buds'?'buds':'');
     [['--bg',th.bg],['--card',th.card],['--row',th.row],['--text',th.text],['--muted',th.muted],['--line',th.line],['--danger',th.danger],['--warn',th.warn],['--accent',acc],['--acc-text',txt]].forEach(function(x){st.setProperty(x[0],x[1]);});
     var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',th.bg);
     document.documentElement.classList.toggle('tbl-pre',get('thView')==='tbl');
@@ -230,9 +258,9 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
   apply();
   document.addEventListener('DOMContentLoaded',function(){
     apply();
-    var dg=document.getElementById('thDiag');if(dg)dg.textContent='theme: '+(get('thId')||'a76')+' · '+getComputedStyle(document.documentElement).getPropertyValue('--accent')+' · 02v50';
+    var dg=document.getElementById('thDiag');if(dg)dg.textContent='theme: '+(get('thId')||'buds')+' · '+getComputedStyle(document.documentElement).getPropertyValue('--accent')+' · 02v51';
     var row=document.getElementById('thRow');
-    function mark(){var id=get('thId')||'a76';[].forEach.call(document.querySelectorAll('#thRow button'),function(b){b.classList.toggle('on',b.getAttribute('data-th')===id);});
+    function mark(){var id=get('thId')||'buds';[].forEach.call(document.querySelectorAll('#thRow button'),function(b){b.classList.toggle('on',b.getAttribute('data-th')===id);});
       var c=document.getElementById('thColor');if(c)c.value=get('thAcc')||T[id].accent;
       var v=document.getElementById('thView');if(v)v.classList.toggle('on',get('thView')==='tbl');}
     if(row){
@@ -248,7 +276,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v50</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v51</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -308,6 +336,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 </section>
 <section id="tab-dblocks" class="tab-panel" role="tabpanel">
   <h2 data-i18n="modsTitle">Блоки (CAN/UDS)</h2>
+  <div class="card" id="vehCard" style="display:none;margin-bottom:calc(8*var(--u))"><b id="vehTitle" style="font-size:calc(15*var(--u));cursor:default;display:block;word-break:break-all"></b><small id="vehInfo" style="margin:calc(4*var(--u)) 0 calc(8*var(--u))"></small><div class="row" style="margin:0"><button id="bVerify" class="sec" disabled data-i18n="vehVerify">Проверить сохранённые блоки</button><button id="bVehName" class="sec" data-i18n="vehName">Имя автомобиля</button><button id="bVehDel" class="sec" data-i18n="vehDel">Удалить запись</button></div></div>
   <div class="row"><button id="bScan" class="sec" disabled data-i18n="scanMods">Найти блоки</button></div>
   <div class="row"><label><input type="checkbox" id="scanFast"> <span data-i18n="scanFast">Быстрый скан</span></label></div>
   <div class="row"><label><input type="checkbox" id="scanFull"> <span data-i18n="scanFull">Полный перебор адресов</span></label></div>
@@ -327,6 +356,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
     <div class="row" style="margin-top:calc(8*var(--u))"><input id="odo" type="number" data-i18n="odoPh" placeholder="Одометр, км (вручную)"><button id="bRep" class="sec" disabled data-i18n="buildReport">Собрать отчёт</button><button id="bRepS" class="sec" data-i18n="saveReport">Сохранить отчёт</button></div>
     <div class="row"><button id="bPrint" class="sec" data-i18n="printReport">Печать / PDF</button></div>
     <div id="report"></div>
+    <h2 data-i18n="repHistTitle">История отчётов</h2><div id="repHist"></div><pre id="repDiff"></pre>
   </div>
   <h2 data-i18n="copies">Копии параметров</h2>
   <div class="panel-note" data-i18n="copiesNote">Каждое успешное чтение параметра сохраняется здесь автоматически: это резервная копия перед любыми изменениями.</div>
@@ -365,7 +395,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 <section id="tab-tools" class="tab-panel" role="tabpanel">
   <div id="toolsMain">
   <h2 data-i18n="thTitle">Оформление</h2>
-  <div class="row" id="thRow"><button type="button" class="sec" data-th="a76" data-i18n="thA76">A76 Tiefseeblau</button><button type="button" class="sec" data-th="classic" data-i18n="thClassic">Классика</button><button type="button" class="sec" data-th="graphite" data-i18n="thGraphite">Графит</button><button type="button" class="sec" data-th="light" data-i18n="thLight">Светлая</button></div>
+  <div class="row" id="thRow"><button type="button" class="sec" data-th="buds" data-i18n="thBuds">BUDS</button><button type="button" class="sec" data-th="a76" data-i18n="thA76">A76 Tiefseeblau</button><button type="button" class="sec" data-th="classic" data-i18n="thClassic">Классика</button><button type="button" class="sec" data-th="graphite" data-i18n="thGraphite">Графит</button><button type="button" class="sec" data-th="light" data-i18n="thLight">Светлая</button></div>
   <div class="row"><label class="thc"><span data-i18n="thAccent">Свой акцент</span><input type="color" id="thColor" value="#3d7deb"></label><button type="button" id="thView" class="sec" data-i18n="thViewTbl">Параметры: таблица</button><button type="button" id="thReset" class="sec" data-i18n="thReset">Сбросить</button></div>
   <div class="panel-note" id="thDiag"></div>
   <div class="panel-note" data-i18n="thNote">Цвет акцента подстраивается, чтобы оставаться читаемым. Зелёный, оранжевый и красный статусы не меняются.</div>
@@ -389,6 +419,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
   <textarea id="dcTxt" data-i18n="dictPh" placeholder="P0123;Датчик положения дросселя: высокий сигнал"></textarea>
   <div class="row" style="margin-top:calc(6*var(--u))"><input type="file" id="dcFile" accept=".csv,.txt,.json"><button id="dcAdd" class="sec" data-i18n="add">Добавить</button><button id="dcClr" class="sec" data-i18n="clearDict">Очистить словарь</button></div>
   <div class="panel-note" id="dcInfo"></div>
+  <div class="row"><button id="dcExp" class="sec" data-i18n="dictExport">Экспорт словаря</button></div>
   <div class="row" style="margin-top:calc(10*var(--u)); background:var(--card); padding:calc(10*var(--u)); border-radius:calc(10*var(--u)); border:calc(1*var(--u)) solid var(--accent);">
       <b style="width:100%; font-size:calc(14*var(--u)); margin-bottom:calc(5*var(--u));" data-i18n="importDb">Импорт большой базы ошибок (JSON)</b>
       <input type="file" id="bigDtcFile" accept=".json,.txt,.ndjson,application/json,text/plain" style="flex:1; min-width:0;"><button id="bigDtcClr" class="sec" data-i18n="dbClr">Стереть базу</button>
@@ -396,6 +427,12 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
   <h2 data-i18n="carTitle">Автомобиль</h2>
   <div class="row"><input id="carName" data-i18n="carNamePh" placeholder="Название авто (необязательно), например BMW E46 330d"></div>
   <div class="panel-note" data-i18n="carNote">Показывается вверху. Модель по OBD-II определить нельзя: из VIN берутся марка и примерный год, если ЭБУ отдаёт VIN.</div>
+  <h2 data-i18n="vehGarage">Сохранённые автомобили</h2>
+  <div id="garage"></div>
+  <h2 data-i18n="auditTitle">Журнал действий</h2>
+  <div class="panel-note" data-i18n="auditNote"></div>
+  <div class="row"><button id="auExp" class="sec" data-i18n="auditExp">Экспорт CSV</button><button id="auClr" class="sec" data-i18n="auditClr">Очистить журнал</button></div>
+  <div id="auditList"></div>
   <h2 data-i18n="hudTitle">HUD</h2>
   <div class="row"><input id="hudPad" type="number" inputmode="numeric" data-i18n="hudPadPh" placeholder="Отступ снизу, px (по умолч. 88)"></div>
   <div class="panel-note" data-i18n="hudNote">Отступ под нижнюю панель браузера Bluefy. Если HUD обрезается снизу — увеличьте, если снизу пусто — уменьшите.</div>
@@ -412,6 +449,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
     <select id="guSel"><option value="auto" data-i18n="guAuto">Авто</option><option value="on" data-i18n="guOn">Вкл</option><option value="off" data-i18n="guOff">Выкл</option></select>
   </div>
   <div class="row"><label><input type="checkbox" id="bmwExpCb"> <span data-i18n="bmwExp">BMW</span></label></div>
+  <div class="row"><label><input type="checkbox" id="roCb"> <span data-i18n="roMode">Безопасное чтение</span></label></div>
   <div class="row"><label><input type="checkbox" id="clrMov"> <span data-i18n="clrMoving">Разрешить стирание кодов в движении</span></label></div>
   <div class="row" style="align-items:center"><span data-i18n="rpmWarn">Красная зона оборотов, об/мин</span><input id="rpmWarn" type="number" inputmode="numeric" min="2000" max="12000" step="100" style="max-width:calc(120*var(--u))"></div>
 
@@ -440,7 +478,7 @@ details.sec>summary::before{content:'▸ ';color:var(--muted)}details.sec[open]>
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v50';
+const APP_VER = '02v51';
 (() => {
 'use strict';
 
@@ -449,7 +487,7 @@ const APP_VER = '02v50';
 const LANG_BASE = {
   noiseSum: 'Bus / power-supply codes (U10xx–U14xx): {n}', gwBtn: 'VAG gateway probe (read-only)', gwTask: 'Gateway probe', gwTitle: 'Gateway 710: component list search (22 04xx)', gwNeedCan11: 'Gateway probe needs CAN 11-bit. This car: {p}', gwNoResp: 'Gateway 710 did not answer 22 F197.', gwSummary: 'Done. Positive DIDs: {h}. Negative responses: {n}. Send this log.',
   modAbout: 'About module', modIdentTitle: 'Identification', modErrTitle: 'Errors', modClose: 'Close', modIdentBtn: 'Read identification', modNoIdent: 'Identification not read yet', modSys: 'System', modAddr: 'Address',
-  lang: 'en', rpmWarn: 'RPM warning zone, rpm', reportWwhNote: 'WWH-OBD: fault codes via UDS 19; modes 03/07/09/0A, freeze frame and readiness monitors are not available.', tabHelp: 'Help', helpTitle: 'Help', helpProtoText: 'Protocol support (ELM327 over BLE)\n• Standard OBD-II (modes 01, 02, 03, 04, 07, 09, 0A): CAN 11-bit and 29-bit (500 kbit/s), ISO 9141-2. Confirmed by logs: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: supported by the adapter, not verified in the app.\n• Module scan: CAN 11-bit (addresses 700–7FF) and CAN 29-bit (18DA<ECU>F1). Not performed on K-Line.\n• Module diagnostics (UDS over CAN): fault codes (19), identification and parameters (22), keep-alive (3E). Writing (2E) and risky commands need confirmation and a voltage check. Flashing and authentication (29, 34–38, 3D) are blocked, the app does not compute the seed/key (27), a ready-made frame can be sent.\n• WWH-OBD (ISO 27145, e.g. newer Mercedes): live data via UDS 22 F4xx, codes via 19 42, detected automatically; not verified on a vehicle.\n• Not supported: K-Line module diagnostics (KWP), CAN FD, DoIP.\n• Use the Protocol probe (Settings tab) to collect module replies for analysis: send the log.', helpAbout: 'OBDnoPRO 02v50. Data is stored in this browser only; remote view connects devices directly.', uiScale: 'Interface scale', uiScaleAuto: 'Auto', scanNeedCan11: 'Module scan works on CAN only (11 and 29 bit). This vehicle: {p}', modRead: 'Read codes', modUnknown: 'Module', modClean: 'no codes', modCodes: 'codes: {n}', modNoResp: 'no response', modMore: 'More', modSelect: 'Select', tilesMore: 'More parameters', guMode: 'Head unit mode', clrMoving: 'Allow clearing codes while moving (this device only)', guAuto: 'Auto', guOn: 'On', guOff: 'Off', hNoData: 'The module did not answer. Check that the ignition is on.', hCanErr: 'CAN bus error. Check the connector and ignition.', hUnable: 'Cannot reach the control unit. Turn the ignition on and try again.', hBusInit: 'K-Line connection failed. Wait a few seconds and try again.', hNoResp: 'The adapter did not answer ({c}).', probeBtn: 'Protocol probe (read-only)', probeTask: 'Protocol probe', probeNeedCan: 'Probe needs a CAN protocol. This vehicle: {p}', udsOtherSum: 'Other supported codes, no fault ({n})', statusKlineWait: 'Waiting for the ECU session to close ({s} s)…', batteryBlock: 'Battery voltage cannot be verified: operation blocked.', udsRawNote: 'raw UDS code (format depends on the ECU)', profTitle: 'Profile', profNamePh: 'Your name (shown to the other side)', profId: 'Your ID: {id}', trustTitle: 'Trusted devices', trustNone: 'No trusted devices yet.', rmAuth: 'Verifying identity…', rmBadProof: 'Identity check failed', rmAskConn: '"{n}" ({id}) wants to connect. Allow?', rmAskHost: 'Connect to "{n}" ({id})?', rmRemember: 'Trust "{n}" next time (no prompt)?', rmWithWho: 'Connected: {n} ({id})', rmNoCrypto: 'Profiles need a secure context (https)', rmDeclined: 'Connection declined', connect: 'Connect adapter', demo: 'Demo', stop: 'Stop', refresh: '↻ Refresh link', rmTurnPh: 'TURN (optional): turn:host:3478|user|password', rmTitle: 'Remote view',
+  lang: 'en', rpmWarn: 'RPM warning zone, rpm', reportWwhNote: 'WWH-OBD: fault codes via UDS 19; modes 03/07/09/0A, freeze frame and readiness monitors are not available.', tabHelp: 'Help', helpTitle: 'Help', helpProtoText: 'Protocol support (ELM327 over BLE)\n• Standard OBD-II (modes 01, 02, 03, 04, 07, 09, 0A): CAN 11-bit and 29-bit (500 kbit/s), ISO 9141-2. Confirmed by logs: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: supported by the adapter, not verified in the app.\n• Module scan: CAN 11-bit (addresses 700–7FF) and CAN 29-bit (18DA<ECU>F1). Not performed on K-Line.\n• Module diagnostics (UDS over CAN): fault codes (19), identification and parameters (22), keep-alive (3E). Writing (2E) and risky commands need confirmation and a voltage check. Flashing and authentication (29, 34–38, 3D) are blocked, the app does not compute the seed/key (27), a ready-made frame can be sent.\n• WWH-OBD (ISO 27145, e.g. newer Mercedes): live data via UDS 22 F4xx, codes via 19 42, detected automatically; not verified on a vehicle.\n• Not supported: K-Line module diagnostics (KWP), CAN FD, DoIP.\n• Use the Protocol probe (Settings tab) to collect module replies for analysis: send the log.', helpAbout: 'OBDnoPRO 02v51. Data is stored in this browser only; remote view connects devices directly.', uiScale: 'Interface scale', uiScaleAuto: 'Auto', scanNeedCan11: 'Module scan works on CAN only (11 and 29 bit). This vehicle: {p}', modRead: 'Read codes', modUnknown: 'Module', modClean: 'no codes', modCodes: 'codes: {n}', modNoResp: 'no response', modMore: 'More', modSelect: 'Select', tilesMore: 'More parameters', guMode: 'Head unit mode', clrMoving: 'Allow clearing codes while moving (this device only)', guAuto: 'Auto', guOn: 'On', guOff: 'Off', hNoData: 'The module did not answer. Check that the ignition is on.', hCanErr: 'CAN bus error. Check the connector and ignition.', hUnable: 'Cannot reach the control unit. Turn the ignition on and try again.', hBusInit: 'K-Line connection failed. Wait a few seconds and try again.', hNoResp: 'The adapter did not answer ({c}).', probeBtn: 'Protocol probe (read-only)', probeTask: 'Protocol probe', probeNeedCan: 'Probe needs a CAN protocol. This vehicle: {p}', udsOtherSum: 'Other supported codes, no fault ({n})', statusKlineWait: 'Waiting for the ECU session to close ({s} s)…', batteryBlock: 'Battery voltage cannot be verified: operation blocked.', udsRawNote: 'raw UDS code (format depends on the ECU)', profTitle: 'Profile', profNamePh: 'Your name (shown to the other side)', profId: 'Your ID: {id}', trustTitle: 'Trusted devices', trustNone: 'No trusted devices yet.', rmAuth: 'Verifying identity…', rmBadProof: 'Identity check failed', rmAskConn: '"{n}" ({id}) wants to connect. Allow?', rmAskHost: 'Connect to "{n}" ({id})?', rmRemember: 'Trust "{n}" next time (no prompt)?', rmWithWho: 'Connected: {n} ({id})', rmNoCrypto: 'Profiles need a secure context (https)', rmDeclined: 'Connection declined', connect: 'Connect adapter', demo: 'Demo', stop: 'Stop', refresh: '↻ Refresh link', rmTurnPh: 'TURN (optional): turn:host:3478|user|password', rmTitle: 'Remote view',
   rmNote: 'Direct encrypted (WebRTC) connection between two browsers; a public PeerJS server is used only to set it up. The viewer sees live data and can read codes; clearing codes needs confirmation from the car owner.',
   rmHost: 'Share (I am in the car)', rmView: 'Watch (I am at the computer)', rmOff: 'Disconnect',
   rmCopy: 'Copy', rmShare: 'Send', rmGo: 'Continue',
@@ -669,7 +707,7 @@ const LANG_BASE = {
 const LANG_RU = {
   noiseSum: 'Ошибки шины и питания (U10xx–U14xx): {n}', gwBtn: 'Зонд шлюза VAG (только чтение)', gwTask: 'Зонд шлюза', gwTitle: 'Шлюз 710: поиск списка компонентов (22 04xx)', gwNeedCan11: 'Зонд шлюза нужен для CAN 11 бит. У этой машины: {p}', gwNoResp: 'Шлюз 710 не ответил на 22 F197.', gwSummary: 'Готово. Положительные DID: {h}. Отрицательных ответов: {n}. Пришлите этот лог.',
   modAbout: 'О блоке', modIdentTitle: 'Идентификация', modErrTitle: 'Ошибки', modClose: 'Закрыть', modIdentBtn: 'Считать идентификацию', modNoIdent: 'Идентификация ещё не считана', modSys: 'Система', modAddr: 'Адрес',
-  lang: 'ru', rpmWarn: 'Красная зона оборотов, об/мин', reportWwhNote: 'WWH-OBD: ошибки читаются через UDS 19; режимы 03/07/09/0A, стоп-кадр и мониторы готовности недоступны.', tabHelp: 'Справка', helpTitle: 'Справка', helpProtoText: 'Поддержка протоколов (ELM327 по BLE)\n• Стандартный OBD-II (режимы 01, 02, 03, 04, 07, 09, 0A): CAN 11 бит и 29 бит (500 кбит/с), ISO 9141-2. Подтверждено логами: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: поддерживаются адаптером, в приложении не проверялись.\n• Поиск блоков: CAN 11 бит (адреса 700–7FF) и CAN 29 бит (18DA<блок>F1). На K-Line не выполняется.\n• Диагностика блоков (UDS по CAN): ошибки (19), идентификация и параметры (22), поддержка связи (3E). Запись (2E) и опасные команды — только с подтверждением и проверкой напряжения. Прошивка и авторизация (29, 34–38, 3D) заблокированы, ключ доступа (27) приложение не вычисляет, готовый кадр отправить можно.\n• WWH-OBD (ISO 27145, например новые Mercedes): данные через UDS 22 F4xx, коды через 19 42, определяется автоматически; на машине не проверено.\n• Не поддерживается: диагностика блоков по K-Line (KWP), KWP/TP 2.0 по CAN (старые модули VAG, например тормоза Skoda 5E; адаптер ELM327 их не видит), CAN FD, DoIP.\n• «Зонд протокола» (вкладка «Настройки») собирает ответы блока для анализа: пришлите лог.', helpAbout: 'OBDnoPRO 02v50. Данные хранятся только в браузере этого устройства; удалённый просмотр соединяет устройства напрямую.', uiScale: 'Масштаб интерфейса', uiScaleAuto: 'Авто', scanNeedCan11: 'Поиск блоков работает только на CAN (11 и 29 бит). У этой машины: {p}', modRead: 'Читать коды', modUnknown: 'Блок', modClean: 'ошибок нет', modCodes: 'ошибок: {n}', modNoResp: 'нет ответа', modMore: 'Ещё', modSelect: 'Выбрать', tilesMore: 'Ещё параметры', guMode: 'Режим ГУ', clrMoving: 'Разрешить стирание кодов в движении (только на этом устройстве)', guAuto: 'Авто', guOn: 'Вкл', guOff: 'Выкл', hNoData: 'Блок не ответил. Проверьте, что зажигание включено.', hCanErr: 'Ошибка шины CAN. Проверьте разъём и зажигание.', hUnable: 'Не удаётся связаться с блоком управления. Включите зажигание и повторите.', hBusInit: 'Не удалось установить связь по K-Line. Подождите несколько секунд и повторите.', hNoResp: 'Адаптер не ответил ({c}).', probeBtn: 'Зонд протокола (только чтение)', probeTask: 'Зонд протокола', probeNeedCan: 'Зонд нужен для CAN-протоколов. У этой машины: {p}', udsOtherSum: 'Прочие поддерживаемые коды без отказа ({n})', statusKlineWait: 'Ждём завершения сеанса блока ({s} с)…', batteryBlock: 'Напряжение не удалось проверить: операция заблокирована.', udsRawNote: 'сырой UDS-код (формат зависит от блока)', profTitle: 'Профиль', profNamePh: 'Ваше имя (видит вторая сторона)', profId: 'Ваш ID: {id}', trustTitle: 'Доверенные устройства', trustNone: 'Доверенных пока нет.', rmAuth: 'Проверка личности…', rmBadProof: 'Не удалось подтвердить личность', rmAskConn: '«{n}» ({id}) хочет подключиться. Разрешить?', rmAskHost: 'Подключиться к «{n}» ({id})?', rmRemember: 'Доверять «{n}» в дальнейшем (без вопроса)?', rmWithWho: 'Подключено: {n} ({id})', rmNoCrypto: 'Для профилей нужен защищённый контекст (https)', rmDeclined: 'Подключение отклонено', connect: 'Подключить адаптер', demo: 'Демо', stop: 'Остановить', refresh: '↻ Обновить связь', rmTurnPh: 'TURN (необязательно): turn:host:3478|логин|пароль',
+  lang: 'ru', rpmWarn: 'Красная зона оборотов, об/мин', reportWwhNote: 'WWH-OBD: ошибки читаются через UDS 19; режимы 03/07/09/0A, стоп-кадр и мониторы готовности недоступны.', tabHelp: 'Справка', helpTitle: 'Справка', helpProtoText: 'Поддержка протоколов (ELM327 по BLE)\n• Стандартный OBD-II (режимы 01, 02, 03, 04, 07, 09, 0A): CAN 11 бит и 29 бит (500 кбит/с), ISO 9141-2. Подтверждено логами: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: поддерживаются адаптером, в приложении не проверялись.\n• Поиск блоков: CAN 11 бит (адреса 700–7FF) и CAN 29 бит (18DA<блок>F1). На K-Line не выполняется.\n• Диагностика блоков (UDS по CAN): ошибки (19), идентификация и параметры (22), поддержка связи (3E). Запись (2E) и опасные команды — только с подтверждением и проверкой напряжения. Прошивка и авторизация (29, 34–38, 3D) заблокированы, ключ доступа (27) приложение не вычисляет, готовый кадр отправить можно.\n• WWH-OBD (ISO 27145, например новые Mercedes): данные через UDS 22 F4xx, коды через 19 42, определяется автоматически; на машине не проверено.\n• Не поддерживается: диагностика блоков по K-Line (KWP), KWP/TP 2.0 по CAN (старые модули VAG, например тормоза Skoda 5E; адаптер ELM327 их не видит), CAN FD, DoIP.\n• «Зонд протокола» (вкладка «Настройки») собирает ответы блока для анализа: пришлите лог.', helpAbout: 'OBDnoPRO 02v51. Данные хранятся только в браузере этого устройства; удалённый просмотр соединяет устройства напрямую.', uiScale: 'Масштаб интерфейса', uiScaleAuto: 'Авто', scanNeedCan11: 'Поиск блоков работает только на CAN (11 и 29 бит). У этой машины: {p}', modRead: 'Читать коды', modUnknown: 'Блок', modClean: 'ошибок нет', modCodes: 'ошибок: {n}', modNoResp: 'нет ответа', modMore: 'Ещё', modSelect: 'Выбрать', tilesMore: 'Ещё параметры', guMode: 'Режим ГУ', clrMoving: 'Разрешить стирание кодов в движении (только на этом устройстве)', guAuto: 'Авто', guOn: 'Вкл', guOff: 'Выкл', hNoData: 'Блок не ответил. Проверьте, что зажигание включено.', hCanErr: 'Ошибка шины CAN. Проверьте разъём и зажигание.', hUnable: 'Не удаётся связаться с блоком управления. Включите зажигание и повторите.', hBusInit: 'Не удалось установить связь по K-Line. Подождите несколько секунд и повторите.', hNoResp: 'Адаптер не ответил ({c}).', probeBtn: 'Зонд протокола (только чтение)', probeTask: 'Зонд протокола', probeNeedCan: 'Зонд нужен для CAN-протоколов. У этой машины: {p}', udsOtherSum: 'Прочие поддерживаемые коды без отказа ({n})', statusKlineWait: 'Ждём завершения сеанса блока ({s} с)…', batteryBlock: 'Напряжение не удалось проверить: операция заблокирована.', udsRawNote: 'сырой UDS-код (формат зависит от блока)', profTitle: 'Профиль', profNamePh: 'Ваше имя (видит вторая сторона)', profId: 'Ваш ID: {id}', trustTitle: 'Доверенные устройства', trustNone: 'Доверенных пока нет.', rmAuth: 'Проверка личности…', rmBadProof: 'Не удалось подтвердить личность', rmAskConn: '«{n}» ({id}) хочет подключиться. Разрешить?', rmAskHost: 'Подключиться к «{n}» ({id})?', rmRemember: 'Доверять «{n}» в дальнейшем (без вопроса)?', rmWithWho: 'Подключено: {n} ({id})', rmNoCrypto: 'Для профилей нужен защищённый контекст (https)', rmDeclined: 'Подключение отклонено', connect: 'Подключить адаптер', demo: 'Демо', stop: 'Остановить', refresh: '↻ Обновить связь', rmTurnPh: 'TURN (необязательно): turn:host:3478|логин|пароль',
   rmTitle: 'Удалённый просмотр',
   rmNote: 'Прямое шифрованное (WebRTC) соединение между браузерами; публичный сервер PeerJS нужен только для установки связи. Наблюдатель видит параметры и читает коды; стирание кодов — только с подтверждения владельца.',
   rmHost: 'Раздать (я в машине)', rmView: 'Наблюдать (я за компьютером)', rmOff: 'Отключить',
@@ -1132,6 +1170,9 @@ Object.assign(LANG.ru, {"subErrors": "Ошибки", "subMods": "Блоки", "s
 Object.assign(LANG.en, {"subErrors": "Errors", "subMods": "Modules", "subData": "Data", "snapTitle": "Snapshots when codes appear", "snapNote": "When a new code appears in HUD mode, the app saves the parameter values. This is an app snapshot, not the ECU freeze frame: it is taken when the code was noticed and includes the range over the last 10 s.", "snapNone": "No snapshots yet.", "snapClr": "Clear snapshots", "snapVolt": "Voltage", "snapEcu": "ECU freeze frame (mode 02)", "snapApp": "App snapshot (range over 10 s)", "hudNewDtc": "⚠ New fault", "hudPendDtc": "pending"});
 Object.assign(LANG.de, {"subErrors": "Fehler", "subMods": "Module", "subData": "Daten", "snapTitle": "Schnappschüsse bei neuen Codes", "snapNote": "Erscheint im HUD-Modus ein neuer Code, speichert die App die Parameterwerte. Das ist ein App-Schnappschuss, kein Freeze Frame des Steuergeräts: er entsteht, wenn der Code bemerkt wird, und enthält den Bereich der letzten 10 s.", "snapNone": "Noch keine Schnappschüsse.", "snapClr": "Schnappschüsse löschen", "snapVolt": "Spannung", "snapEcu": "Freeze Frame des Steuergeräts (Modus 02)", "snapApp": "App-Schnappschuss (Bereich 10 s)", "hudNewDtc": "⚠ Neuer Fehler", "hudPendDtc": "ausstehend"});
 Object.assign(LANG.ru, {drvCheck: 'В общий поиск ошибок (привод)', drvChecked: 'Проверены блоки привода: {l}', drvHint: 'Блоки привода (КПП, руль, ABS, раздатка, подвеска) подключаются после сканирования на вкладке «Сервис».'});
+Object.assign(LANG.en, {"dictAdd": "Add to dictionary", "dictAddTip": "Save your own description for this code", "dictPrompt": "Description for {c} (leave empty to delete):", "dictExport": "Export dictionary", "dictEmpty": "Dictionary is empty", "roMode": "Safe read-only mode (blocks clearing codes, writing and service commands)", "roBlocked": "Read-only mode is on: this command is blocked. Turn it off in Settings.", "roBadge": "🔒 READ-ONLY", "auditTitle": "Action log", "auditNote": "Every command that clears codes or changes data (clear, write, session change, reset) is saved here with time, vehicle, module, reply and voltage. Stored on this device only.", "auditEmpty": "No recorded actions yet.", "auditExp": "Export CSV", "auditClr": "Clear log", "auditClrConfirm": "Delete the whole action log?", "auditBlockedRo": "blocked (read-only)", "vehTitle": "Saved vehicle", "vehNone": "No saved modules for this VIN yet. Run \"Find modules\".", "vehSaved": "Saved: {n} modules, last scan {d}", "vehVerify": "Check saved modules", "vehVerifyTask": "Checking saved modules", "vehVerified": "Answered: {k} of {n}", "vehGone": "no answer: {l}", "vehName": "Vehicle name", "vehNamePrompt": "Vehicle name:", "vehDel": "Delete record", "vehDelConfirm": "Delete the saved record of this vehicle (modules, names, reports)?", "vehGarage": "Saved vehicles", "vehGarageNone": "No saved vehicles yet.", "vehRestored": "Saved modules loaded: {n} (not verified yet)", "vehCounts": "{m} modules · {r} reports", "modRename": "Rename module", "modRenamePrompt": "Name for module {r} (leave empty to reset):", "reportModsTitle": "Modules", "reportModsNone": "No modules found: run \"Find modules\" first.", "repHistTitle": "Report history", "repHistNone": "No saved reports for this vehicle yet.", "repHistShow": "Show", "repHistCmp": "Compare with latest", "repHistDel": "Delete", "repHistSame": "No differences.", "repHistDelConfirm": "Delete this report?", "thBuds": "BUDS"});
+Object.assign(LANG.ru, {"dictAdd": "В базу", "dictAddTip": "Сохранить своё описание этого кода", "dictPrompt": "Описание для {c} (пусто = удалить):", "dictExport": "Экспорт словаря", "dictEmpty": "Словарь пуст", "roMode": "Безопасное чтение (блокирует стирание кодов, запись и сервисные команды)", "roBlocked": "Включён режим только чтения: команда заблокирована. Выключите его в «Настройках».", "roBadge": "🔒 ТОЛЬКО ЧТЕНИЕ", "auditTitle": "Журнал действий", "auditNote": "Каждая команда, которая стирает коды или меняет данные (стирание, запись, смена сессии, сброс), сохраняется здесь со временем, автомобилем, блоком, ответом и напряжением. Хранится только на этом устройстве.", "auditEmpty": "Записей пока нет.", "auditExp": "Экспорт CSV", "auditClr": "Очистить журнал", "auditClrConfirm": "Удалить весь журнал действий?", "auditBlockedRo": "заблокировано (только чтение)", "vehTitle": "Сохранённый автомобиль", "vehNone": "Для этого VIN нет сохранённых блоков. Нажмите «Найти блоки».", "vehSaved": "Сохранено блоков: {n}, последний скан {d}", "vehVerify": "Проверить сохранённые блоки", "vehVerifyTask": "Проверка сохранённых блоков", "vehVerified": "Ответили: {k} из {n}", "vehGone": "нет ответа: {l}", "vehName": "Имя автомобиля", "vehNamePrompt": "Название автомобиля:", "vehDel": "Удалить запись", "vehDelConfirm": "Удалить сохранённую запись этого автомобиля (блоки, имена, отчёты)?", "vehGarage": "Сохранённые автомобили", "vehGarageNone": "Сохранённых автомобилей пока нет.", "vehRestored": "Загружены сохранённые блоки: {n} (ещё не проверены)", "vehCounts": "блоков: {m} · отчётов: {r}", "modRename": "Переименовать блок", "modRenamePrompt": "Название блока {r} (пусто = сбросить):", "reportModsTitle": "Блоки", "reportModsNone": "Блоки не найдены: сначала нажмите «Найти блоки».", "repHistTitle": "История отчётов", "repHistNone": "Для этого автомобиля сохранённых отчётов пока нет.", "repHistShow": "Показать", "repHistCmp": "Сравнить с последним", "repHistDel": "Удалить", "repHistSame": "Различий нет.", "repHistDelConfirm": "Удалить этот отчёт?", "thBuds": "BUDS"});
+Object.assign(LANG.de, {"dictAdd": "In Datenbank", "dictAddTip": "Eigene Beschreibung für diesen Code speichern", "dictPrompt": "Beschreibung für {c} (leer = löschen):", "dictExport": "Wörterbuch exportieren", "dictEmpty": "Wörterbuch ist leer", "roMode": "Sicherer Lesemodus (sperrt Löschen von Codes, Schreiben und Servicebefehle)", "roBlocked": "Lesemodus ist aktiv: Befehl gesperrt. In den Einstellungen ausschalten.", "roBadge": "🔒 NUR LESEN", "auditTitle": "Aktionsprotokoll", "auditNote": "Jeder Befehl, der Codes löscht oder Daten ändert (Löschen, Schreiben, Sitzungswechsel, Reset), wird hier mit Zeit, Fahrzeug, Steuergerät, Antwort und Spannung gespeichert. Nur auf diesem Gerät.", "auditEmpty": "Noch keine Einträge.", "auditExp": "CSV exportieren", "auditClr": "Protokoll leeren", "auditClrConfirm": "Gesamtes Aktionsprotokoll löschen?", "auditBlockedRo": "gesperrt (nur lesen)", "vehTitle": "Gespeichertes Fahrzeug", "vehNone": "Für diese FIN sind keine Steuergeräte gespeichert. „Steuergeräte suchen“ starten.", "vehSaved": "Gespeichert: {n} Steuergeräte, letzter Scan {d}", "vehVerify": "Gespeicherte Steuergeräte prüfen", "vehVerifyTask": "Gespeicherte Steuergeräte prüfen", "vehVerified": "Geantwortet: {k} von {n}", "vehGone": "keine Antwort: {l}", "vehName": "Fahrzeugname", "vehNamePrompt": "Fahrzeugname:", "vehDel": "Eintrag löschen", "vehDelConfirm": "Gespeicherten Eintrag dieses Fahrzeugs löschen (Steuergeräte, Namen, Berichte)?", "vehGarage": "Gespeicherte Fahrzeuge", "vehGarageNone": "Noch keine gespeicherten Fahrzeuge.", "vehRestored": "Gespeicherte Steuergeräte geladen: {n} (noch nicht geprüft)", "vehCounts": "{m} Steuergeräte · {r} Berichte", "modRename": "Steuergerät umbenennen", "modRenamePrompt": "Name für Steuergerät {r} (leer = zurücksetzen):", "reportModsTitle": "Steuergeräte", "reportModsNone": "Keine Steuergeräte gefunden: zuerst „Steuergeräte suchen“.", "repHistTitle": "Berichtsverlauf", "repHistNone": "Für dieses Fahrzeug gibt es noch keine gespeicherten Berichte.", "repHistShow": "Anzeigen", "repHistCmp": "Mit letztem vergleichen", "repHistDel": "Löschen", "repHistSame": "Keine Unterschiede.", "repHistDelConfirm": "Diesen Bericht löschen?", "thBuds": "BUDS"});
 Object.assign(LANG.ru, {thTitle: 'Оформление', thA76: 'A76 Tiefseeblau', thClassic: 'Классика', thGraphite: 'Графит', thLight: 'Светлая', thAccent: 'Свой акцент', thViewTbl: 'Параметры: таблица', thReset: 'Сбросить', thNote: 'Цвет акцента подстраивается, чтобы оставаться читаемым. Зелёный, оранжевый и красный статусы не меняются.'});
 Object.assign(LANG.en, {drvCheck: 'Include in main code search (drivetrain)', drvChecked: 'Drivetrain modules checked: {l}', drvHint: 'Drivetrain modules (gearbox, steering, ABS, transfer case, suspension) are added after a scan on the Service tab.'});
 Object.assign(LANG.en, {thTitle: 'Appearance', thA76: 'A76 Deep Sea Blue', thClassic: 'Classic', thGraphite: 'Graphite', thLight: 'Light', thAccent: 'Custom accent', thViewTbl: 'Parameters: table', thReset: 'Reset', thNote: 'The accent adjusts itself to stay readable. Green, orange and red status colors are fixed.'});
@@ -1365,6 +1406,22 @@ async function dropGatt() {
 }
 async function hardReset() { log('GATT: full reset'); await dropGatt(); await openGatt(); }
 async function send(cmd, to = 5000) {
+  if (/^ATSH/i.test(cmd)) curHdr = cmd.slice(4).toUpperCase();
+  const hc = /^[0-9A-Fa-f]{2,}$/.test(cmd) ? cmd.toUpperCase() : '', cls = hc ? cmdClass(hc) : 'other';
+  if (cls === 'other') return sendRaw(cmd, to);
+  const rec = {ts: Date.now(), vin: car.vin || '', car: [(vehRec() || {}).name, car.mk].filter(Boolean).join(' '), hdr: curHdr, cmd: hc, cls, v: volt != null ? Math.round(volt * 10) / 10 : null};
+  if (roMode) { // безопасное чтение: всё, что стирает/пишет/меняет сессию, не уходит в адаптер
+    log('read-only: blocked ' + hc); status(t('roBlocked'));
+    if (!demo) auditAdd(Object.assign(rec, {ro: 1, res: ''}));
+    return ['7F' + hc.slice(0, 2) + '22'];
+  }
+  let res, err;
+  try { res = await sendRaw(cmd, to); } catch (e) { err = e; }
+  if (!demo) auditAdd(Object.assign(rec, {res: err ? 'ERR ' + errText(err) : (res || []).join(' ').slice(0, 100)}));
+  if (err) throw err;
+  return res;
+}
+async function sendRaw(cmd, to = 5000) {
   if (demo) return fake(cmd);
   try { return await send0(cmd, to); }
   catch (e) {
@@ -1558,14 +1615,30 @@ function describe(c) {
   if ((m = c.match(/^P067([1-8])$/))) return 'Glow plug circuit cylinder ' + m[1];
   return t('notInDatabase');
 }
+const isUnknownDesc = k => describe(k) === t('notInDatabase');
+// v51: кнопка «В базу» у кода без описания (и ✎ у кода со своим описанием): ищешь в Google и сразу добавляешь
+function dictBtn(key, onChange) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'sec dbtn'; b.title = t('dictAddTip');
+  const ui = () => { const has = !!userDesc[key]; b.textContent = has ? '✎' : '＋ ' + t('dictAdd'); b.style.display = (has || isUnknownDesc(key)) ? '' : 'none'; };
+  b.onclick = e => {
+    e.stopPropagation();
+    const v = prompt(t('dictPrompt', {c: key}), userDesc[key] || ''); if (v === null) return;
+    const sv = v.trim().slice(0, 200);
+    if (sv) userDesc[key] = sv; else delete userDesc[key];
+    try { localStorage.setItem('dtcDict', JSON.stringify(userDesc)); } catch (err) {}
+    dcInfo(); ui(); onChange(); status(t('statusAddedDict', {n: sv ? 1 : 0}));
+  };
+  ui(); b.refresh = ui; return b;
+}
+const searchLink = q => { const a = document.createElement('a'); a.textContent = t('codeSearch'); a.target = '_blank'; a.rel = 'noopener'; a.href = 'https://www.google.com/search?q=' + encodeURIComponent((car.mk ? car.mk + ' ' : '') + q + ' fault code'); return a; };
 function dtcRow(c, x) {
   const d = document.createElement('div'), pre = c + (x ? ' [' + x + ']' : '') + ' — ', code = c.slice(0, 5);
   d.textContent = pre + describe(code) + ' ';
-  const a = document.createElement('a');
-  a.textContent = t('codeSearch'); a.target = '_blank'; a.rel = 'noopener';
-  a.href = 'https://www.google.com/search?q=' + encodeURIComponent(code + ' fault code');
-  d.appendChild(a);
+  d.appendChild(searchLink(code));
+  const bt = dictBtn(code, () => { d.firstChild.nodeValue = pre + describe(code) + ' '; });
+  d.appendChild(bt);
   dbLookup([code]).then(() => {
+    bt.refresh();
     const o = dbCache[code]; if (!o) return;
     d.firstChild.nodeValue = pre + describe(code) + ' ';
     d.appendChild(dbDetails(o));
@@ -1763,6 +1836,7 @@ function clearAllOrOne() {
 }
 async function clearAllMods() {
   if (!running) { status(t('statusNoLink')); return; }
+  if (roGuard()) return;
   const nm = m => MODN[m.req] || m.autoName || m.req;
   const isAir = m => /air.?bag|^air$|\bsrs\b|crash|restraint|подуш/i.test((MODN[m.req] || '') + ' ' + (m.autoName || '')) || ['715', '737'].includes(m.req) || m.resp === '77F';
   const seenR = new Set(), list = foundMods.filter(m => !m.closed && !m.weak && !seenR.has(m.resp) && seenR.add(m.resp)), skipped = foundMods.length - list.length;
@@ -1810,6 +1884,7 @@ async function clearUdsLeftAuto() {
 }
 async function clearUdsLeft() {
   if (!running) { status(t('statusNoLink')); return; }
+  if (roGuard()) return;
   const ids = lastUdsEcus.slice(); if (!ids.length) return;
   if (!(await clearSpeedGate())) return;
   const names = ids.map(id => (parseInt(id, 16) - 8).toString(16).toUpperCase());
@@ -1922,6 +1997,7 @@ function modDialog(m, idx, title) {
   const readCodes = mask => runAct(async () => { outSel = '#mde' + idx; await udsDTC(m, mask); }, true, t('udsTask') + ' ' + m.req);
   const clearHere = async () => {
     if (!running) { status(t('statusNoLink')); return; }
+    if (roGuard()) return;
     if (!(await clearSpeedGate())) return;
     if (!confirm(t('clearModulePrompt', {m: title, r: m.req}) + (isAirMod(m) ? '\n\n' + t('airClearWarn') : ''))) return;
     runAct(async () => {
@@ -1950,12 +2026,14 @@ function showMods(list) {
   { const cb = document.createElement('button'); cb.id = 'bClearAllOrOne'; cb.className = 'danger'; cb.style.margin = '6px 0'; cb.onclick = clearAllOrOne; b.appendChild(cb); clearAllBtnUI(); }
   list.forEach((m, idx) => {
     const d = document.createElement('div'); d.className = 'card mod'; d.dataset.mod = m.req;
-    const nm = MODN[m.req] || m.autoName, exact = !MODN[m.req] || /^7E[0-7]$/.test(m.req) || /^DA1[08]F1$/.test(m.req);
+    const nm = MODN[m.req] || m.autoName, exact = !!vehNames()[m.req] || !MODN[m.req] || /^7E[0-7]$/.test(m.req) || /^DA1[08]F1$/.test(m.req);
     const h = document.createElement('div'); h.className = 'mh';
     const ti = document.createElement('b'); ti.textContent = nm ? (exact ? '' : '≈ ') + nm : t('modUnknown');
-    const st = document.createElement('span'); st.className = 'mst'; h.append(ti, st);
+    const st = document.createElement('span'); st.className = 'mst';
+    const rn = document.createElement('button'); rn.type = 'button'; rn.className = 'sec'; rn.textContent = '✎'; rn.title = t('modRename'); rn.style.cssText = 'padding:2px 8px;font-size:13px'; rn.onclick = ev => { ev.stopPropagation(); vehRenameMod(m); };
+    h.append(ti, rn, st);
     if (m.closed) ti.textContent += ' · ' + t('modClosed', {n: m.closed});
-    const ad = document.createElement('small'); ad.textContent = m.req + ' → ' + m.resp;
+    const ad = document.createElement('small'); ad.textContent = m.req + ' → ' + m.resp + (m.saved ? ' · 💾' : '');
     const cardOut = document.createElement('div'); cardOut.id = 'mdc' + idx; cardOut.className = 'mid';
     if (m.rows && m.rows.length) appendRows(cardOut, m.rows);
     else if (m.nAct === 0) cardOut.textContent = t('modClean');
@@ -2046,7 +2124,8 @@ async function autoProbe(list) {
     try { await autoProbeOne(list[i]); } catch (e) { if (fatalErr(e)) throw e; log('! autoProbe ' + list[i].req + ': ' + errText(e)); }
   }
 }
-async function scanMods() {
+async function scanMods(verifyOnly) {
+  if (verifyOnly) { await verifyMods(); return; }
   const found = [], c29 = /CAN 29/.test(protoName), fast = !!($('#scanFast') && $('#scanFast').checked);
   if (!/CAN/.test(protoName)) { $('#mods').textContent = t('scanNeedCan11', {p: protoName || '?'}); return; }
   $('#mods').textContent = t('statusScanning');
@@ -2142,7 +2221,7 @@ async function scanMods() {
     if (found.length && running && !taskCancel) await autoProbe(found.filter(f => !f.closed));
     if (bmwExp() && !c29 && running && !taskCancel) await bmwProbe();
   } catch (e) { log('! scan ' + errText(e)); }
-  await (bmwDone ? restore() : restoreFast()); showMods(found); if (bmwDone) bmwCard();
+  await (bmwDone ? restore() : restoreFast()); showMods(found); if (found.length) { try { vehStoreMods(found); } catch (e) { log('! veh: ' + errText(e)); } } if (bmwDone) bmwCard();
 }
 const bmwExp = () => { try { return localStorage.getItem('bmwExp') === '1'; } catch (e) { return false; } };
 const bmwHits = []; let bmwDone = false;
@@ -2183,9 +2262,14 @@ function decodeUdsDtc(h, emission) {
 }
 function rawRow(e) {
   const d = document.createElement('div'), pre = '0x' + e.raw + ' [' + (e.flags === 'KWP' ? 'KWP ' + e.st : stBadges(e.st) + ' ' + stLabel(e.st) + ' ' + e.st + ': ' + e.flags) + '] -- ';
-  d.textContent = pre + t('udsRawNote');
+  const rawTxt = () => userDesc[e.raw] || t('udsRawNote');
+  d.textContent = pre + rawTxt() + ' ';
+  d.appendChild(searchLink('0x' + e.raw));
+  const bt = dictBtn(e.raw, () => { d.firstChild.nodeValue = pre + rawTxt() + ' '; });
+  d.appendChild(bt);
   // сырой код (напр. 6 hex-знаков BMW) ищем в загруженной базе: при совпадении показываем название и подробности
   dbLookup([e.raw]).then(() => {
+    bt.refresh();
     const o = dbCache[e.raw]; if (!o) return;
     const tt = dbPick(o.title).replace(/\s+/g, ' ').trim();
     if (tt) d.firstChild.nodeValue = pre + tt + ' ';
@@ -2412,7 +2496,7 @@ async function doExt(a) {
   catch (e) { taskEnd(errText(e), true); throw e; }
 }
 async function doExt0(a) {
-  if (a.t === 'scan') await scanMods();
+  if (a.t === 'scan') await scanMods(a.verify);
   else if (a.t === 'uds') await udsDTC(a.m, a.mask);
   else if (a.t === 'info') await udsInfo(a.m);
   else if (a.t === 'term') await term(a.cmd);
@@ -2424,6 +2508,7 @@ async function doExt0(a) {
 
 function buttons() {
   $('#bScan').disabled = !running;
+  { const vb = $('#bVerify'), vr = vehRec(); if (vb) vb.disabled = !(running && vr && vr.mods && vr.mods.length && /CAN/.test(protoName) && !wwh); }
   $('#bDemo').disabled = running;
   $('#bRep').disabled = !running;
   $('#bRec').disabled = !running;
@@ -2462,7 +2547,7 @@ function render() {
   g.className = 'grid bigg';
   if (mt) {
     mt.style.display = rest.length ? '' : 'none';
-    try { mt.open = localStorage.getItem('moreOpen') === '1'; } catch (e) {}
+    try { mt.open = localStorage.getItem('moreOpen') !== '0'; } catch (e) { mt.open = true; }
     mt.ontoggle = () => { try { localStorage.setItem('moreOpen', mt.open ? '1' : '0'); } catch (e) {} };
   }
   const mkCard = (m, big, host) => {
@@ -3179,8 +3264,11 @@ async function report() {
   const d21 = await pv(0x21), w30 = await pv(0x30), d31 = await pv(0x31), t4d = await pv(0x4D), t4e = await pv(0x4E), t1f = await pv(0x1F);
   [['reportDistanceMIL', d21, t('unitKm')], ['reportDistanceSinceClear', d31, t('unitKm')], ['reportWarmupsSinceClear', w30, ''], ['reportTimeMIL', t4d, t('unitMin')], ['reportTimeSinceClear', t4e, t('unitMin')], ['reportEngineRuntime', t1f === undefined ? t1f : t1f / 60, t('unitMin')]]
     .forEach(([k, v, u]) => put(t(k) + ': ' + (v === undefined ? t('notSupported') : Math.round(v) + (u ? ' ' + u : ''))));
+  const cs = L.length;
   put('\n— ' + t('reportCurrentValues') + ' —');
   active.forEach(m => { if (last[m.k] !== undefined) { const [u, f, d] = unitOf(m); put(t(m.t) + ': ' + f(last[m.k]).toFixed(d) + ' ' + t(u)); } });
+  const ce = L.length;
+  await reportMods(put);
   const N = [];
   if (R && R.mil) N.push(t('reportNoteMil'));
   if (d31 !== undefined && d31 < 100) N.push(t('reportNoteDistFmt', {d: Math.round(d31)}));
@@ -3190,6 +3278,7 @@ async function report() {
   put('\n— ' + t('reportNotes') + ' —');
   (N.length ? N : [t('reportNoteNoSigns')]).forEach(x => put('• ' + x));
   put(t('reportNoteProof'));
+  vehReportSave(L, cs, ce);
 }
 
 // ===== BLOCKS =====
@@ -3434,6 +3523,7 @@ function checkSteps(steps) {
   return '';
 }
 function runSteps(m, steps, title, riskyIn) {
+  if (roMode && steps.some(x => cmdClass(x) !== 'other')) { status(t('roBlocked')); alert(t('roBlocked')); return; }
   const risky = !(riskyIn === false && steps.every(isSafeCmd));
   const e = checkSteps(steps);
   if (e) { alert(e); return; }
@@ -3530,6 +3620,7 @@ function initBlocks() {
   $('#bmInfo').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsInfo(m); }, true, t('identTask') + ' ' + m.req); };
   $('#bmDtc').onclick = () => { const m = bmMod(); if (m) runAct(async () => { outSel = '#bmOut'; await udsDTC(m, 'FF'); }, true, t('udsTask') + ' ' + m.req); };
   $('#bmClr').onclick = () => {
+    if (roGuard()) return;
     const m = bmMod(); if (!m) return;
     if (!confirm(t('clearModulePrompt', {m: MODN[m.req] || m.req, r: m.req}) + (isAirMod(m) ? '\n\n' + t('airClearWarn') : ''))) return;
     runAct(async () => { if (!(await clearGate())) return; await udsSetup(m); const cr = await clearAny(m); bmOut((MODN[m.req] || m.req) + ': ' + t('clearingCodes') + cr.r.text + (cr.kind === 'KWP' ? ' (KWP)' : '')); }, false, t('clearBlockDtc') + ' ' + m.req);
@@ -3552,7 +3643,7 @@ function initBlocks() {
     r.readAsText(f); e.target.value = '';
   };
   $('#expOn').onchange = () => { $('#expBox').style.display = expOn() ? 'block' : 'none'; copiesUI(); };
-  $('#wGo').onclick = () => { const m = bmMod(); if (m) writeDid(m, $('#wDid').value, $('#wVal').value); };
+  $('#wGo').onclick = () => { if (roGuard()) return; const m = bmMod(); if (m) writeDid(m, $('#wDid').value, $('#wVal').value); };
   $('#chS1').onclick = () => { $('#chTxt').value = '1003'; };
   $('#chS2').onclick = () => { $('#chTxt').value = '3E00'; };
   $('#chS3').onclick = () => { $('#chTxt').value = '1003\n2701'; };
@@ -3583,8 +3674,183 @@ const WMI = {WBA: 'BMW', WBS: 'BMW M', WBY: 'BMW i', WMW: 'MINI', WVW: 'Volkswag
   WDB: 'Mercedes-Benz', WDC: 'Mercedes-Benz', WDD: 'Mercedes-Benz', WDF: 'Mercedes-Benz', W1K: 'Mercedes-Benz', W1N: 'Mercedes-Benz', WP0: 'Porsche', WF0: 'Ford', W0L: 'Opel', VF1: 'Renault', VF3: 'Peugeot', VF7: 'Citroën',
   ZFA: 'Fiat', SAL: 'Land Rover', SAJ: 'Jaguar', YV1: 'Volvo', JTD: 'Toyota', JN1: 'Nissan', JHM: 'Honda', JMZ: 'Mazda', KMH: 'Hyundai', KNA: 'Kia', KND: 'Kia', XTA: 'LADA', UU1: 'Dacia'};
 let car = {vin: '', cal: '', mk: '', year: '', done: false};
+// ===== v51: безопасное чтение, журнал действий, записи автомобилей по VIN =====
+let roMode = false; try { roMode = localStorage.getItem('roMode') === '1'; } catch (e) {}
+let curHdr = '';
+function roUI() {
+  document.body.classList.toggle('ro', roMode);
+  const b = $('#roBadge'); if (b) b.style.display = roMode ? '' : 'none';
+  const c = $('#roCb'); if (c) c.checked = roMode;
+}
+function roGuard() { if (!roMode) return false; status(t('roBlocked')); alert(t('roBlocked')); return true; }
+const fmtTs = ts => { const d = new Date(ts), p = n => String(n).padStart(2, '0'); return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); };
+const auditLoad = () => { try { const j = JSON.parse(localStorage.getItem('audit')); return Array.isArray(j) ? j : []; } catch (e) { return []; } };
+function auditAdd(r) {
+  const a = auditLoad(); a.push(r); while (a.length > 400) a.shift();
+  try { localStorage.setItem('audit', JSON.stringify(a)); } catch (e) {}
+  auditUI();
+}
+function auditUI() {
+  const box = $('#auditList'); if (!box) return;
+  const a = auditLoad(); box.textContent = '';
+  if (!a.length) { box.className = 'panel-note'; box.textContent = t('auditEmpty'); return; }
+  box.className = '';
+  a.slice(-40).reverse().forEach(r => {
+    const d = document.createElement('div'); d.className = 'aurow';
+    d.textContent = fmtTs(r.ts) + ' · ' + (r.vin ? r.vin.slice(-6) : '—') + ' · ' + (r.hdr || '—') + ' · ' + spaced(r.cmd) + ' → ' + (r.ro ? t('auditBlockedRo') : r.res) + (r.v ? ' · ' + r.v + ' V' : '');
+    box.appendChild(d);
+  });
+}
+let vehDB = {}; try { vehDB = JSON.parse(localStorage.getItem('vehicles') || '{}') || {}; } catch (e) {}
+let modsVin = '';
+const MODN_BASE = Object.assign({}, MODN);
+const vehSave = () => { try { localStorage.setItem('vehicles', JSON.stringify(vehDB)); } catch (e) { log('vehicles: ' + errText(e)); } };
+const vehKey = () => !car.done ? '' : (car.vin || (car.cal ? 'CAL ' + car.cal : '') || '_NOVIN');
+function vehRec(create) {
+  const k = vehKey(); if (!k) return null;
+  if (!vehDB[k] && create) vehDB[k] = {key: k, vin: car.vin || '', name: '', names: {}, mods: [], reports: [], seen: Date.now()};
+  return vehDB[k] || null;
+}
+const vehNames = () => { const r = vehRec(); return (r && r.names) || {}; };
+// собственные имена блоков накладываются на встроенную таблицу MODN только для текущего автомобиля
+function vehNameApply() {
+  Object.keys(MODN).forEach(k => { if (!(k in MODN_BASE)) delete MODN[k]; });
+  Object.assign(MODN, MODN_BASE, vehNames());
+}
+const vehModClean = m => ({req: m.req, resp: m.resp, autoName: m.autoName, info: m.info, closed: m.closed, weak: m.weak, last: m.last || Date.now(), verified: m.verified !== false});
+function vehStoreMods(list) {
+  const r = vehRec(true); if (!r) return;
+  modsVin = vehKey();
+  r.mods = list.map(m => vehModClean(Object.assign({}, m, {last: Date.now(), verified: true})));
+  r.lastScan = Date.now(); r.proto = protoName; vehSave(); vehUI();
+}
+function vehOnDetected() {
+  if (modsVin && modsVin !== vehKey()) { foundMods = []; modsVin = ''; const b = $('#mods'); if (b) b.textContent = ''; bmSelUI(); }
+  vehNameApply();
+  const r = vehRec();
+  if (r) {
+    r.seen = Date.now(); if (car.cal) r.cal = car.cal; if (car.mk) r.mk = car.mk; if (car.year) r.year = car.year; vehSave();
+    const ci = $('#carName'); if (ci && r.name) ci.value = r.name;
+  }
+  if (r && r.mods && r.mods.length && /CAN/.test(protoName) && !wwh && !foundMods.length) {
+    modsVin = vehKey();
+    showMods(r.mods.map(m => Object.assign({}, m, {saved: true})));
+    status(t('vehRestored', {n: r.mods.length}));
+  }
+  vehUI();
+}
+function vehRenameMod(m) {
+  const r = vehRec(true); if (!r) return;
+  const v = prompt(t('modRenamePrompt', {r: m.req}), (r.names && r.names[m.req]) || MODN[m.req] || m.autoName || ''); if (v === null) return;
+  r.names = r.names || {}; const sv = v.trim().slice(0, 40);
+  if (sv) r.names[m.req] = sv; else delete r.names[m.req];
+  vehSave(); vehNameApply(); showMods(foundMods); vehUI();
+}
+// Быстрая проверка вместо перебора: каждому сохранённому блоку — физический 3E00 (ничего не пишется)
+async function verifyMods() {
+  const r = vehRec(); if (!r || !r.mods.length) { status(t('vehNone')); return; }
+  const c29 = /CAN 29/.test(protoName), keep = [], gone = [];
+  const tp = async (c, to) => { try { return await send(c, to); } catch (e) { if (fatalErr(e)) throw e; log('! verify ' + c + ': ' + errText(e)); return null; } };
+  for (const c of c29 ? ['ATSP7', 'ATH1', 'ATCF18DAF100', 'ATCM1FFFFF00', 'ATST32'] : ['ATSP6', 'ATH1', 'ATCF700', 'ATCM700', 'ATST32']) await tp(c, 5000);
+  const mods = r.mods.filter(m => !m.closed);
+  for (let i = 0; i < mods.length && running && !taskCancel; i++) {
+    const m = mods[i]; taskProg(i / mods.length);
+    status(t('statusScanningAddr', {a: m.req, n: keep.length}));
+    if (await tp('ATSH' + m.req, 2000) === null) { gone.push(m); continue; }
+    const ls = await tp('3E00', 2500);
+    const ok = ls && ls.some(l => { l = l.replace(/\s/g, '').toUpperCase(); return l.startsWith(m.resp) && /^0[0-9](7E00|7E|7F3E[0-9A-F]{2})/.test(l.slice(m.resp.length)); });
+    (ok ? keep : gone).push(m);
+  }
+  await restoreFast();
+  const now = Date.now();
+  r.mods.forEach(m => { if (keep.includes(m)) { m.last = now; m.verified = true; } else if (gone.includes(m)) m.verified = false; });
+  r.lastVerify = now; vehSave();
+  modsVin = vehKey();
+  showMods(r.mods.filter(m => m.closed || keep.includes(m)).map(m => Object.assign({}, m, {saved: true})));
+  const note = document.createElement('div'); note.style.cssText = 'margin:6px 0;font-weight:600';
+  note.textContent = t('vehVerified', {k: keep.length, n: mods.length}) + (gone.length ? ' · ' + t('vehGone', {l: gone.map(m => MODN[m.req] || m.autoName || m.req).join(', ')}) : '');
+  $('#mods').prepend(note); vehUI();
+}
+async function reportMods(put) {
+  put('\n— ' + t('reportModsTitle') + ' —');
+  const seenR = new Set(), list = foundMods.filter(m => !m.closed && !m.weak && !seenR.has(m.resp) && seenR.add(m.resp));
+  if (!list.length || !/CAN/.test(protoName) || wwh) { put(t('reportModsNone')); return; }
+  for (let i = 0; i < list.length && running; i++) {
+    const m = list[i], nm = MODN[m.req] || m.autoName || m.req;
+    let rows = null;
+    try { status(t('statusProbingMod', {a: m.req, i: i + 1, n: list.length})); rows = await readModCodes(m); }
+    catch (e) { if (fatalErr(e)) throw e; log('! report mod ' + m.req + ': ' + errText(e)); }
+    put(nm + ' [' + m.req + '→' + m.resp + ']' + (m.info && m.info.length ? ' · ' + m.info.map(([k, v]) => AUTO_LBL[k] + ' ' + v).join(' · ') : '') + ' — ' + (rows === null ? t('modNoResp') : rows.length ? t('modCodes', {n: rows.length}) : t('modClean')));
+    if (rows) {
+      await dbLookup(rows.map(e => e.raw));
+      rows.filter(e => !isNoiseDtc(e)).forEach(e => { const d = describe(e.raw); put('  0x' + e.raw + ' [' + rowNote(e) + ']' + (d === t('notInDatabase') ? '' : ' — ' + d)); });
+    }
+  }
+  try { await restoreFast(); } catch (e) { if (fatalErr(e)) throw e; }
+}
+function vehReportSave(L, cs, ce) {
+  const r = vehRec(true); if (!r) return;
+  const cmp = [];
+  L.forEach((x, i) => { if (i < 3 || (i >= cs && i < ce)) return; x.split('\n').map(q => q.trim()).filter(q => q && !/^—/.test(q)).forEach(q => cmp.push(q)); });
+  r.reports = r.reports || [];
+  r.reports.unshift({ts: Date.now(), odo: ($('#odo').value || '').trim(), text: L.join('\n'), cmp});
+  r.reports.length = Math.min(r.reports.length, 12);
+  vehSave(); vehUI();
+}
+function repDiffText(older, newer) {
+  const A = older.cmp || [], B = newer.cmp || [], sa = new Set(A), sb = new Set(B), out = [];
+  A.forEach(l => { if (!sb.has(l)) out.push('− ' + l); });
+  B.forEach(l => { if (!sa.has(l)) out.push('+ ' + l); });
+  return fmtTs(older.ts) + ' → ' + fmtTs(newer.ts) + '\n' + (out.length ? out.join('\n') : t('repHistSame'));
+}
+function vehUI() {
+  const r = vehRec(), card = $('#vehCard');
+  if (card) {
+    card.style.display = car.done ? '' : 'none';
+    if (car.done) {
+      $('#vehTitle').textContent = t('vehTitle') + ': ' + ((r && r.name) || car.mk || '') + (car.vin ? ' · ' + car.vin : '');
+      $('#vehInfo').textContent = r && r.mods.length ? t('vehSaved', {n: r.mods.length, d: fmtTs(r.lastScan || r.seen)}) : t('vehNone');
+      const vb = $('#bVerify'); if (vb) vb.disabled = !(running && r && r.mods.length && /CAN/.test(protoName) && !wwh);
+    }
+  }
+  const mkb = (txt, fn) => { const bt = document.createElement('button'); bt.className = 'sec'; bt.textContent = txt; bt.onclick = fn; return bt; };
+  const g = $('#garage');
+  if (g) {
+    g.textContent = '';
+    const ks = Object.keys(vehDB).sort((a, b) => (vehDB[b].seen || 0) - (vehDB[a].seen || 0));
+    if (!ks.length) { g.className = 'panel-note'; g.textContent = t('vehGarageNone'); }
+    else {
+      g.className = '';
+      ks.forEach(k => {
+        const v = vehDB[k], d = document.createElement('div'); d.className = 'card srow';
+        const b = document.createElement('b'); b.textContent = (v.name || v.mk || '—') + ' · ' + k;
+        const sm = document.createElement('small'); sm.textContent = t('vehCounts', {m: (v.mods || []).length, r: (v.reports || []).length}) + ' · ' + fmtTs(v.seen || 0);
+        d.append(mkb(t('vehDel'), () => { if (!confirm(t('vehDelConfirm'))) return; delete vehDB[k]; vehSave(); vehNameApply(); vehUI(); }), b, sm);
+        g.appendChild(d);
+      });
+    }
+  }
+  const h = $('#repHist');
+  if (h) {
+    h.textContent = '';
+    const reps = (r && r.reports) || [];
+    if (!reps.length) { h.className = 'panel-note'; h.textContent = t('repHistNone'); }
+    else {
+      h.className = '';
+      reps.forEach((x, i) => {
+        const d = document.createElement('div'); d.className = 'card srow';
+        const b = document.createElement('b'); b.textContent = fmtTs(x.ts) + (x.odo ? ' · ' + x.odo + ' ' + t('unitKm') : '');
+        d.append(mkb(t('repHistDel'), () => { if (!confirm(t('repHistDelConfirm'))) return; r.reports.splice(i, 1); vehSave(); vehUI(); }));
+        if (i > 0) d.append(mkb(t('repHistCmp'), () => { $('#repDiff').textContent = repDiffText(x, reps[0]); }));
+        d.append(mkb(t('repHistShow'), () => { $('#report').textContent = x.text; $('#repDiff').textContent = ''; }), b);
+        h.appendChild(d);
+      });
+    }
+  }
+}
 function carShow() {
-  let n = ''; try { n = localStorage.getItem('carName') || ''; } catch (e) {}
+  vehNameApply();
+  const r0 = vehRec(); let n = (r0 && r0.name) || ''; if (!n) { try { n = localStorage.getItem('carName') || ''; } catch (e) {} }
   const det = [car.mk, car.year && ('~' + car.year), car.vin ? 'VIN ' + car.vin : (car.cal ? 'cal ' + car.cal : '')].filter(Boolean).join(' · ');
   const el = $('#carInfo');
   if (el) el.textContent = [n, det, protoName && car.done ? protoName : ''].filter(Boolean).join(' · ') || t('unknownCar');
@@ -3618,7 +3884,7 @@ async function detectCar() {
       car.year = c.length === 2 ? (/CAN/.test(protoName) || wwh || /[A-Z]/.test(car.vin[6]) ? c[1] : c[0]) : (c[0] || '');
     }
   }
-  car.done = true; log('vehicle: ' + JSON.stringify(car)); carShow();
+  car.done = true; log('vehicle: ' + JSON.stringify(car)); try { vehOnDetected(); } catch (e) { log('! veh: ' + errText(e)); } carShow();
 }
 
 // ===== PROFILE / IDENTITY =====
@@ -4270,6 +4536,7 @@ function applyLanguage(lang) {
   recUI();
   try { flagsUI(); } catch (e) {}
   dcInfo();
+  try { vehUI(); auditUI(); roUI(); } catch (e) {}
 
   if (remote.role === 'viewer' && remote.ready && performance.now() - remote.rx < 6000) setConn('ok', 'rmOnView');
 }
@@ -4298,6 +4565,7 @@ $('#bRead').onclick = () => {
   action = 'read';
 };
 $('#bClear').onclick = () => {
+  if (roGuard()) return;
   if (!confirm(t('clearConfirmDtc2'))) return;
   if (remote.role === 'viewer' && remote.dc) { taskShow(t('rmClrReq'), ''); rmSend({t: 'clearDtc'}); return; }
   action = 'clear';
@@ -4401,10 +4669,10 @@ function dcAdd(txt) {
   let n = 0;
   try {
     const j = JSON.parse(txt);
-    Object.keys(j).forEach(k => { if (/^[PCBU][0-9A-F]{4}$/i.test(k)) { userDesc[k.toUpperCase()] = String(j[k]).slice(0, 200); n++; } });
+    Object.keys(j).forEach(k => { if (/^([PCBU][0-9A-F]{4}|[0-9A-F]{6})$/i.test(k)) { userDesc[k.toUpperCase()] = String(j[k]).slice(0, 200); n++; } });
   } catch (e) {
     txt.split(/\r?\n/).forEach(l => {
-      const m = l.match(/^\s*"?([PCBU][0-9A-F]{4})"?\s*[;,\t]\s*"?(.+?)"?\s*$/i);
+      const m = l.match(/^\s*"?([PCBU][0-9A-F]{4}|[0-9A-F]{6})"?\s*[;,\t]\s*"?(.+?)"?\s*$/i);
       if (m) { userDesc[m[1].toUpperCase()] = m[2].slice(0, 200); n++; }
     });
   }
@@ -4412,6 +4680,19 @@ function dcAdd(txt) {
   dcInfo(); status(t('statusAddedDict', {n}));
 }
 $('#dcAdd').onclick = () => { dcAdd($('#dcTxt').value); $('#dcTxt').value = ''; };
+// v51: обработчики
+roUI(); auditUI(); vehUI();
+$('#roCb').onchange = e => { roMode = e.target.checked; try { localStorage.setItem('roMode', roMode ? '1' : '0'); } catch (x) {} roUI(); };
+$('#auExp').onclick = () => {
+  const a = auditLoad(); if (!a.length) { status(t('auditEmpty')); return; }
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  shareText('obd-audit.csv', '﻿' + [['Time', 'VIN', 'Car', 'Header', 'Command', 'Class', 'Result', 'Volt', 'ReadOnlyBlocked'], ...a.map(r => [new Date(r.ts).toLocaleString(), r.vin, r.car, r.hdr, r.cmd, r.cls, r.res, r.v, r.ro ? 1 : 0])].map(r => r.map(q).join(',')).join('\r\n'));
+};
+$('#auClr').onclick = () => { if (auditLoad().length && confirm(t('auditClrConfirm'))) { try { localStorage.removeItem('audit'); } catch (e) {} auditUI(); } };
+$('#bVerify').onclick = () => { if (!running) { status(t('statusNoLink')); return; } action = {t: 'scan', verify: true}; };
+$('#bVehName').onclick = () => { const r = vehRec(true); if (!r) return; const v = prompt(t('vehNamePrompt'), r.name || ''); if (v === null) return; r.name = v.trim().slice(0, 60); vehSave(); const ci = $('#carName'); if (ci) ci.value = r.name; carShow(); vehUI(); };
+$('#bVehDel').onclick = () => { const k = vehKey(); if (!k || !vehDB[k] || !confirm(t('vehDelConfirm'))) return; delete vehDB[k]; vehSave(); vehNameApply(); carShow(); vehUI(); };
+$('#dcExp').onclick = () => { const k = Object.keys(userDesc).sort(); if (!k.length) { status(t('dictEmpty')); return; } shareText('dtc-dictionary.csv', k.map(c => c + ';' + String(userDesc[c]).replace(/[\r\n;]/g, ' ')).join('\n')); };
 $('#dcClr').onclick = () => { if (confirm(t('clearDictConfirm'))) { userDesc = {}; try { localStorage.removeItem('dtcDict'); } catch (e) {} dcInfo(); } };
 $('#dcFile').onchange = e => {
   const f = e.target.files[0]; if (!f) return;
@@ -4463,7 +4744,7 @@ $('#bigDtcClr').onclick = async () => {
 };
 
 $('#carName').value = (() => { try { return localStorage.getItem('carName') || ''; } catch (e) { return ''; } })();
-$('#carName').addEventListener('input', () => { try { localStorage.setItem('carName', $('#carName').value.trim()); } catch (e) {} carShow(); });
+$('#carName').addEventListener('input', () => { try { localStorage.setItem('carName', $('#carName').value.trim()); } catch (e) {} { const vr = vehRec(true); if (vr) { vr.name = $('#carName').value.trim(); vehSave(); } } carShow(); });
 
 carShow(); initBlocks(); rmInit(); profInit();
 $('#bScan').onclick = () => { action = {t: 'scan'}; };
