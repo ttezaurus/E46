@@ -276,7 +276,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v51</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v52</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -349,7 +349,12 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   <h2 data-i18n="safeOps">Безопасные операции</h2>
   <div class="row"><button id="bmInfo" class="sec" data-i18n="ident">Идентификация</button><button id="bmDtc" class="sec" data-i18n="blockDtc">Ошибки блока</button><button id="bmClr" class="danger" data-i18n="clearBlockDtc">Стереть ошибки блока</button></div>
   <div class="row"><input id="bmDid" data-i18n="bmDidPh" placeholder="параметр (DID), напр. F190" autocapitalize="characters"><button id="bmRead" class="sec" data-i18n="readDid">Прочитать (22)</button></div>
+  <div class="row" id="bmPre"></div>
   <div id="bmOut"></div>
+  <h2><span data-i18n="dsgTitle">DSG 0AM: сцепления</span> <small style="color:var(--warn)">· тест</small></h2>
+  <div class="panel-note" data-i18n="dsgNote"></div>
+  <div class="row"><button id="bDsg" class="sec" disabled data-i18n="dsgRead">Запросить значения</button></div>
+  <div id="dsgOut"></div>
 </section>
 <section id="tab-ddata" class="tab-panel" role="tabpanel">
   <h2 data-i18n="reportTitle">Отчёт автомобиля</h2><div>
@@ -478,7 +483,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v51';
+const APP_VER = '02v52';
 (() => {
 'use strict';
 
@@ -1166,6 +1171,9 @@ Object.assign(LANG.de, {modClosed: 'gesperrt (NRC {n})', probeBgNote: '~ = Busra
 Object.assign(LANG.ru, {tabBlocks: 'Сервис', tabTools: 'Настройки', modsTitle: 'Сервис: блоки (CAN/UDS)', statusEcuTimeout: 'Блоки не отвечают уже {s} с. Проверьте зажигание, адаптер и протокол. Машины без OBD-II (часть электромобилей) через автоподключение пока не читаются.', statusCanQuick: 'Проверяю CAN…', clearFail: 'Стирание не выполнено: {e}', clearLeft: 'Стирание подтверждено, но коды остались (список ниже): другой блок мог отказать или код вернулся.', clearedOk: 'Коды стёрты, повторное чтение: ошибок нет.', clearNoAnswer: 'нет ответа на команду стирания', clearAllMods: 'Стереть коды во всех блоках', clearAllPrompt: 'Стереть коды в блоках ({n}): {names}? Блоки подушек безопасности пропущены ({s}), их стирают по одному. Сначала лучше прочитать и сохранить коды.', clearAllDone: 'Стирание по блокам (было → стало):', clearAllSkipped: 'Пропущено блоков подушек безопасности: {s}', statusClearingMod: 'Стирание: {a} ({i}/{n})', scanFast: 'Быстрый скан (только стандартные адреса, без полного перебора)', stConfirmedOff: 'подтверждён, сейчас не активен', stLegend: '🔴 активен сейчас · 🟠 подтверждён · 🟡 ожидает · ⚪ был, сейчас нет · 💡 горит лампа'});
 Object.assign(LANG.en, {tabBlocks: 'Service', tabTools: 'Settings', modsTitle: 'Service: modules (CAN/UDS)', statusEcuTimeout: 'No module has answered for {s} s. Check ignition, adapter and protocol. Cars without OBD-II (some EVs) cannot be read by auto-connect yet.', statusCanQuick: 'Checking CAN…', clearFail: 'Clearing failed: {e}', clearLeft: 'Clearing was confirmed, but codes remain (list below): another module may have refused or the code came back.', clearedOk: 'Codes cleared, re-read: no faults.', clearNoAnswer: 'no answer to the clear command', clearAllMods: 'Clear codes in all modules', clearAllPrompt: 'Clear codes in {n} modules: {names}? Airbag modules are skipped ({s}); clear them one by one. Better read and save the codes first.', clearAllDone: 'Clearing per module (before → after):', clearAllSkipped: 'Airbag modules skipped: {s}', statusClearingMod: 'Clearing: {a} ({i}/{n})', scanFast: 'Fast scan (standard addresses only, no full sweep)', stConfirmedOff: 'confirmed, not active now', stLegend: '🔴 active now · 🟠 confirmed · 🟡 pending · ⚪ was, not now · 💡 lamp on'});
 Object.assign(LANG.de, {tabBlocks: 'Service', tabTools: 'Optionen', modsTitle: 'Service: Module (CAN/UDS)', statusEcuTimeout: 'Kein Modul antwortet seit {s} s. Zündung, Adapter und Protokoll prüfen. Fahrzeuge ohne OBD-II (manche E-Autos) werden vom Auto-Connect noch nicht gelesen.', statusCanQuick: 'CAN wird geprüft…', clearFail: 'Löschen fehlgeschlagen: {e}', clearLeft: 'Löschen bestätigt, aber Codes sind noch da (Liste unten): ein anderes Modul hat abgelehnt oder der Code kam zurück.', clearedOk: 'Codes gelöscht, erneut gelesen: keine Fehler.', clearNoAnswer: 'keine Antwort auf den Löschbefehl', clearAllMods: 'Codes in allen Modulen löschen', clearAllPrompt: 'Codes in {n} Modulen löschen: {names}? Airbag-Module werden übersprungen ({s}); einzeln löschen. Vorher Codes lesen und sichern.', clearAllDone: 'Löschen je Modul (vorher → nachher):', clearAllSkipped: 'Airbag-Module übersprungen: {s}', statusClearingMod: 'Löschen: {a} ({i}/{n})', scanFast: 'Schnellscan (nur Standardadressen, kein Vollscan)', stConfirmedOff: 'bestätigt, jetzt nicht aktiv', stLegend: '🔴 jetzt aktiv · 🟠 bestätigt · 🟡 anstehend · ⚪ war, jetzt nicht · 💡 Lampe an'});
+Object.assign(LANG.ru, {odisActive: 'активна/статична', odisSporadic: 'пассивн./спорадич.', odisPending: 'ожидает', odisMil: 'лампа MIL', extTip: 'Расширенные данные и стоп-кадр (19 06 / 19 04)', extRecs: 'записи', dsgTitle: 'DSG 0AM: сцепления', dsgNote: 'Тест. Только 7-ступенчатая сухая DQ200 (0AM), CAN 11 бит. Читаются положения штоков, давление и запас по износу, значения пока выводятся сырыми — сверяем на машине.', dsgRead: 'Запросить значения', dsgNeedCan: 'Нужен протокол CAN 11 бит. Сначала подключитесь к автомобилю.', dsgNoTcu: 'Блок КПП (7E1) не отвечает.', dsgOnly0am: 'Это не коробка 0AM: экран работает только с DQ200.', dsgRaw: 'ответ', dsgVals: 'значения', dsgFoot: 'Группы по 3 байта: формат, старший, младший. Какое значение к какому сцеплению относится — уточняется на тесте.'});
+Object.assign(LANG.en, {odisActive: 'active/static', odisSporadic: 'passive/sporadic', odisPending: 'pending', odisMil: 'MIL on', extTip: 'Extended data and snapshot (19 06 / 19 04)', extRecs: 'records', dsgTitle: 'DSG 0AM: clutches', dsgNote: 'Test. 7-speed dry DQ200 (0AM) only, CAN 11-bit. Rod positions, pressure and wear reserve are read; values are shown raw for now and need checking on a car.', dsgRead: 'Read values', dsgNeedCan: 'CAN 11-bit protocol needed. Connect to the car first.', dsgNoTcu: 'Transmission module (7E1) does not answer.', dsgOnly0am: 'This is not a 0AM gearbox: the screen works with DQ200 only.', dsgRaw: 'response', dsgVals: 'values', dsgFoot: 'Groups of 3 bytes: format, high, low. Which value belongs to which clutch is to be confirmed in testing.'});
+Object.assign(LANG.de, {odisActive: 'aktiv/statisch', odisSporadic: 'passiv/sporadisch', odisPending: 'anstehend', odisMil: 'MIL an', extTip: 'Erweiterte Daten und Snapshot (19 06 / 19 04)', extRecs: 'Datensätze', dsgTitle: 'DSG 0AM: Kupplungen', dsgNote: 'Test. Nur 7-Gang-Trockenkupplung DQ200 (0AM), CAN 11 Bit. Gelesen werden Stangenposition, Druck und Verschleißreserve; Werte werden vorerst roh angezeigt und müssen am Fahrzeug geprüft werden.', dsgRead: 'Werte abfragen', dsgNeedCan: 'CAN 11 Bit nötig. Zuerst mit dem Fahrzeug verbinden.', dsgNoTcu: 'Getriebesteuergerät (7E1) antwortet nicht.', dsgOnly0am: 'Kein 0AM-Getriebe: der Bildschirm funktioniert nur mit DQ200.', dsgRaw: 'Antwort', dsgVals: 'Werte', dsgFoot: 'Gruppen zu 3 Bytes: Format, High, Low. Welcher Wert zu welcher Kupplung gehört, wird im Test geklärt.'});
 Object.assign(LANG.ru, {"subErrors": "Ошибки", "subMods": "Блоки", "subData": "Данные", "snapTitle": "Снимки при появлении кодов", "snapNote": "Когда в режиме HUD появляется новый код, приложение сохраняет значения параметров. Это снимок приложения, а не стоп-кадр ЭБУ: он сделан в момент, когда код заметили, и содержит диапазон за последние 10 с.", "snapNone": "Снимков пока нет.", "snapClr": "Очистить снимки", "snapVolt": "Напряжение", "snapEcu": "Стоп-кадр ЭБУ (режим 02)", "snapApp": "Снимок приложения (диапазон за 10 с)", "hudNewDtc": "⚠ Новая ошибка", "hudPendDtc": "ожидает"});
 Object.assign(LANG.en, {"subErrors": "Errors", "subMods": "Modules", "subData": "Data", "snapTitle": "Snapshots when codes appear", "snapNote": "When a new code appears in HUD mode, the app saves the parameter values. This is an app snapshot, not the ECU freeze frame: it is taken when the code was noticed and includes the range over the last 10 s.", "snapNone": "No snapshots yet.", "snapClr": "Clear snapshots", "snapVolt": "Voltage", "snapEcu": "ECU freeze frame (mode 02)", "snapApp": "App snapshot (range over 10 s)", "hudNewDtc": "⚠ New fault", "hudPendDtc": "pending"});
 Object.assign(LANG.de, {"subErrors": "Fehler", "subMods": "Module", "subData": "Daten", "snapTitle": "Schnappschüsse bei neuen Codes", "snapNote": "Erscheint im HUD-Modus ein neuer Code, speichert die App die Parameterwerte. Das ist ein App-Schnappschuss, kein Freeze Frame des Steuergeräts: er entsteht, wenn der Code bemerkt wird, und enthält den Bereich der letzten 10 s.", "snapNone": "Noch keine Schnappschüsse.", "snapClr": "Schnappschüsse löschen", "snapVolt": "Spannung", "snapEcu": "Freeze Frame des Steuergeräts (Modus 02)", "snapApp": "App-Schnappschuss (Bereich 10 s)", "hudNewDtc": "⚠ Neuer Fehler", "hudPendDtc": "ausstehend"});
@@ -1551,6 +1559,7 @@ const DESC_EN = {
   P0380: 'Glow plug circuit', P0400: 'Exhaust gas recirculation (EGR) flow malfunction', P0401: 'EGR flow insufficient', P0402: 'EGR flow excessive', P0403: 'EGR control circuit', P0404: 'EGR range/performance',
   P0420: 'Catalyst system efficiency below threshold (bank 1)', P0430: 'Catalyst system efficiency below threshold (bank 2)', P0440: 'Evaporative emission (EVAP) system malfunction', P0442: 'EVAP system small leak detected', P0455: 'EVAP system large leak detected',
   P0500: 'Vehicle speed sensor', P0560: 'System voltage malfunction', P0562: 'System voltage low', P0563: 'System voltage high', P0571: 'Brake switch circuit',
+  P1719: 'Restriction caused by engine control unit (VAG)', U1400: 'Operation limited: supply voltage too low (VAG)', B1528: 'Headlight range control motors: implausible control voltage (VAG)',
   P0600: 'Serial communication link malfunction', P0601: 'Internal control module memory checksum error', P0602: 'Control module programming error', P0606: 'ECM/PCM processor fault', P0620: 'Generator control circuit', P0670: 'Glow plug module control circuit',
   P0700: 'Transmission control system malfunction', P0715: 'Input/turbine speed sensor circuit', P0720: 'Output speed sensor circuit', P0730: 'Incorrect gear ratio', P0741: 'Torque converter clutch circuit performance', P0750: 'Shift solenoid A', P0755: 'Shift solenoid B',
   P2002: 'Diesel particulate filter (DPF) efficiency below threshold', U0100: 'Lost communication with ECM/PCM', U0101: 'Lost communication with TCM', U0121: 'Lost communication with ABS', U0140: 'Lost communication with BCM', U0155: 'Lost communication with instrument panel'
@@ -1703,7 +1712,7 @@ async function readModCodes(m) {
   const r = await ud('19020C', 12000);
   if (r.h.startsWith('5902')) {
     const rows = [];
-    for (let i = 6; i + 8 <= r.h.length; i += 8) { const x = decodeUdsDtc(r.h.substr(i, 8), false); if (x && (parseInt(x.st, 16) & 0xAF) !== 0) rows.push(x); }
+    for (let i = 6; i + 8 <= r.h.length; i += 8) { const x = decodeUdsDtc(r.h.substr(i, 8), false); if (x && (parseInt(x.st, 16) & 0xAF) !== 0) { x.mreq = m.req; x.mresp = m.resp; rows.push(x); } }
     return rows;
   }
   if (!/^DA/.test(m.req) && (!r.h || ['11', '12', '7F', '80'].includes(r.nrc))) {
@@ -1777,7 +1786,7 @@ async function readDTC() {
   if (!out.length && (pend.length || udsRows.length || drvN)) { const h = document.createElement('div'); h.style.fontWeight = '600'; h.textContent = t('dtcNoConfirmed', {n: pend.length + udsRows.length + drvN}); box.appendChild(h); }
   out.forEach(c => box.appendChild(dtcRow(c, who[c] && ecus.length > 1 ? 'ECU ' + who[c].join('/') : undefined)));
   pend.forEach(c => box.appendChild(dtcRow(c, '🟡 ' + t('stPending') + (whoP[c] && ecus.length > 1 ? ' · ECU ' + whoP[c].join('/') : ''))));
-  udsRows.forEach(e => box.appendChild(e.obd ? dtcRow(e.obd, rowNote(e) + ' · ECU ' + e.ecu) : rawRow(e)));
+  udsRows.forEach(e => box.appendChild(withExt(e.obd ? dtcRow(e.obd, rowNote(e) + ' · ECU ' + e.ecu) : rawRow(e), e)));
   drvRows.filter(x => x.rows.length).forEach(({m, rows}) => {
     const h = document.createElement('div'); h.style.cssText = 'font-weight:600;margin-top:8px'; h.textContent = (MODN[m.req] || m.autoName || m.req) + ' · ' + m.req; box.appendChild(h);
     appendRows(box, rows);
@@ -1979,6 +1988,11 @@ const MODN = {'DA10F1': 'Engine (ECU)', 'DA18F1': 'Transmission (TCU)', '710': '
   '737': 'Airbags', '736': 'Parking Sensors', '7D0': 'Infotainment (APIM)', '727': 'Audio', '730': 'Power Steering',
   '740': 'Driver Door', '741': 'Passenger Door', '724': 'Steering Column', '733': 'Climate'};
 const modStat = {};
+// v52: диагностические адреса VAG (как в ODIS) и имя блока по ODX-идентификатору (UDS 22 F19E, напр. EV_TCMDQ250021)
+const VAG_ADDR = {'01': 'Engine (ECU)', '02': 'Transmission (TCU)', '03': 'Brakes (ABS/ESP)', '08': 'Climate control', '09': 'Body control (BCM)', '13': 'Adaptive cruise (ACC)', '15': 'Airbag', '16': 'Steering column', '17': 'Instrument cluster', '19': 'Gateway', '42': 'Door driver', '52': 'Door passenger', '44': 'Power steering', '5F': 'Infotainment', '69': 'Trailer', '76': 'Park assist', 'B7': 'Keyless (KESSY)'};
+const VAG_ODX = [[/AirCondi|ACClima/i, '08'], [/AdaptCruis|ACCBOSCH|EV_ACC/i, '13'], [/TransContrModul|EV_TCM|DSG/i, '02'], [/EnginContrModul|EV_ECM/i, '01'], [/Brake/i, '03'], [/CentrElect|BodyContrModul/i, '09'], [/Airba/i, '15'], [/SteerColumElect/i, '16'], [/DashBoard/i, '17'], [/Gatew/i, '19'], [/DriveSide/i, '42'], [/PasseSide/i, '52'], [/SteerAssis/i, '44'], [/InforContrUnit|EV_MU/i, '5F'], [/TrailFunct/i, '69'], [/ParkiAssis|EV_EPH/i, '76'], [/AccesStartInter|Kessy/i, 'B7']];
+const vagByOdx = x => { for (const [re, a] of VAG_ODX) if (re.test(x || '')) return {addr: a, name: VAG_ADDR[a]}; return null; };
+const isVag = () => /^(WVW|WV[123]|WVG|WUA|WAU|TMB|VSS|TRU|3VW|1VW|9BW|AAV|LSV|WSC)/.test(car && car.vin || '');
 function setModStat(req, n) {
   modStat[req] = n;
   document.querySelectorAll('[data-mod]').forEach(d => {
@@ -1992,7 +2006,7 @@ function setModStat(req, n) {
 // v37: ошибки шины и питания (U10xx–U14xx) сворачиваем отдельно, чтобы не терять реальные неисправности среди «шума» после диагностики
 const isNoiseDtc = e => { let c = e.obd || ''; if (!c && e.raw && e.raw.length >= 4) { try { c = decodeDTC(e.raw.slice(0, 4)) || ''; } catch (x) {} } return /^U1[0-4]/.test(c); };
 function appendRows(box, rows) {
-  const mk = e => e.obd ? dtcRow(e.obd, e.st ? rowNote(e) : '') : rawRow(e);
+  const mk = e => withExt(e.obd ? dtcRow(e.obd, e.st ? rowNote(e) : '') : rawRow(e), e);
   rows.filter(e => !isNoiseDtc(e)).forEach(e => box.appendChild(mk(e)));
   const nz = rows.filter(isNoiseDtc);
   if (nz.length) { const det = document.createElement('details'), sm = document.createElement('summary'); sm.textContent = t('noiseSum', {n: nz.length}); det.appendChild(sm); nz.forEach(e => det.appendChild(mk(e))); box.appendChild(det); }
@@ -2097,7 +2111,7 @@ function showMods(list) {
 }
 // ---- v27: автономный опрос найденных модулей. Только чтение: 22 F1xx, 19 02, 03, 3E, 10 03. Ничего не пишется и не стирается.
 const AUTO_DIDS = [['F197', 'sys'], ['F187', 'pn'], ['F190', 'vin'], ['F188', 'sw'], ['F191', 'hw'], ['F18C', 'sn'], ['F194', 'sw2']];
-const AUTO_LBL = {pn: 'P/N', vin: 'VIN', sw: 'SW', hw: 'HW', sn: 'S/N', sw2: 'SW2', k86: 'KWP 1A 86', k87: 'KWP 1A 87', k90: 'KWP 1A 90', k9B: 'KWP 1A 9B', k80: 'KWP 1A 80'};
+const AUTO_LBL = {pn: 'P/N', vin: 'VIN', sw: 'SW', hw: 'HW', sn: 'S/N', sw2: 'SW2', odx: 'ODX', k86: 'KWP 1A 86', k87: 'KWP 1A 87', k90: 'KWP 1A 90', k9B: 'KWP 1A 9B', k80: 'KWP 1A 80'};
 const asciiOf = h => (h.slice(6).match(/../g) || []).map(x => parseInt(x, 16)).filter(c => c > 31 && c < 127).map(c => String.fromCharCode(c)).join('').trim();
 const noAnswer = ls => !ls || !ls.length || ls.every(l => /NO DATA|UNABLE|ERROR|STOPPED|^\?$/i.test(l));
 const fatalErr = e => /obd:disconnected|obd:refresh/.test(errText(e)) || gattErr(e);
@@ -2109,14 +2123,18 @@ async function autoProbeOne(m) {
   await udsSetup(m);
   // 1) идентификация; при «сервис не поддерживается в текущей сессии» (NRC 7F) один раз пробуем расширенную сессию 10 03
   let sess = false, silent = 0;
-  for (const [d, k] of AUTO_DIDS) {
+  for (const [d, k] of (isVag() ? AUTO_DIDS.concat([['F19E', 'odx']]) : AUTO_DIDS)) {
     if (!live()) break;
     if (k === 'vin' && !emis) continue; // v37: VIN у остальных блоков тот же, а запрос стоит до 0,5 с
     let r = await safe(() => ud('22' + d, 3000)); if (!r) continue;
     // v47: сканирование ничего не меняет в блоке: сессию 10 xx открывает только кнопка «Ошибки»/«О блоке»
     if (r.h.startsWith('62' + d)) {
       const tx = asciiOf(r.h);
-      if (tx) { if (k === 'sys') m.autoName = tx.slice(0, 40); else m.info.push([k, tx]); }
+      if (tx) {
+        if (k === 'sys') m.autoName = tx.slice(0, 40);
+        else if (k === 'odx') { m.info.push([k, tx]); const v = vagByOdx(tx); if (v) { m.vagAddr = v.addr; m.autoName = v.name + (m.autoName ? ' (' + m.autoName + ')' : ''); } }
+        else m.info.push([k, tx]);
+      }
       silent = 0;
     } else if (!r.h) { if (++silent >= 2) break; } // блок молчит на 22 — не тратим время
     else silent = 0;
@@ -2142,6 +2160,7 @@ async function autoProbeOne(m) {
     if (r && r.h.startsWith('5902')) {
       const act = [];
       for (let i = 6; i + 8 <= r.h.length; i += 8) { const x = decodeUdsDtc(r.h.substr(i, 8), emis); if (x && (parseInt(x.st, 16) & 0xAF) !== 0) act.push(x); }
+      act.forEach(x => { x.mreq = m.req; x.mresp = m.resp; });
       m.nAct = act.length; m.rows = act.slice(0, 30);
     } else if (r && emis && (r.nrc === '11' || !r.h) && !/^DA/.test(m.req) && !noAnswer(ls03 = (await safe(() => send('03', 10000))) || [])) {
       const codes = parseDTCs(ls03, '43');
@@ -2292,8 +2311,33 @@ function decodeUdsDtc(h, emission) {
   const raw = h.substr(0, 6).toUpperCase();
   if (raw === '000000' || h.toUpperCase() === 'AAAAAAAA') return null;
   const st = parseInt(h.substr(6, 2), 16);
-  return {raw, ftb: raw.slice(4), obd: emission ? decodeDTC(raw.slice(0, 4)) : null, st: h.substr(6, 2).toUpperCase(),
+  return {raw, ftb: raw.slice(4), obd: (emission || isVag()) ? decodeDTC(raw.slice(0, 4)) : null, st: h.substr(6, 2).toUpperCase(),
     flags: UDS_ST.filter((n, i) => st & (1 << i)).join(', ') || '-'};
+}
+// v52: расширенные данные и стоп-кадр кода (UDS 19 06 / 19 04, запись FF = все). Только чтение. Разбор пока сырой: сверяем на машине.
+function withExt(el, e) {
+  if (!e || !e.mreq || e.flags === 'KWP' || !/^[0-9A-F]{6}$/.test(e.raw || '')) return el;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'sec dbtn'; b.textContent = 'ℹ'; b.title = t('extTip');
+  const out = document.createElement('pre'); out.style.cssText = 'white-space:pre-wrap;font-size:11px;margin:4px 0;display:none';
+  b.onclick = ev => {
+    ev.stopPropagation();
+    runAct(async () => {
+      await udsSetup({req: e.mreq, resp: e.mresp});
+      const L = [];
+      for (const [lbl, c] of [['19 06', '1906' + e.raw + 'FF'], ['19 04', '1904' + e.raw + 'FF']]) {
+        const r = await ud(c, 8000);
+        L.push(lbl + ': ' + (r.h ? spaced(r.h) : t('clearNoAnswer')));
+        const h = r.h || '';
+        if (h.startsWith('59' + c.slice(2, 4) + e.raw)) {
+          const body = h.slice(2 + 2 + 6 + 2); // после 59 xx DTC(3) статус
+          if (body) L.push('  → ' + t('extRecs') + ': ' + spaced(body));
+        } else if (r.nrc) L.push('  NRC ' + r.nrc);
+      }
+      out.textContent = L.join('\n'); out.style.display = '';
+      log('ext ' + e.mreq + ' ' + e.raw + ': ' + L.join(' | '));
+    }, false, t('extTip') + ' ' + e.raw);
+  };
+  el.appendChild(b); el.appendChild(out); return el;
 }
 function rawRow(e) {
   const d = document.createElement('div'), pre = '0x' + e.raw + ' [' + (e.flags === 'KWP' ? 'KWP ' + e.st : stBadges(e.st) + ' ' + stLabel(e.st) + ' ' + e.st + ': ' + e.flags) + '] -- ';
@@ -2368,7 +2412,8 @@ async function kwpDTC(emis) {
   return rows;
 }
 const stLabel = st => { const v = parseInt(st, 16); return isNaN(v) ? '' : t(v & 1 ? 'stActive' : v & 8 ? 'stConfirmedOff' : v & 4 ? 'stPending' : 'stStored'); };
-const rowNote = e => e.flags === 'KWP' ? 'KWP ' + e.st : stBadges(e.st) + ' ' + stLabel(e.st) + ' · FTB ' + e.ftb + ' / ' + e.st + ': ' + e.flags;
+const odisSt = st => { const v = parseInt(st, 16); if (isNaN(v)) return ''; const a = []; a.push(v & 1 ? t('odisActive') : t('odisSporadic')); if (v & 4) a.push(t('odisPending')); if (v & 0x80) a.push(t('odisMil')); return a.join(', '); };
+const rowNote = e => e.flags === 'KWP' ? 'KWP ' + e.st : stBadges(e.st) + ' ' + stLabel(e.st) + ' · FTB ' + e.ftb + ' / ' + e.st + ': ' + e.flags + (isVag() ? ' · ' + odisSt(e.st) : '');
 function lowBatNote() {
   const rpm = typeof last['0C'] === 'number' ? last['0C'] : 0;
   return typeof volt === 'number' && volt > 0 && volt < 11.8 && rpm < 400 ? t('lowBat', {v: volt.toFixed(1)}) : '';
@@ -2410,7 +2455,7 @@ async function udsDTC(m, mask) {
       o.textContent = nm + ': ' + (act.length ? t('moduleCodesCount', {n: act.length}) : t('moduleNoCodes')) +
         (raw.some(l => /BUFFER/.test(l)) ? '\n⚠ ' + t('listTruncated') : '');
       setModStat(m.req, act.length);
-      const mkRow = e => e.obd ? dtcRow(e.obd, rowNote(e)) : rawRow(e);
+      const mkRow = e => withExt(e.obd ? dtcRow(e.obd, rowNote(e)) : rawRow(e), e);
       { const nz = act.filter(isNoiseDtc); act.filter(e => !isNoiseDtc(e)).forEach(e => o.appendChild(mkRow(e)));
         if (nz.length) { const det = document.createElement('details'), sm = document.createElement('summary'); sm.textContent = t('noiseSum', {n: nz.length}); det.appendChild(sm); nz.forEach(e => det.appendChild(mkRow(e))); o.appendChild(det); } }
       if (rest.length) {
@@ -2430,7 +2475,7 @@ async function udsDTC(m, mask) {
       if (k) {
         setModStat(m.req, k.length);
         o.textContent = nm + ': ' + (k.length ? t('moduleCodesCount', {n: k.length}) : t('moduleNoCodes')) + ' (KWP 18)';
-        k.forEach(e => o.appendChild(e.obd ? dtcRow(e.obd, rowNote(e)) : rawRow(e)));
+        k.forEach(e => o.appendChild(withExt(e.obd ? dtcRow(e.obd, rowNote(e)) : rawRow(e), e)));
       } else { setModStat(m.req, -1); o.textContent = nm + ': ' + t('moduleNoResponse', {h: h || t('moduleNoData')}); }
     }
   } catch (e) { o.textContent = t('statusError', {e: errText(e)}); }
@@ -2542,7 +2587,7 @@ async function doExt0(a) {
 }
 
 function buttons() {
-  $('#bScan').disabled = !running;
+  $('#bScan').disabled = !running; { const bd = $('#bDsg'); if (bd) bd.disabled = !running; }
   { const vb = $('#bVerify'), vr = vehRec(); if (vb) vb.disabled = !(running && vr && vr.mods && vr.mods.length && /CAN/.test(protoName) && !wwh); }
   $('#bDemo').disabled = running;
   $('#bRep').disabled = !running;
@@ -2709,6 +2754,11 @@ async function fake(cmd) {
   if (c === '04') return ['44'];
   if (c === '3E00') return fakeHdr === '7E0' ? ['7E8027E00'] : fakeHdr === '726' ? ['72E027E00'] : ['NO DATA'];
   if (c.startsWith('1902')) return ['5902FF01010008'];
+  { const mf = h => { const n = h.length / 2, hx = n.toString(16).toUpperCase().padStart(3, '0'), out = [hx]; let i = 12, k = 0; out.push('0:' + h.slice(0, 12)); while (i < h.length) { k++; out.push((k % 16).toString(16).toUpperCase() + ':' + h.slice(i, i + 14)); i += 14; } return out; };
+    if (c === '1A9B') return mf('5A9B' + hexAscii('0AM927769D 0123'));
+    if (c === '215F' || c === '2160' || c === '2173' || c === '2174') return mf('61' + c.slice(2) + '00' + '03E8' + '00' + '07D0' + '00' + '0BB8' + '00' + '0FA0');
+    if (c === '211C' || c === '211E') return mf('61' + c.slice(2) + '00' + '0190' + '00' + '00C8' + '00' + '0258');
+    if (c === '2161' || c === '2175') return mf('61' + c.slice(2) + '00' + '012C' + '00' + '0258'); }
   if (c === '22F190') return ['62F190' + hexAscii('DEMOVIN0000000000')];
   if (c === '22F187') return ['62F187' + hexAscii('DEMO-123')];
   if (c === '22F197') return ['62F197' + hexAscii(fakeHdr === '726' ? 'BCM_DEMO' : 'ECU_DEMO')];
@@ -3338,7 +3388,7 @@ const toAscii = h => (h.match(/../g) || []).map(x => parseInt(x, 16)).map(c => c
 const spaced = h => (h.match(/../g) || []).join(' ');
 const expOn = () => $('#expOn').checked;
 const saveLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-const PEND_RE = /7F[0-9A-F]{2}78/, SAFE_RETRY = ['10', '18', '19', '1A', '22', '3E'];
+const PEND_RE = /7F[0-9A-F]{2}78/, SAFE_RETRY = ['10', '18', '19', '1A', '21', '22', '3E'];
 // После 7F xx 78 блок «досчитывает»: повтор запроса каждые 0,8 с перезапускает расчёт (на Passat 12 повторов подряд не давали ответа), поэтому
 // сначала ждём запоздалый кадр (onData копит его в buf, пока нет активной команды), и лишь потом спрашиваем ещё раз (до 3 раз).
 async function lateLines(ms) {
@@ -3661,6 +3711,7 @@ function initBlocks() {
     runAct(async () => { if (!(await clearGate())) return; await udsSetup(m); const cr = await clearAny(m); bmOut((MODN[m.req] || m.req) + ': ' + t('clearingCodes') + cr.r.text + (cr.kind === 'KWP' ? ' (KWP)' : '')); }, false, t('clearBlockDtc') + ' ' + m.req);
   };
   $('#bmRead').onclick = () => bmRead($('#bmDid').value);
+  { const pb = $('#bmPre'); if (pb) [['0286', 'клемма 30 (тест)'], ['2203', 'пробег (тест)'], ['F40D', 'speed'], ['F40C', 'rpm'], ['F19E', 'ODX']].forEach(([d, n]) => { const b = document.createElement('button'); b.className = 'sec'; b.textContent = d; b.title = n; b.onclick = () => { $('#bmDid').value = d; bmRead(d, n); }; pb.appendChild(b); }); }
   $('#bmCsv').onclick = () => {
     if (!copies.length) { status(t('statusNoCopies')); return; }
     const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
@@ -4715,6 +4766,32 @@ function dcAdd(txt) {
   dcInfo(); status(t('statusAddedDict', {n}));
 }
 $('#dcAdd').onclick = () => { dcAdd($('#dcTxt').value); $('#dcTxt').value = ''; };
+// ===== v52: DSG 0AM (DQ200) — адаптация сцеплений, ТЕСТ. Протокол снят с утилиты DSGClutchDiag: CAN 11/500, 7E1→7E9, 1A 9B, 21 xx. Только чтение. =====
+const DSG_IDS = [['1C', 0.01, 'bar'], ['1E', 0.01, 'bar'], ['5F', 0.1, ''], ['60', 0.1, ''], ['61', 0.1, ''], ['73', 0.1, ''], ['74', 0.1, ''], ['75', 0.1, '']];
+async function dsgRead() {
+  const out = $('#dsgOut'); out.textContent = '';
+  const put = (txt, cls) => { const d = document.createElement('div'); if (cls) d.style.color = cls; d.textContent = txt; out.appendChild(d); return d; };
+  if (!/CAN 11/.test(protoName)) { put(t('dsgNeedCan'), 'var(--warn)'); return; }
+  const m = {req: '7E1', resp: '7E9'};
+  await udsSetup(m);
+  const id = await ud('1A9B', 4000);
+  let tx = '';
+  if (id.pos) { tx = asciiOf('xx' + id.h).replace(/\s+/g, ' ').trim(); put('1A 9B: ' + (tx || spaced(id.h))); }
+  else { put('1A 9B: ' + (id.h || t('clearNoAnswer')) + (id.nrc ? ' (NRC ' + id.nrc + ')' : ''), 'var(--warn)'); if (!id.h) { put(t('dsgNoTcu'), 'var(--warn)'); return; } }
+  if (tx && !/0AM/i.test(tx)) { put(t('dsgOnly0am'), 'var(--warn)'); return; }
+  const tb = document.createElement('table'); const hd = tb.insertRow(); ['21 xx', t('dsgRaw'), '×', t('dsgVals')].forEach(x => { const c = document.createElement('th'); c.textContent = x; hd.appendChild(c); }); out.appendChild(tb);
+  for (const [lid, k, unit] of DSG_IDS) {
+    const r = await ud('21' + lid, 5000), tr = tb.insertRow();
+    tr.insertCell().textContent = lid;
+    if (!r.pos) { const c = tr.insertCell(); c.colSpan = 3; c.textContent = (r.h || t('clearNoAnswer')) + (r.nrc ? ' (NRC ' + r.nrc + ')' : ''); continue; }
+    const b = (r.h.match(/../g) || []).map(x => parseInt(x, 16)), vals = [];
+    for (let i = 3; i + 1 < b.length; i += 3) vals.push(b[i] * 256 + b[i + 1]);   // группы по 3 байта: формат, старший, младший
+    tr.insertCell().textContent = spaced(r.h.slice(4));
+    tr.insertCell().textContent = k;
+    tr.insertCell().textContent = vals.map(v => +(v * k).toFixed(2) + unit).join(' · ');
+  }
+  put(t('dsgFoot'), 'var(--muted)');
+}
 // v51: обработчики
 roUI(); auditUI(); vehUI();
 $('#roCb').onchange = e => { roMode = e.target.checked; try { localStorage.setItem('roMode', roMode ? '1' : '0'); } catch (x) {} roUI(); };
@@ -4783,6 +4860,7 @@ $('#carName').addEventListener('input', () => { try { localStorage.setItem('carN
 
 carShow(); initBlocks(); rmInit(); profInit();
 $('#bScan').onclick = () => { action = {t: 'scan'}; };
+$('#bDsg').onclick = () => runAct(async () => { await dsgRead(); await restoreFast(); }, true, t('dsgTitle'));
 $('#bProbe').onclick = () => { action = {t: 'probe'}; };
 $('#bGw').onclick = () => { action = {t: 'gw'}; };
 $('#tSave').onclick = () => { const d = new Date(), p = n => String(n).padStart(2, '0'), ts = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds()); shareText('obd-terminal-' + ts + '.txt', '# OBDnoPRO ' + APP_VER + ' terminal log ' + d.toISOString() + '\n# ' + (protoName || '-') + '\n' + $('#tOut').textContent); };
