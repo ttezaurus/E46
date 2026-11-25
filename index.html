@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OBDnoPRO 02v52</title>
+<title>OBDnoPRO 02v54</title>
 <style>
 :root{--u:1px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
@@ -276,7 +276,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v52</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v54</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -300,6 +300,8 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </nav>
 <section id="tab-monitor" class="tab-panel active" role="tabpanel">
   <div class="row"><button id="bHud" class="sec" data-i18n="hud">HUD</button><button id="bPk" class="sec" data-i18n="resetPeaks">Сброс пиков</button><button id="bTg" class="sec" data-i18n="sendTg">📤 Поделиться</button></div>
+  <div class="row"><button id="bRec" class="sec" disabled data-i18n="recBtn">● Запись</button><button id="bCsv" class="sec" disabled data-i18n="saveCsv">Сохранить CSV</button><button id="bLog" class="sec" data-i18n="saveLog">Сохранить лог</button></div>
+  <div class="panel-note" data-i18n="recNote">CSV содержит выбранные параметры и временные отметки. Лог содержит обмен с адаптером.</div>
   <div class="grid" id="grid"></div>
   <div id="moreTiles"><div class="grid" id="grid2" style="margin-top:calc(8*var(--u))"></div></div>
   <div id="rate" style="color:var(--muted);font-size:calc(12*var(--u));margin:calc(6*var(--u)) 0"></div>
@@ -325,6 +327,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   </details>
 </section>
 <section id="tab-diagnostics" class="tab-panel" role="tabpanel">
+  <div class="row"><label><input type="checkbox" id="bmwExpCb"> <span data-i18n="bmwExp">BMW</span></label></div>
   <h2 data-i18n="dtcTitle">Ошибки OBD-II</h2>
   <div class="row"><button id="bRead" class="sec" disabled data-i18n="readDtc">Прочитать коды</button><button id="bClear" class="danger" disabled data-i18n="clearDtc">Стереть коды</button></div>
   <div id="dtc"></div>
@@ -416,9 +419,6 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   <div class="panel-note" id="profId"></div>
   <div class="panel-note" data-i18n="trustTitle">Доверенные устройства</div>
   <div id="trustList"></div>
-  <h2 data-i18n="recTitle">Запись параметров</h2>
-  <div class="row"><button id="bRec" class="sec" disabled data-i18n="recBtn">● Запись</button><button id="bCsv" class="sec" disabled data-i18n="saveCsv">Сохранить CSV</button><button id="bLog" class="sec" data-i18n="saveLog">Сохранить лог</button></div>
-  <div class="panel-note" data-i18n="recNote">CSV содержит выбранные параметры и временные отметки. Лог содержит обмен с адаптером.</div>
   <h2 data-i18n="dictTitle">Словарь ошибок</h2>
   <div class="panel-note" data-i18n="dictNote">Свои расшифровки кодов поверх встроенных. Строки вида <code>P0123;Описание</code> (разделитель ; , или табуляция) или JSON {"P0123":"Описание"}. Используйте тексты, на которые у вас есть права.</div>
   <textarea id="dcTxt" data-i18n="dictPh" placeholder="P0123;Датчик положения дросселя: высокий сигнал"></textarea>
@@ -453,7 +453,6 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
     <span data-i18n="guMode">Режим ГУ</span>
     <select id="guSel"><option value="auto" data-i18n="guAuto">Авто</option><option value="on" data-i18n="guOn">Вкл</option><option value="off" data-i18n="guOff">Выкл</option></select>
   </div>
-  <div class="row"><label><input type="checkbox" id="bmwExpCb"> <span data-i18n="bmwExp">BMW</span></label></div>
   <div class="row"><label><input type="checkbox" id="roCb"> <span data-i18n="roMode">Безопасное чтение</span></label></div>
   <div class="row"><label><input type="checkbox" id="clrMov"> <span data-i18n="clrMoving">Разрешить стирание кодов в движении</span></label></div>
   <div class="row" style="align-items:center"><span data-i18n="rpmWarn">Красная зона оборотов, об/мин</span><input id="rpmWarn" type="number" inputmode="numeric" min="2000" max="12000" step="100" style="max-width:calc(120*var(--u))"></div>
@@ -483,7 +482,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v52';
+const APP_VER = '02v54';
 (() => {
 'use strict';
 
@@ -1990,7 +1989,7 @@ const MODN = {'DA10F1': 'Engine (ECU)', 'DA18F1': 'Transmission (TCU)', '710': '
 const modStat = {};
 // v52: диагностические адреса VAG (как в ODIS) и имя блока по ODX-идентификатору (UDS 22 F19E, напр. EV_TCMDQ250021)
 const VAG_ADDR = {'01': 'Engine (ECU)', '02': 'Transmission (TCU)', '03': 'Brakes (ABS/ESP)', '08': 'Climate control', '09': 'Body control (BCM)', '13': 'Adaptive cruise (ACC)', '15': 'Airbag', '16': 'Steering column', '17': 'Instrument cluster', '19': 'Gateway', '42': 'Door driver', '52': 'Door passenger', '44': 'Power steering', '5F': 'Infotainment', '69': 'Trailer', '76': 'Park assist', 'B7': 'Keyless (KESSY)'};
-const VAG_ODX = [[/AirCondi|ACClima/i, '08'], [/AdaptCruis|ACCBOSCH|EV_ACC/i, '13'], [/TransContrModul|EV_TCM|DSG/i, '02'], [/EnginContrModul|EV_ECM/i, '01'], [/Brake/i, '03'], [/CentrElect|BodyContrModul/i, '09'], [/Airba/i, '15'], [/SteerColumElect/i, '16'], [/DashBoard/i, '17'], [/Gatew/i, '19'], [/DriveSide/i, '42'], [/PasseSide/i, '52'], [/SteerAssis/i, '44'], [/InforContrUnit|EV_MU/i, '5F'], [/TrailFunct/i, '69'], [/ParkiAssis|EV_EPH/i, '76'], [/AccesStartInter|Kessy/i, 'B7']];
+const VAG_ODX = [[/EV_BCM/i, '09'], [/EV_SMLS/i, '16'], [/AirCondi|ACClima/i, '08'], [/AdaptCruis|ACCBOSCH|EV_ACC/i, '13'], [/TransContrModul|EV_TCM|DSG/i, '02'], [/EnginContrModul|EV_ECM/i, '01'], [/Brake/i, '03'], [/CentrElect|BodyContrModul/i, '09'], [/Airba/i, '15'], [/SteerColumElect/i, '16'], [/DashBoard/i, '17'], [/Gatew/i, '19'], [/DriveSide/i, '42'], [/PasseSide/i, '52'], [/SteerAssis/i, '44'], [/InforContrUnit|EV_MU/i, '5F'], [/TrailFunct/i, '69'], [/ParkiAssis|EV_EPH/i, '76'], [/AccesStartInter|Kessy/i, 'B7']];
 const vagByOdx = x => { for (const [re, a] of VAG_ODX) if (re.test(x || '')) return {addr: a, name: VAG_ADDR[a]}; return null; };
 const isVag = () => /^(WVW|WV[123]|WVG|WUA|WAU|TMB|VSS|TRU|3VW|1VW|9BW|AAV|LSV|WSC)/.test(car && car.vin || '');
 function setModStat(req, n) {
@@ -2786,6 +2785,7 @@ function dragStep(v, now) {
     d.pk = {rpm: 0, boost: null, int: last['15'], cool: last['5']};
     $('#dragR').textContent = t('accelerating');
   } else if (d.s === 'run') {
+    if (now - d.t0 > 30000 && !MARKS.some(x => d.res[x] !== undefined)) { d.s = 'idle'; $('#dragR').textContent = t('interrupted'); d.pt = now; d.pv = v; dvSched(); return; }
     d.samples.push([(now - d.t0) / 1000, v]);
     if (d.samples.length > 2000) d.samples.splice(0, d.samples.length - 2000);
     d.vmax = Math.max(d.vmax || 0, v);
@@ -2971,6 +2971,7 @@ function recordCycle() {
   if (recRows.length % 10 === 0) saveBackup();
 }
 const FAST = new Set([0x04, 0x0B, 0x0C, 0x0D, 0x10, 0x11, 0x23, 0x59, 0x5A, 0x5D, 0x5E, 0x62, 0x73, 0x7A]);
+const deadPid = new Set(), ndCnt = {};
 let cycle = 0, reqs = 0, rt = performance.now();
 function recUI() {
   const b = $('#bRec'); if (!b) return;
@@ -4420,6 +4421,7 @@ async function run() {
     }
     if (!udsOnly) { taskEnd(t('statusLinkEstablished')); setConn(demo ? 'demo' : 'ok', demo ? 'statusDemo' : 'statusOk'); }
     let fails = 0;
+    deadPid.clear(); for (const k in ndCnt) delete ndCnt[k];
     while (running && my === gen) {
       cycle++;
       recUpdated.clear();
@@ -4437,7 +4439,7 @@ async function run() {
               if (m) { volt = parseFloat(m[1]); sbUI(); }
             } catch (e) { if (/obd:disconnected|obd:refresh/.test(errText(e)) || gattErr(e)) throw e; }
           } else if (demo) { volt = 13.8 + Math.sin(performance.now() / 4000) * 0.3; }
-          const due = [...new Set(active.map(m => m.pid))].filter(pid => FAST.has(pid) || cycle % 5 === 0), groups = [];
+          const due = [...new Set(active.map(m => m.pid))].filter(pid => !deadPid.has(pid) && (FAST.has(pid) || cycle % 5 === 0)), groups = [];
           if (multi) {
             const ok = due.filter(p => PIDLEN[p]);
             for (let i = 0; i < ok.length; i += 4) groups.push(ok.slice(i, i + 4));
@@ -4445,10 +4447,12 @@ async function run() {
           } else due.forEach(p => groups.push([p]));
           for (const g of groups) {
             if (!running || my !== gen || forceRe) break;
-            for (const [pid, b] of await readPids(g)) {
+            const rr = await readPids(g);
+            for (const [pid, b] of rr) {
               reqs++; got++;
               active.filter(m => m.pid === pid).forEach(m => { try { const v = m.f(b); if (isFinite(v)) show(m, v); } catch (e) {} });
             }
+            if (got) g.forEach(p => { if (rr.some(x => x[0] === p)) ndCnt[p] = 0; else { ndCnt[p] = (ndCnt[p] || 0) + 1; if (ndCnt[p] >= 2 && !deadPid.has(p)) { deadPid.add(p); log('PID ' + p.toString(16).toUpperCase() + ': NO DATA x2, пропускаю'); } } });
           }
           if (groups.length && !got && !forceRe) { if (++fails >= 2) bad = true; }
           else if (got) { fails = 0; if (conn.s !== 'ok' && conn.s !== 'demo') setConn('ok', 'statusOk'); }
@@ -4656,7 +4660,7 @@ $('#bClear').onclick = () => {
   if (remote.role === 'viewer' && remote.dc) { taskShow(t('rmClrReq'), ''); rmSend({t: 'clearDtc'}); return; }
   action = 'clear';
 };
-$('#bLog').onclick = () => shareText('obd-log.txt', logBuf);
+$('#bLog').onclick = () => shareText('obd-log.txt', '# ' + new Date().toISOString() + ' ' + APP_VER + ' VIN ' + ((car && car.vin) || '-') + ' ECT ' + (last['5'] !== undefined ? last['5'] : '?') + ' RPM ' + (last['12'] !== undefined ? last['12'] : '?') + '\n' + logBuf);
 $('#bDemo').onclick = () => {
   unlockAudio();
   car = {vin: '', cal: '', mk: '', year: '', done: false};
@@ -4774,7 +4778,8 @@ async function dsgRead() {
   if (!/CAN 11/.test(protoName)) { put(t('dsgNeedCan'), 'var(--warn)'); return; }
   const m = {req: '7E1', resp: '7E9'};
   await udsSetup(m);
-  const id = await ud('1A9B', 4000);
+  let id = await ud('1A9B', 4000);
+  if (!id.pos) { const i2 = await ud('22F189', 4000); if (i2.pos) id = i2; }
   let tx = '';
   if (id.pos) { tx = asciiOf('xx' + id.h).replace(/\s+/g, ' ').trim(); put('1A 9B: ' + (tx || spaced(id.h))); }
   else { put('1A 9B: ' + (id.h || t('clearNoAnswer')) + (id.nrc ? ' (NRC ' + id.nrc + ')' : ''), 'var(--warn)'); if (!id.h) { put(t('dsgNoTcu'), 'var(--warn)'); return; } }
@@ -4785,10 +4790,11 @@ async function dsgRead() {
     tr.insertCell().textContent = lid;
     if (!r.pos) { const c = tr.insertCell(); c.colSpan = 3; c.textContent = (r.h || t('clearNoAnswer')) + (r.nrc ? ' (NRC ' + r.nrc + ')' : ''); continue; }
     const b = (r.h.match(/../g) || []).map(x => parseInt(x, 16)), vals = [];
-    for (let i = 3; i + 1 < b.length; i += 3) vals.push(b[i] * 256 + b[i + 1]);   // группы по 3 байта: формат, старший, младший
+    const kn = lid !== '1C' && lid !== '1E';
+    for (let i = 3; i + 1 < b.length; i += 3) { const ty = b[i - 1], A = b[i], B = b[i + 1]; vals.push(kn && ty === 0x66 ? +(A * B * k).toFixed(2) : kn && ty === 0x5E ? +(A * (B - 128) * k).toFixed(2) : ty.toString(16).toUpperCase() + ':' + A + ',' + B); }   // группы по 3 байта: формат, старший, младший
     tr.insertCell().textContent = spaced(r.h.slice(4));
-    tr.insertCell().textContent = k;
-    tr.insertCell().textContent = vals.map(v => +(v * k).toFixed(2) + unit).join(' · ');
+    tr.insertCell().textContent = kn ? k : '—';
+    tr.insertCell().textContent = vals.join(' · ');
   }
   put(t('dsgFoot'), 'var(--muted)');
 }
