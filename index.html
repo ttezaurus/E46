@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OBDnoPRO 02v57</title>
+<title>OBDnoPRO 02v58</title>
 <style>
 :root{--u:1px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
@@ -276,7 +276,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v57</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v58</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -448,6 +448,10 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
       <b style="width:100%; font-size:calc(14*var(--u)); margin-bottom:calc(5*var(--u));" data-i18n="importDb">Импорт большой базы ошибок (JSON)</b>
       <input type="file" id="bigDtcFile" accept=".json,.txt,.ndjson,application/json,text/plain" style="flex:1; min-width:0;"><button id="bigDtcClr" class="sec" data-i18n="dbClr">Стереть базу</button>
   </div>
+  <h2 data-i18n="adpTitle">Адаптер</h2>
+  <div id="adpInfo" class="panel-note"></div>
+  <div class="row"><label><input type="checkbox" id="adpAuto"> <span data-i18n="adpAutoLbl">Подключаться к запомненному адаптеру при запуске</span></label></div>
+  <div class="row"><button id="adpForget" class="sec" type="button" data-i18n="adpForget">Забыть адаптер</button></div>
   <h2 data-i18n="carTitle">Автомобиль</h2>
   <div class="row"><input id="carName" data-i18n="carNamePh" placeholder="Название авто (необязательно), например BMW E46 330d"></div>
   <div class="panel-note" data-i18n="carNote">Показывается вверху. Модель по OBD-II определить нельзя: из VIN берутся марка и примерный год, если ЭБУ отдаёт VIN.</div>
@@ -501,7 +505,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v57';
+const APP_VER = '02v58';
 (() => {
 'use strict';
 
@@ -4788,7 +4792,34 @@ async function onDisc() {
   status(userStop ? t('statusStopped') : t('statusReconnectFail'));
 }
 
-async function connect() {
+// ===== v58: запоминание адаптера и автоподключение =====
+const ADP_KEY = 'adapter', ADP_AUTO = 'adapterAuto', adpHooked = new WeakSet();
+const adpSaved = () => { try { return JSON.parse(localStorage.getItem(ADP_KEY) || 'null'); } catch (e) { return null; } };
+const adpAuto = () => { try { return localStorage.getItem(ADP_AUTO) !== '0'; } catch (e) { return true; } };
+const adpCanList = () => !!(navigator.bluetooth && navigator.bluetooth.getDevices);
+function adpUI() {
+  const sv = adpSaved(), e = $('#adpInfo'), c = $('#adpAuto');
+  if (e) e.textContent = sv ? t('adpSaved', {n: sv.name || sv.id}) + (adpCanList() ? '' : ' · ' + t('adpNoList')) : t('adpNone');
+  if (c) c.checked = adpAuto();
+}
+function adpRemember() { try { if (dev) localStorage.setItem(ADP_KEY, JSON.stringify({id: dev.id, name: dev.name || ''})); } catch (e) {} adpUI(); }
+function adpHook(d) { if (!adpHooked.has(d)) { adpHooked.add(d); d.addEventListener('gattserverdisconnected', onDisc); } }
+async function adpFind() { // ранее разрешённое устройство без окна выбора (если браузер умеет getDevices)
+  const sv = adpSaved(); if (!sv || !adpCanList()) return null;
+  try { const l = await navigator.bluetooth.getDevices(); return l.find(d => d.id === sv.id) || l.find(d => sv.name && d.name === sv.name) || null; }
+  catch (e) { log('! getDevices: ' + errText(e)); return null; }
+}
+function adpWake(d) { // известное устройство иногда подключается только после его рекламного пакета
+  if (!d.watchAdvertisements) return Promise.resolve();
+  return new Promise(res => {
+    const done = () => { d.removeEventListener('advertisementreceived', done); res(); };
+    d.addEventListener('advertisementreceived', done);
+    try { d.watchAdvertisements().catch(() => res()); } catch (e) { res(); }
+    setTimeout(res, 6000);
+  });
+}
+async function connect(silent) {
+  if (silent && !(adpSaved() && adpCanList())) return; // автоподключение без жеста возможно только через getDevices
   demo = false; userStop = false; car = {vin: '', cal: '', mk: '', year: '', done: false};
   taskShow(t('statusConnectAdapter'), 'connect');
   if (!navigator.bluetooth) { taskEnd(t('statusNoBt'), true); setConn('idle', 'statusIdle'); status(t('statusNoBt')); return; }
@@ -4800,13 +4831,33 @@ async function connect() {
         await openGatt(); run(); return;
       } catch (e) { log('! ' + errText(e) + ' — selecting device again'); }
     }
+    if (!dev) {
+      const d = await adpFind();
+      if (d) {
+        log('saved adapter: ' + (d.name || d.id));
+        dev = d; adpHook(d);
+        try { await openGatt(); adpRemember(); run(); return; }
+        catch (e) {
+          log('! ' + errText(e) + ' — waiting for advertisement');
+          try { await adpWake(d); await openGatt(); adpRemember(); run(); return; }
+          catch (e2) { log('! saved adapter: ' + errText(e2)); try { await dropGatt(); } catch (e3) {} dev = null; }
+        }
+      }
+    }
+    if (silent) { taskClose(); setConn('idle', 'statusIdle'); status(t('statusIdle')); return; }
+    const sv = adpSaved();
     log('requesting device…');
-    dev = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: SERVICES});
-    dev.addEventListener('gattserverdisconnected', onDisc);
+    if (sv && sv.name) {
+      try { dev = await navigator.bluetooth.requestDevice({filters: [{name: sv.name}], optionalServices: SERVICES}); }
+      catch (e) { if (/cancel/i.test(errText(e))) throw e; log('! ' + errText(e) + ' — showing all devices'); dev = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: SERVICES}); }
+    } else dev = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: SERVICES});
+    adpHook(dev);
     log('selected: ' + dev.name);
     await openGatt();
+    adpRemember();
     run();
   } catch (e) {
+    if (silent) { taskClose(); setConn('idle', 'statusIdle'); status(t('statusIdle')); log('! autoconnect: ' + errText(e)); return; }
     taskEnd(t('statusConnError', {e: errText(e)}), true);
     setConn('idle', 'statusIdle');
     status(t('statusError', {e: errText(e)}));
@@ -5127,10 +5178,22 @@ function uiInit() {
   const r = $('#uiRange'); if (r) r.addEventListener('input', () => uiScaleSet(r.value / 100, true));
   const a = $('#uiAuto'); if (a) a.onclick = () => { try { localStorage.removeItem('ui'); } catch (e) {} uiScaleSet(uiScaleGet(), false); };
 }
+Object.assign(LANG.ru, {adpTitle: 'Адаптер', adpSaved: 'Запомнен: {n}', adpNone: 'Адаптер не запомнен: он запомнится после первого подключения.', adpNoList: 'этот браузер не умеет подключаться без окна выбора: будет показан только один вариант', adpAutoLbl: 'Подключаться к запомненному адаптеру при запуске', adpForget: 'Забыть адаптер', adpForgot: 'Адаптер забыт'});
+Object.assign(LANG.en, {adpTitle: 'Adapter', adpSaved: 'Remembered: {n}', adpNone: 'No adapter remembered: it is saved after the first connection.', adpNoList: 'this browser cannot reconnect without the chooser: only one option will be shown', adpAutoLbl: 'Connect to the remembered adapter on start', adpForget: 'Forget adapter', adpForgot: 'Adapter forgotten'});
+Object.assign(LANG.de, {adpTitle: 'Adapter', adpSaved: 'Gemerkt: {n}', adpNone: 'Kein Adapter gemerkt: er wird nach der ersten Verbindung gespeichert.', adpNoList: 'dieser Browser kann nicht ohne Auswahlfenster verbinden: es wird nur eine Option angezeigt', adpAutoLbl: 'Beim Start mit dem gemerkten Adapter verbinden', adpForget: 'Adapter vergessen', adpForgot: 'Adapter vergessen'});
+$('#adpAuto').onchange = () => { try { localStorage.setItem(ADP_AUTO, $('#adpAuto').checked ? '1' : '0'); } catch (e) {} };
+$('#adpForget').onclick = async () => {
+  const sv = adpSaved();
+  try { localStorage.removeItem(ADP_KEY); } catch (e) {}
+  if (sv && adpCanList()) { try { for (const d of await navigator.bluetooth.getDevices()) if ((d.id === sv.id || d.name === sv.name) && d.forget && !(d.gatt && d.gatt.connected)) await d.forget(); } catch (e) {} }
+  adpUI(); status(t('adpForgot'));
+};
 buttons();
 buildHelp(); uiInit();
 
 applyLanguage(currentLang);
+adpUI();
+setTimeout(() => { try { if (adpAuto() && adpSaved() && !running && !dev && !demo && !reconnecting) connect(true); } catch (e) {} }, 800);
 
 
 // ===== v24: режим ГУ и меню «⋯» =====
