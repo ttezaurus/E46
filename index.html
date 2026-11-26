@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OBDnoPRO 02v55kline</title>
+<title>OBDnoPRO 02v56</title>
 <style>
 :root{--u:1px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
@@ -258,7 +258,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   apply();
   document.addEventListener('DOMContentLoaded',function(){
     apply();
-    var dg=document.getElementById('thDiag');if(dg)dg.textContent='theme: '+(get('thId')||'buds')+' · '+getComputedStyle(document.documentElement).getPropertyValue('--accent')+' · 02v51';
+    var dg=document.getElementById('thDiag');if(dg)dg.textContent='theme: '+(get('thId')||'buds')+' · '+getComputedStyle(document.documentElement).getPropertyValue('--accent')+' · 02v56';
     var row=document.getElementById('thRow');
     function mark(){var id=get('thId')||'buds';[].forEach.call(document.querySelectorAll('#thRow button'),function(b){b.classList.toggle('on',b.getAttribute('data-th')===id);});
       var c=document.getElementById('thColor');if(c)c.value=get('thAcc')||T[id].accent;
@@ -276,7 +276,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v54</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v56</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -328,6 +328,8 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </section>
 <section id="tab-diagnostics" class="tab-panel" role="tabpanel">
   <div class="row"><label><input type="checkbox" id="bmwExpCb"> <span data-i18n="bmwExp">BMW</span></label></div>
+  <div class="row"><button id="bBmwK" type="button">E46: коды DDE по K-line (эксперимент)</button></div>
+  <pre id="bmwOut" style="white-space:pre-wrap;font-size:12px"></pre>
   <h2 data-i18n="dtcTitle">Ошибки OBD-II</h2>
   <div class="row"><button id="bRead" class="sec" disabled data-i18n="readDtc">Прочитать коды</button><button id="bClear" class="danger" disabled data-i18n="clearDtc">Стереть коды</button></div>
   <div id="dtc"></div>
@@ -344,6 +346,23 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   <div class="row"><label><input type="checkbox" id="scanFast"> <span data-i18n="scanFast">Быстрый скан</span></label></div>
   <div class="row"><label><input type="checkbox" id="scanFull"> <span data-i18n="scanFull">Полный перебор адресов</span></label></div>
   <div id="mods"></div><div id="udsOut"></div>
+  <h2>Скан DID с эталоном (только чтение)</h2>
+  <div class="row"><input id="dsReq" value="7E0" size="4"> <input id="dsResp" value="7E8" size="4"> <input id="dsFrom" value="F400" size="5"> <input id="dsTo" value="F4FF" size="5"> <button id="dsGo" type="button">Скан</button> <button id="dsStop" type="button">Стоп</button></div>
+  <textarea id="dsRef" rows="6" style="width:100%">Напряжение клеммы 30 В=11.74
+Напряжение АКБ мВ=11740
+Температура ОЖ=12
+Температура на впуске=6
+Температура масла=4.06
+Давление на впуске кПа=101
+Атмосферное кПа=100
+Давление топлива кПа=170
+Уровень топлива л=49
+Сажа расчётная г=14.1
+Сажа измеренная г=11.0
+Зола масляная г=34.9
+Граница заполнения г=80
+Разность давлений DPF гПа=-5</textarea>
+  <pre id="dsOut" style="white-space:pre-wrap;font-size:12px"></pre>
   <div class="panel-note" data-i18n="stLegend"></div>
   <h2 data-i18n="blockTitle">Блок</h2>
   <div class="row"><select id="bmSel" style="flex:1;min-width:0"></select></div>
@@ -482,7 +501,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v54';
+const APP_VER = '02v56';
 (() => {
 'use strict';
 
@@ -491,7 +510,7 @@ const APP_VER = '02v54';
 const LANG_BASE = {
   noiseSum: 'Bus / power-supply codes (U10xx–U14xx): {n}', gwBtn: 'VAG gateway probe (read-only)', gwTask: 'Gateway probe', gwTitle: 'Gateway 710: component list search (22 04xx)', gwNeedCan11: 'Gateway probe needs CAN 11-bit. This car: {p}', gwNoResp: 'Gateway 710 did not answer 22 F197.', gwSummary: 'Done. Positive DIDs: {h}. Negative responses: {n}. Send this log.',
   modAbout: 'About module', modIdentTitle: 'Identification', modErrTitle: 'Errors', modClose: 'Close', modIdentBtn: 'Read identification', modNoIdent: 'Identification not read yet', modSys: 'System', modAddr: 'Address',
-  lang: 'en', rpmWarn: 'RPM warning zone, rpm', reportWwhNote: 'WWH-OBD: fault codes via UDS 19; modes 03/07/09/0A, freeze frame and readiness monitors are not available.', tabHelp: 'Help', helpTitle: 'Help', helpProtoText: 'Protocol support (ELM327 over BLE)\n• Standard OBD-II (modes 01, 02, 03, 04, 07, 09, 0A): CAN 11-bit and 29-bit (500 kbit/s), ISO 9141-2. Confirmed by logs: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: supported by the adapter, not verified in the app.\n• Module scan: CAN 11-bit (addresses 700–7FF) and CAN 29-bit (18DA<ECU>F1). Experimental K-Line/KWP scan (BMW-oriented addresses) when the link is ISO 9141 / KWP2000 — read-only, not K-Bus/I-Bus.\n• Module diagnostics (UDS over CAN): fault codes (19), identification and parameters (22), keep-alive (3E). Writing (2E) and risky commands need confirmation and a voltage check. Flashing and authentication (29, 34–38, 3D) are blocked, the app does not compute the seed/key (27), a ready-made frame can be sent.\n• WWH-OBD (ISO 27145, e.g. newer Mercedes): live data via UDS 22 F4xx, codes via 19 42, detected automatically; not verified on a vehicle.\n• Not supported: K-Bus/I-Bus body modules, CAN FD, DoIP.\n• Use the Protocol probe (Settings tab) to collect module replies for analysis: send the log.', helpAbout: 'OBDnoPRO 02v51. Data is stored in this browser only; remote view connects devices directly.', uiScale: 'Interface scale', uiScaleAuto: 'Auto', scanNeedCan11: 'Module scan works on CAN only (11 and 29 bit). This vehicle: {p}', statusScanningKline: 'K-Line/KWP scan (experimental)… up to 2–3 min, do not close the page.', klineScanNote: 'K-Line scan finished: {n} module(s). Experimental — only units answering on diagnostic K-Line (not K-Bus/I-Bus).', klineScanEmpty: 'No modules answered on K-Line. Typical causes: adapter does not support KWP headers, ignition off, or modules sit on K-Bus/I-Bus (not reachable via ELM327).', modRead: 'Read codes', modUnknown: 'Module', modClean: 'no codes', modCodes: 'codes: {n}', modNoResp: 'no response', modMore: 'More', modSelect: 'Select', tilesMore: 'More parameters', guMode: 'Head unit mode', clrMoving: 'Allow clearing codes while moving (this device only)', guAuto: 'Auto', guOn: 'On', guOff: 'Off', hNoData: 'The module did not answer. Check that the ignition is on.', hCanErr: 'CAN bus error. Check the connector and ignition.', hUnable: 'Cannot reach the control unit. Turn the ignition on and try again.', hBusInit: 'K-Line connection failed. Wait a few seconds and try again.', hNoResp: 'The adapter did not answer ({c}).', probeBtn: 'Protocol probe (read-only)', probeTask: 'Protocol probe', probeNeedCan: 'Probe needs a CAN protocol. This vehicle: {p}', udsOtherSum: 'Other supported codes, no fault ({n})', statusKlineWait: 'Waiting for the ECU session to close ({s} s)…', batteryBlock: 'Battery voltage cannot be verified: operation blocked.', udsRawNote: 'raw UDS code (format depends on the ECU)', profTitle: 'Profile', profNamePh: 'Your name (shown to the other side)', profId: 'Your ID: {id}', trustTitle: 'Trusted devices', trustNone: 'No trusted devices yet.', rmAuth: 'Verifying identity…', rmBadProof: 'Identity check failed', rmAskConn: '"{n}" ({id}) wants to connect. Allow?', rmAskHost: 'Connect to "{n}" ({id})?', rmRemember: 'Trust "{n}" next time (no prompt)?', rmWithWho: 'Connected: {n} ({id})', rmNoCrypto: 'Profiles need a secure context (https)', rmDeclined: 'Connection declined', connect: 'Connect adapter', demo: 'Demo', stop: 'Stop', refresh: '↻ Refresh link', rmTurnPh: 'TURN (optional): turn:host:3478|user|password', rmTitle: 'Remote view',
+  lang: 'en', rpmWarn: 'RPM warning zone, rpm', reportWwhNote: 'WWH-OBD: fault codes via UDS 19; modes 03/07/09/0A, freeze frame and readiness monitors are not available.', tabHelp: 'Help', helpTitle: 'Help', helpProtoText: 'Protocol support (ELM327 over BLE)\n• Standard OBD-II (modes 01, 02, 03, 04, 07, 09, 0A): CAN 11-bit and 29-bit (500 kbit/s), ISO 9141-2. Confirmed by logs: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: supported by the adapter, not verified in the app.\n• Module scan: CAN 11-bit (addresses 700–7FF) and CAN 29-bit (18DA<ECU>F1). Experimental K-Line/KWP scan (BMW-oriented addresses) when the link is ISO 9141 / KWP2000 — read-only, not K-Bus/I-Bus.\n• Module diagnostics (UDS over CAN): fault codes (19), identification and parameters (22), keep-alive (3E). Writing (2E) and risky commands need confirmation and a voltage check. Flashing and authentication (29, 34–38, 3D) are blocked, the app does not compute the seed/key (27), a ready-made frame can be sent.\n• WWH-OBD (ISO 27145, e.g. newer Mercedes): live data via UDS 22 F4xx, codes via 19 42, detected automatically; not verified on a vehicle.\n• Not supported: K-Bus/I-Bus body modules, CAN FD, DoIP.\n• Use the Protocol probe (Settings tab) to collect module replies for analysis: send the log.', helpAbout: 'OBDnoPRO 02v56. Data is stored in this browser only; remote view connects devices directly.', uiScale: 'Interface scale', uiScaleAuto: 'Auto', scanNeedCan11: 'Module scan works on CAN only (11 and 29 bit). This vehicle: {p}', statusScanningKline: 'K-Line/KWP scan (experimental)… up to 2–3 min, do not close the page.', klineScanNote: 'K-Line scan finished: {n} module(s). Experimental — only units answering on diagnostic K-Line (not K-Bus/I-Bus).', klineScanEmpty: 'No modules answered on K-Line. Typical causes: adapter does not support KWP headers, ignition off, or modules sit on K-Bus/I-Bus (not reachable via ELM327).', modRead: 'Read codes', modUnknown: 'Module', modClean: 'no codes', modCodes: 'codes: {n}', modNoResp: 'no response', modMore: 'More', modSelect: 'Select', tilesMore: 'More parameters', guMode: 'Head unit mode', clrMoving: 'Allow clearing codes while moving (this device only)', guAuto: 'Auto', guOn: 'On', guOff: 'Off', hNoData: 'The module did not answer. Check that the ignition is on.', hCanErr: 'CAN bus error. Check the connector and ignition.', hUnable: 'Cannot reach the control unit. Turn the ignition on and try again.', hBusInit: 'K-Line connection failed. Wait a few seconds and try again.', hNoResp: 'The adapter did not answer ({c}).', probeBtn: 'Protocol probe (read-only)', probeTask: 'Protocol probe', probeNeedCan: 'Probe needs a CAN protocol. This vehicle: {p}', udsOtherSum: 'Other supported codes, no fault ({n})', statusKlineWait: 'Waiting for the ECU session to close ({s} s)…', batteryBlock: 'Battery voltage cannot be verified: operation blocked.', udsRawNote: 'raw UDS code (format depends on the ECU)', profTitle: 'Profile', profNamePh: 'Your name (shown to the other side)', profId: 'Your ID: {id}', trustTitle: 'Trusted devices', trustNone: 'No trusted devices yet.', rmAuth: 'Verifying identity…', rmBadProof: 'Identity check failed', rmAskConn: '"{n}" ({id}) wants to connect. Allow?', rmAskHost: 'Connect to "{n}" ({id})?', rmRemember: 'Trust "{n}" next time (no prompt)?', rmWithWho: 'Connected: {n} ({id})', rmNoCrypto: 'Profiles need a secure context (https)', rmDeclined: 'Connection declined', connect: 'Connect adapter', demo: 'Demo', stop: 'Stop', refresh: '↻ Refresh link', rmTurnPh: 'TURN (optional): turn:host:3478|user|password', rmTitle: 'Remote view',
   rmNote: 'Direct encrypted (WebRTC) connection between two browsers; a public PeerJS server is used only to set it up. The viewer sees live data and can read codes; clearing codes needs confirmation from the car owner.',
   rmHost: 'Share (I am in the car)', rmView: 'Watch (I am at the computer)', rmOff: 'Disconnect',
   rmCopy: 'Copy', rmShare: 'Send', rmGo: 'Continue',
@@ -711,7 +730,7 @@ const LANG_BASE = {
 const LANG_RU = {
   noiseSum: 'Ошибки шины и питания (U10xx–U14xx): {n}', gwBtn: 'Зонд шлюза VAG (только чтение)', gwTask: 'Зонд шлюза', gwTitle: 'Шлюз 710: поиск списка компонентов (22 04xx)', gwNeedCan11: 'Зонд шлюза нужен для CAN 11 бит. У этой машины: {p}', gwNoResp: 'Шлюз 710 не ответил на 22 F197.', gwSummary: 'Готово. Положительные DID: {h}. Отрицательных ответов: {n}. Пришлите этот лог.',
   modAbout: 'О блоке', modIdentTitle: 'Идентификация', modErrTitle: 'Ошибки', modClose: 'Закрыть', modIdentBtn: 'Считать идентификацию', modNoIdent: 'Идентификация ещё не считана', modSys: 'Система', modAddr: 'Адрес',
-  lang: 'ru', rpmWarn: 'Красная зона оборотов, об/мин', reportWwhNote: 'WWH-OBD: ошибки читаются через UDS 19; режимы 03/07/09/0A, стоп-кадр и мониторы готовности недоступны.', tabHelp: 'Справка', helpTitle: 'Справка', helpProtoText: 'Поддержка протоколов (ELM327 по BLE)\n• Стандартный OBD-II (режимы 01, 02, 03, 04, 07, 09, 0A): CAN 11 бит и 29 бит (500 кбит/с), ISO 9141-2. Подтверждено логами: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: поддерживаются адаптером, в приложении не проверялись.\n• Поиск блоков: CAN 11 бит (адреса 700–7FF) и CAN 29 бит (18DA<блок>F1). Экспериментальный скан K-Line/KWP (адреса в стиле BMW) при связи ISO 9141 / KWP2000 — только чтение, не K-Bus/I-Bus.\n• Диагностика блоков (UDS по CAN): ошибки (19), идентификация и параметры (22), поддержка связи (3E). Запись (2E) и опасные команды — только с подтверждением и проверкой напряжения. Прошивка и авторизация (29, 34–38, 3D) заблокированы, ключ доступа (27) приложение не вычисляет, готовый кадр отправить можно.\n• WWH-OBD (ISO 27145, например новые Mercedes): данные через UDS 22 F4xx, коды через 19 42, определяется автоматически; на машине не проверено.\n• Не поддерживается: кузовные блоки на K-Bus/I-Bus, KWP/TP 2.0 по CAN (старые модули VAG), CAN FD, DoIP.\n• «Зонд протокола» (вкладка «Настройки») собирает ответы блока для анализа: пришлите лог.', helpAbout: 'OBDnoPRO 02v51. Данные хранятся только в браузере этого устройства; удалённый просмотр соединяет устройства напрямую.', uiScale: 'Масштаб интерфейса', uiScaleAuto: 'Авто', scanNeedCan11: 'Поиск блоков работает только на CAN (11 и 29 бит). У этой машины: {p}', statusScanningKline: 'Скан K-Line/KWP (эксперимент)… до 2–3 мин, страницу не закрывайте.', klineScanNote: 'Скан K-Line завершён: блоков {n}. Эксперимент — только блоки, отвечающие по диагностической K-Line (не K-Bus/I-Bus).', klineScanEmpty: 'Ни один блок не ответил по K-Line. Частые причины: адаптер не умеет заголовки KWP, выключено зажигание, или блоки сидят на K-Bus/I-Bus (через ELM327 недоступны).', modRead: 'Читать коды', modUnknown: 'Блок', modClean: 'ошибок нет', modCodes: 'ошибок: {n}', modNoResp: 'нет ответа', modMore: 'Ещё', modSelect: 'Выбрать', tilesMore: 'Ещё параметры', guMode: 'Режим ГУ', clrMoving: 'Разрешить стирание кодов в движении (только на этом устройстве)', guAuto: 'Авто', guOn: 'Вкл', guOff: 'Выкл', hNoData: 'Блок не ответил. Проверьте, что зажигание включено.', hCanErr: 'Ошибка шины CAN. Проверьте разъём и зажигание.', hUnable: 'Не удаётся связаться с блоком управления. Включите зажигание и повторите.', hBusInit: 'Не удалось установить связь по K-Line. Подождите несколько секунд и повторите.', hNoResp: 'Адаптер не ответил ({c}).', probeBtn: 'Зонд протокола (только чтение)', probeTask: 'Зонд протокола', probeNeedCan: 'Зонд нужен для CAN-протоколов. У этой машины: {p}', udsOtherSum: 'Прочие поддерживаемые коды без отказа ({n})', statusKlineWait: 'Ждём завершения сеанса блока ({s} с)…', batteryBlock: 'Напряжение не удалось проверить: операция заблокирована.', udsRawNote: 'сырой UDS-код (формат зависит от блока)', profTitle: 'Профиль', profNamePh: 'Ваше имя (видит вторая сторона)', profId: 'Ваш ID: {id}', trustTitle: 'Доверенные устройства', trustNone: 'Доверенных пока нет.', rmAuth: 'Проверка личности…', rmBadProof: 'Не удалось подтвердить личность', rmAskConn: '«{n}» ({id}) хочет подключиться. Разрешить?', rmAskHost: 'Подключиться к «{n}» ({id})?', rmRemember: 'Доверять «{n}» в дальнейшем (без вопроса)?', rmWithWho: 'Подключено: {n} ({id})', rmNoCrypto: 'Для профилей нужен защищённый контекст (https)', rmDeclined: 'Подключение отклонено', connect: 'Подключить адаптер', demo: 'Демо', stop: 'Остановить', refresh: '↻ Обновить связь', rmTurnPh: 'TURN (необязательно): turn:host:3478|логин|пароль',
+  lang: 'ru', rpmWarn: 'Красная зона оборотов, об/мин', reportWwhNote: 'WWH-OBD: ошибки читаются через UDS 19; режимы 03/07/09/0A, стоп-кадр и мониторы готовности недоступны.', tabHelp: 'Справка', helpTitle: 'Справка', helpProtoText: 'Поддержка протоколов (ELM327 по BLE)\n• Стандартный OBD-II (режимы 01, 02, 03, 04, 07, 09, 0A): CAN 11 бит и 29 бит (500 кбит/с), ISO 9141-2. Подтверждено логами: BMW E46, MINI, smart, VW Golf, Peugeot, Fiat 500.\n• ISO 14230 (KWP2000), J1850 PWM/VPW: поддерживаются адаптером, в приложении не проверялись.\n• Поиск блоков: CAN 11 бит (адреса 700–7FF) и CAN 29 бит (18DA<блок>F1). Экспериментальный скан K-Line/KWP (адреса в стиле BMW) при связи ISO 9141 / KWP2000 — только чтение, не K-Bus/I-Bus.\n• Диагностика блоков (UDS по CAN): ошибки (19), идентификация и параметры (22), поддержка связи (3E). Запись (2E) и опасные команды — только с подтверждением и проверкой напряжения. Прошивка и авторизация (29, 34–38, 3D) заблокированы, ключ доступа (27) приложение не вычисляет, готовый кадр отправить можно.\n• WWH-OBD (ISO 27145, например новые Mercedes): данные через UDS 22 F4xx, коды через 19 42, определяется автоматически; на машине не проверено.\n• Не поддерживается: кузовные блоки на K-Bus/I-Bus, KWP/TP 2.0 по CAN (старые модули VAG), CAN FD, DoIP.\n• «Зонд протокола» (вкладка «Настройки») собирает ответы блока для анализа: пришлите лог.', helpAbout: 'OBDnoPRO 02v56. Данные хранятся только в браузере этого устройства; удалённый просмотр соединяет устройства напрямую.', uiScale: 'Масштаб интерфейса', uiScaleAuto: 'Авто', scanNeedCan11: 'Поиск блоков работает только на CAN (11 и 29 бит). У этой машины: {p}', statusScanningKline: 'Скан K-Line/KWP (эксперимент)… до 2–3 мин, страницу не закрывайте.', klineScanNote: 'Скан K-Line завершён: блоков {n}. Эксперимент — только блоки, отвечающие по диагностической K-Line (не K-Bus/I-Bus).', klineScanEmpty: 'Ни один блок не ответил по K-Line. Частые причины: адаптер не умеет заголовки KWP, выключено зажигание, или блоки сидят на K-Bus/I-Bus (через ELM327 недоступны).', modRead: 'Читать коды', modUnknown: 'Блок', modClean: 'ошибок нет', modCodes: 'ошибок: {n}', modNoResp: 'нет ответа', modMore: 'Ещё', modSelect: 'Выбрать', tilesMore: 'Ещё параметры', guMode: 'Режим ГУ', clrMoving: 'Разрешить стирание кодов в движении (только на этом устройстве)', guAuto: 'Авто', guOn: 'Вкл', guOff: 'Выкл', hNoData: 'Блок не ответил. Проверьте, что зажигание включено.', hCanErr: 'Ошибка шины CAN. Проверьте разъём и зажигание.', hUnable: 'Не удаётся связаться с блоком управления. Включите зажигание и повторите.', hBusInit: 'Не удалось установить связь по K-Line. Подождите несколько секунд и повторите.', hNoResp: 'Адаптер не ответил ({c}).', probeBtn: 'Зонд протокола (только чтение)', probeTask: 'Зонд протокола', probeNeedCan: 'Зонд нужен для CAN-протоколов. У этой машины: {p}', udsOtherSum: 'Прочие поддерживаемые коды без отказа ({n})', statusKlineWait: 'Ждём завершения сеанса блока ({s} с)…', batteryBlock: 'Напряжение не удалось проверить: операция заблокирована.', udsRawNote: 'сырой UDS-код (формат зависит от блока)', profTitle: 'Профиль', profNamePh: 'Ваше имя (видит вторая сторона)', profId: 'Ваш ID: {id}', trustTitle: 'Доверенные устройства', trustNone: 'Доверенных пока нет.', rmAuth: 'Проверка личности…', rmBadProof: 'Не удалось подтвердить личность', rmAskConn: '«{n}» ({id}) хочет подключиться. Разрешить?', rmAskHost: 'Подключиться к «{n}» ({id})?', rmRemember: 'Доверять «{n}» в дальнейшем (без вопроса)?', rmWithWho: 'Подключено: {n} ({id})', rmNoCrypto: 'Для профилей нужен защищённый контекст (https)', rmDeclined: 'Подключение отклонено', connect: 'Подключить адаптер', demo: 'Демо', stop: 'Остановить', refresh: '↻ Обновить связь', rmTurnPh: 'TURN (необязательно): turn:host:3478|логин|пароль',
   rmTitle: 'Удалённый просмотр',
   rmNote: 'Прямое шифрованное (WebRTC) соединение между браузерами; публичный сервер PeerJS нужен только для установки связи. Наблюдатель видит параметры и читает коды; стирание кодов — только с подтверждения владельца.',
   rmHost: 'Раздать (я в машине)', rmView: 'Наблюдать (я за компьютером)', rmOff: 'Отключить',
@@ -1711,7 +1730,7 @@ async function readModCodes(m) {
   // K-Line modules: skip UDS 19, go straight to KWP service 18
   if (m.kline || (/^[0-9A-F]{2}$/.test(m.req) && !/CAN/.test(protoName))) {
     await kwpSession(m).catch(() => {});
-    return await kwpDTC(false);
+    kwpRaw = true; try { return await kwpDTC(false); } finally { kwpRaw = false; }
   }
   const r = await ud('19020C', 12000);
   if (r.h.startsWith('5902')) {
@@ -1991,11 +2010,8 @@ function hexBody(lines) {
 const MODN = {'DA10F1': 'Engine (ECU)', 'DA18F1': 'Transmission (TCU)', '710': 'Gateway', '713': 'ABS/ESP', '714': 'Instrument Panel', '715': 'Airbag', '7E0': 'Engine (PCM)', '7E1': 'Transmission (TCM)', '760': 'ABS/ESP', '720': 'Instrument Panel', '726': 'Body Control (BCM)',
   '737': 'Airbags', '736': 'Parking Sensors', '7D0': 'Infotainment (APIM)', '727': 'Audio', '730': 'Power Steering',
   '740': 'Driver Door', '741': 'Passenger Door', '724': 'Steering Column', '733': 'Climate',
-  // BMW K-Line / KWP physical addresses (E36/E46/E39 era, experimental)
-  '12': 'BMW Engine (DME/DDE)', '18': 'BMW Transmission (EGS)', '80': 'BMW ABS/DSC', 'A0': 'BMW Instrument cluster',
-  '60': 'BMW Climate (IHKA)', '44': 'BMW Airbag', '50': 'BMW Light module (LSZ)', '9C': 'BMW Body (ZKE)',
-  '72': 'BMW Radio/IKE', '7F': 'BMW Gateway/LCM', 'B0': 'BMW Seat memory', '40': 'BMW EWS/CAS',
-  'C0': 'BMW PDC', '6F': 'BMW SMG/Transmission', '55': 'BMW Seat', '56': 'BMW Seat pass.'};
+  // BMW K-Line / KWP, физические адреса E3x/E4x (по памяти, сверить)
+  '12': 'BMW DME/DDE (двигатель)', '32': 'BMW EGS (КПП)', '56': 'BMW ABS/DSC', '80': 'BMW IKE (приборы)', '5B': 'BMW IHKA (климат)', '60': 'BMW PDC', 'A4': 'BMW MRS (подушки)', 'D0': 'BMW LCM (свет)', '00': 'BMW ZKE/GM (кузов)', '44': 'BMW EWS', '08': 'BMW SHD (люк)', '68': 'BMW радио', '7F': 'BMW навигация', '50': 'BMW MFL (руль)', '72': 'BMW память сидений'};
 const modStat = {};
 // v52: диагностические адреса VAG (как в ODIS) и имя блока по ODX-идентификатору (UDS 22 F19E, напр. EV_TCMDQ250021)
 const VAG_ADDR = {'01': 'Engine (ECU)', '02': 'Transmission (TCU)', '03': 'Brakes (ABS/ESP)', '08': 'Climate control', '09': 'Body control (BCM)', '13': 'Adaptive cruise (ACC)', '15': 'Airbag', '16': 'Steering column', '17': 'Instrument cluster', '19': 'Gateway', '42': 'Door driver', '52': 'Door passenger', '44': 'Power steering', '5F': 'Infotainment', '69': 'Trailer', '76': 'Park assist', 'B7': 'Keyless (KESSY)'};
@@ -2293,12 +2309,10 @@ async function scanMods(verifyOnly) {
 }
 // ===== Experimental K-Line / KWP2000 module scan (BMW E36/E46/E39-oriented) =====
 // Uses physical addressing ATSH 81 <addr> F1 + KWP tester-present / identification.
-// Read-only. K-Bus / I-Bus is NOT accessible via standard ELM327 — this only covers modules
-// that answer on the diagnostic K-Line.
-const KLINE_BMW_ADDRS = [
-  '12', '18', '80', 'A0', '60', '44', '50', '9C', '72', '7F', 'B0', '40', 'C0', '6F', '55', '56',
-  '10', '13', '1A', '20', '28', '30', '39', '48', '58', '5E', '64', '6B', '70', '78', '98', 'BB', 'D0'
-];
+// Только чтение. Блоки кузова E46 (ZKE, LCM, IHKA) на ряде годов доступны через шлюз в комбинации приборов — проверять опытом.
+const KLINE_BMW_ADDRS = ['12', '32', '56', '80', '5B', '60', 'A4', 'D0', '00', '44', '08', '68', '7F', '50', '72']; // адреса BMW E3x/E4x по памяти, сверить с INPA/Launch
+let klineSp = '5'; // протокол K-line, найденный сканом (5 = ISO 14230 fast init, 4/3 = 5-baud)
+let kwpRaw = false; // BMW: коды KWP показывать сырым hex (43F1), а не SAE-буквой
 async function scanModsKline() {
   const found = [];
   $('#mods').textContent = t('statusScanningKline');
@@ -2312,10 +2326,10 @@ async function scanModsKline() {
       const trySp = ['5', '4', '3'];
       for (const sp of trySp) {
         const r = await tp('ATSP' + sp, 5000);
-        if (r && !/ERROR|UNABLE/i.test(r.join(' '))) { log('kline-scan: ATSP' + sp); break; }
+        if (r && !/ERROR|UNABLE/i.test(r.join(' '))) { log('kline-scan: ATSP' + sp); klineSp = sp; break; }
       }
     } else {
-      await tp('ATSP' + saved, 5000);
+      await tp('ATSP' + saved, 5000); klineSp = saved;
     }
     // Short silence helps after protocol switch on K-Line
     await sleep(800);
@@ -2329,6 +2343,11 @@ async function scanModsKline() {
       status(t('statusScanningAddr', {a: 'K ' + ad, n: found.length}));
       // ISO14230 header: 81 <target> F1 (physical, length in first byte often handled by ELM)
       if (await tp('ATSH81' + ad + 'F1', 2500) === null) { if (++bad >= 8) break; continue; }
+      { // ISO 14230: у каждого блока своя инициализация (ATFI быстрая; 5-baud: ATIIA на адрес блока + ATSI)
+        if (klineSp !== '5') await tp('ATIIA' + ad, 2000);
+        const ri = await tp(klineSp === '5' ? 'ATFI' : 'ATSI', 12000);
+        if (!ri || /UNABLE|ERROR|NO DATA|FAIL/i.test(ri.join(' '))) { if (++bad >= 12 && found.length === 0 && i > 20) { log('kline-scan: many consecutive misses, aborting early'); break; } await sleep(120); continue; }
+      }
       // Tester Present (KWP 3E 00) — many ECUs answer with 7E 00
       let r = await tp('3E00', 3500);
       let hit = r && r.some(l => {
@@ -2518,7 +2537,7 @@ async function kwpDTC(emis) {
   for (let i = 0; i < n && 4 + i * 6 + 6 <= r.h.length; i++) {
     const q = r.h.substr(4 + i * 6, 6), hl = q.slice(0, 4).toUpperCase();
     if (hl === '0000') continue;
-    rows.push({raw: hl, ftb: '', obd: decodeDTC(hl), st: q.slice(4), flags: 'KWP'}); // v51: 2 байта KWP = обычный код SAE (B1101, U1502…): поиск и словарь работают как для P-кодов
+    rows.push({raw: hl, ftb: '', obd: kwpRaw ? hl : decodeDTC(hl), st: q.slice(4), flags: 'KWP'}); // v51: 2 байта KWP = обычный код SAE (B1101, U1502…): поиск и словарь работают как для P-кодов
   }
   return rows;
 }
@@ -2530,12 +2549,72 @@ function lowBatNote() {
   return typeof volt === 'number' && volt > 0 && volt < 11.8 && rpm < 400 ? t('lowBat', {v: volt.toFixed(1)}) : '';
 }
 // Лёгкий возврат после работы с модулем: без ATZ (на части адаптеров он занимает ~5 с). Если проверка 0100 не прошла — полный restore().
+
+let stopScan = false;
+async function physEcm() { // CAN 29 бит: опрос только блока двигателя 10, иначе отвечают 2 ЭБУ и пакетный опрос ломается
+  try {
+    await send('ATSHDA10F1', 3000);
+    const r = await send('0100', 6000);
+    if (r.some(l => /^41/.test(l.replace(/\s/g, '')))) return true;
+  } catch (e) { if (fatalErr(e)) throw e; }
+  try { await send('ATSHDB33F1', 3000); } catch (e) {}
+  return false;
+}
+const BMW_DTC = {'43F1': 'DDE: дополнительный электроотопитель', '4AB2': 'DDE: дополнительный электроотопитель', '41A2': 'DDE: регулятор давления наддува'};
+async function bmwKline() { // E46: DDE по K-line (BMW KWP2000, адрес 0x12). Эксперимент, только чтение: 1A 80, 18 00 FF 00
+  const o = $('#bmwOut'); const add = s => { o.textContent += s + '\n'; };
+  o.textContent = 'E46 K-line, DDE 0x12, только чтение\n';
+  for (const [name, cmds] of [['быстрая инициализация (ATSP5)', ['ATSP5', 'ATH1', 'ATSH8112F1', 'ATST64', 'ATFI']], ['5-baud на адрес 12 (ATSP4)', ['ATSP4', 'ATIIA12', 'ATH1', 'ATSH8112F1', 'ATST64', 'ATSI']]]) {
+    add('— ' + name); let up = true;
+    for (const c of cmds) { try { const r = await send(c, 12000); add(c + ' → ' + (r.join(' ') || '(пусто)')); if (/UNABLE|ERROR|NO DATA/.test(r.join(' ')) && /AT(FI|SI)/.test(c)) up = false; } catch (e) { if (fatalErr(e)) throw e; add(c + ' → ' + errText(e)); up = false; } }
+    if (!up) continue;
+    for (const rq of ['1A80', '1800FF00']) {
+      let r = []; try { r = await send(rq, 8000); } catch (e) { if (fatalErr(e)) throw e; add(rq + ' → ' + errText(e)); continue; }
+      add(rq + ' → ' + (r.join(' | ') || '(пусто)'));
+      for (const l of r) { const m = l.replace(/\s/g, '').toUpperCase().match(/F112(?:[0-9A-F]{2})?58([0-9A-F]{2})([0-9A-F]*)/); if (!m) continue;
+        const d = (m[2].match(/../g) || []); add('Кодов: ' + parseInt(m[1], 16));
+        for (let i = 0; i + 2 < d.length; i += 3) { const c = d[i] + d[i + 1]; add('  ' + c + ' (статус ' + d[i + 2] + ') ' + (BMW_DTC[c] || '')); } }
+    }
+    if (/58/.test(o.textContent.split('— ').pop())) break;
+  }
+  add('Готово. Пришли этот текст разработчику, если коды не прочитались.');
+}
+function didMatch(by, refs) {
+  const hits = [];
+  for (const n of [1, 2, 4]) for (let i = 0; i + n <= by.length && i < 8; i += n) {
+    let u = 0; for (let k = 0; k < n; k++) u = u * 256 + by[i + k];
+    const sg = n < 4 && u >= 2 ** (8 * n - 1) ? u - 2 ** (8 * n) : u;
+    for (const raw of (sg === u ? [u] : [u, sg])) for (const k of [1, 0.1, 0.01, 0.001, 0.0625, 0.25, 0.5, 10, 100]) for (const off of [0, -40, -273.14]) {
+      const v = raw * k + off;
+      for (const r of refs) if (Math.abs(v - r.v) <= Math.max(Math.abs(r.v) * 0.003, k * 0.6, 0.05)) hits.push({s: r.n + ' = ' + +v.toFixed(2) + ' [' + n + 'Б@' + i + (raw !== u ? ' знак' : '') + ' ×' + k + (off ? ' ' + off : '') + ']', strong: r.strong});
+    }
+  }
+  const seen = new Set(); return hits.filter(h => !seen.has(h.s) && seen.add(h.s)).slice(0, 6);
+}
+async function didScan() { // перебор 22 xxxx у блока, сравнение с эталонными значениями (только чтение)
+  const req = ($('#dsReq').value || '7E0').trim().toUpperCase(), resp = ($('#dsResp').value || '7E8').trim().toUpperCase();
+  const a = parseInt($('#dsFrom').value, 16), b = parseInt($('#dsTo').value, 16), o = $('#dsOut');
+  if (!(a >= 0 && b >= a && b - a < 0x2000)) { o.textContent = 'Диапазон не больше 8192 DID за раз'; return; }
+  const refs = ($('#dsRef').value || '').split('\n').map(x => { const i = x.lastIndexOf('='); return i < 0 ? null : {n: x.slice(0, i).trim(), v: parseFloat(x.slice(i + 1).replace(',', '.'))}; }).filter(x => x && isFinite(x.v));
+  refs.forEach(r => { r.strong = !Number.isInteger(r.v) || Math.abs(r.v) >= 40; });
+  stopScan = false; o.textContent = 'Скан ' + req + '/' + resp + ' ' + a.toString(16).toUpperCase() + '–' + b.toString(16).toUpperCase() + '\n';
+  await udsSetup({req, resp}); let ans = 0;
+  for (let d = a; d <= b && running && !stopScan; d++) {
+    const did = d.toString(16).toUpperCase().padStart(4, '0'); if (d % 16 === 0) status('DID ' + did);
+    let r; try { r = await ud('22' + did, 2500); } catch (e) { if (fatalErr(e)) throw e; continue; }
+    if (!r || !r.pos || !r.h || r.h.length <= 6) continue;
+    ans++; const by = (r.h.slice(6).match(/../g) || []).map(x => parseInt(x, 16)), hit = didMatch(by, refs);
+    o.textContent += (hit.some(h => h.strong) ? '★ ' : '') + did + ' = ' + r.h.slice(6, 6 + 32) + (hit.length ? '  ← ' + hit.map(h => h.s).join('; ') : '') + '\n';
+  }
+  o.textContent += 'Готово: ответили ' + ans + (stopScan ? ' (остановлено)' : '') + '. ★ — совпали значения с эталоном (не целые или ≥40).';
+}
 async function restoreFast() {
   if (demo || wwh || !/CAN/.test(protoName)) return restore();
   try {
     const c29 = /CAN 29/.test(protoName);
     for (const c of ['ATH0', 'ATAR', 'ATST32', 'ATFCSM0', c29 ? 'ATSHDB33F1' : 'ATSH7DF']) await send(c, 3000);
     await applyCRA();
+    if (c29) await physEcm();
     const r = await send('0100', 8000);
     if (r.some(l => /^41/.test(l.replace(/\s/g, '')))) return;
   } catch (e) { if (fatalErr(e)) throw e; }
@@ -2544,8 +2623,8 @@ async function restoreFast() {
 async function udsSetup(m) {
   // K-Line / KWP physical addressing (2-byte BMW-style or 81 xx F1)
   if (m.kline || (/^[0-9A-F]{2}$/.test(m.req) && !/CAN/.test(protoName))) {
-    const cmds = ['ATH1', 'ATST64', 'ATSH81' + m.req + 'F1'];
-    for (const c of cmds) await send(c, 3000);
+    for (const c of ['ATSP' + klineSp, 'ATH1', 'ATST64', 'ATSH81' + m.req + 'F1']) await send(c, 5000);
+    if (klineSp === '5') await send('ATFI', 9000); else { await send('ATIIA' + m.req, 3000); await send('ATSI', 12000); }
     return;
   }
   const cmds = ['ATH0', 'ATSH' + m.req, 'ATCRA' + m.resp, 'ATST64'];
@@ -4557,6 +4636,7 @@ async function run() {
     if (!udsOnly) { taskEnd(t('statusLinkEstablished')); setConn(demo ? 'demo' : 'ok', demo ? 'statusDemo' : 'statusOk'); }
     let fails = 0;
     deadPid.clear(); for (const k in ndCnt) delete ndCnt[k];
+    if (/CAN 29/.test(protoName) && !demo && !wwh) { try { await physEcm(); } catch (e) { if (fatalErr(e)) throw e; } }
     while (running && my === gen) {
       cycle++;
       recUpdated.clear();
@@ -4795,6 +4875,9 @@ $('#bClear').onclick = () => {
   if (remote.role === 'viewer' && remote.dc) { taskShow(t('rmClrReq'), ''); rmSend({t: 'clearDtc'}); return; }
   action = 'clear';
 };
+$('#bBmwK').onclick = () => runAct(async () => { await bmwKline(); }, false, 'E46 K-line');
+$('#dsGo').onclick = () => runAct(async () => { await didScan(); }, false, 'DID scan');
+$('#dsStop').onclick = () => { stopScan = true; };
 $('#bLog').onclick = () => shareText('obd-log.txt', '# ' + new Date().toISOString() + ' ' + APP_VER + ' VIN ' + ((car && car.vin) || '-') + ' ECT ' + (last['5'] !== undefined ? last['5'] : '?') + ' RPM ' + (last['12'] !== undefined ? last['12'] : '?') + '\n' + logBuf);
 $('#bDemo').onclick = () => {
   unlockAudio();
