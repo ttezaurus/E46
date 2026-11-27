@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OBDnoPRO 02v58</title>
+<title>OBDnoPRO 02v59</title>
 <style>
 :root{--u:1px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f5f7;--card:#fff;--text:#14171c;--muted:#6b7280;--accent:#1c69d4;--danger:#c62828;--line:#e3e5e9}
@@ -155,7 +155,7 @@ body.tbl .grid .card>small:first-child{grid-column:1;font-size:calc(14*var(--u))
 body.tbl .grid .card .cv{grid-column:2;justify-content:flex-end}
 body.tbl .grid .card b,body.tbl .grid .card.big b{font-size:calc(20*var(--u))}
 body.tbl .grid .card small[id^="m"],body.tbl .grid .card canvas{grid-column:1/-1}
-body.tbl .grid .card .gb{display:none}
+body.tbl .grid .card .gb{display:inline}
 .tabs{grid-template-columns:repeat(6,minmax(0,1fr))}
 .tabs button{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .tabs button:not([aria-selected="true"]){background:var(--card);color:var(--muted);border:calc(1*var(--u)) solid var(--line)}
@@ -276,7 +276,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 </head>
 <body>
 <main>
-<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v58</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
+<h1>OBDnoPRO <span style="font-size:calc(11*var(--u));color:var(--muted);font-weight:500">02v59</span><span id="roBadge" class="robadge" style="display:none" data-i18n="roBadge">🔒 READ-ONLY</span></h1>
 <div id="flags" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-label="Русский" title="Русский">🇷🇺</button><button type="button" data-lang="en" aria-label="English" title="English">🇬🇧</button><button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch">🇩🇪</button></div>
 <div id="carInfo" style="color:var(--muted);font-size:calc(13*var(--u));margin:0 0 calc(8*var(--u))" data-i18n="unknownCar">Автомобиль не определён</div>
 <div id="topbar">
@@ -377,6 +377,15 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
   <div class="panel-note" data-i18n="dsgNote"></div>
   <div class="row"><button id="bDsg" class="sec" disabled data-i18n="dsgRead">Запросить значения</button></div>
   <div id="dsgOut"></div>
+  <h2 data-i18n="batTitle">Тест АКБ</h2>
+  <div class="panel-note" data-i18n="batNote"></div>
+  <div class="row"><button id="bBat" class="sec" disabled data-i18n="batRun">Проверить аккумулятор</button></div>
+  <div id="batOut"></div>
+  <details id="etalon"><summary data-i18n="etTitle">Эталон адресов VAG / ODIS</summary>
+    <div class="panel-note" data-i18n="etNote"></div>
+    <div class="row"><input id="etQ" data-i18n="etPh" placeholder="адрес или название" autocapitalize="characters"></div>
+    <div id="etOut"></div>
+  </details>
 </section>
 <section id="tab-ddata" class="tab-panel" role="tabpanel">
   <h2 data-i18n="reportTitle">Отчёт автомобиля</h2><div>
@@ -505,7 +514,7 @@ body.ro #bClear,body.ro #bmClr,body.ro #wGo,body.ro #chGo,body.ro #bClearAllOrOn
 <div id="dv"></div>
 <div id="hud"><div id="hudAl"></div><div id="hudGrid"></div><div id="hudDtc"></div></div>
 <script>
-const APP_VER = '02v58';
+const APP_VER = '02v59';
 (() => {
 'use strict';
 
@@ -1196,6 +1205,9 @@ Object.assign(LANG.de, {tabBlocks: 'Service', tabTools: 'Optionen', modsTitle: '
 Object.assign(LANG.ru, {odisActive: 'активна/статична', odisSporadic: 'пассивн./спорадич.', odisPending: 'ожидает', odisMil: 'лампа MIL', extTip: 'Расширенные данные и стоп-кадр (19 06 / 19 04)', extRecs: 'записи', dsgTitle: 'DSG 0AM: сцепления', dsgNote: 'Тест. Только 7-ступенчатая сухая DQ200 (0AM), CAN 11 бит. Читаются положения штоков, давление и запас по износу, значения пока выводятся сырыми — сверяем на машине.', dsgRead: 'Запросить значения', dsgNeedCan: 'Нужен протокол CAN 11 бит. Сначала подключитесь к автомобилю.', dsgNoTcu: 'Блок КПП (7E1) не отвечает.', dsgOnly0am: 'Это не коробка 0AM: экран работает только с DQ200.', dsgRaw: 'ответ', dsgVals: 'значения', dsgFoot: 'Группы по 3 байта: формат, старший, младший. Какое значение к какому сцеплению относится — уточняется на тесте.'});
 Object.assign(LANG.en, {odisActive: 'active/static', odisSporadic: 'passive/sporadic', odisPending: 'pending', odisMil: 'MIL on', extTip: 'Extended data and snapshot (19 06 / 19 04)', extRecs: 'records', dsgTitle: 'DSG 0AM: clutches', dsgNote: 'Test. 7-speed dry DQ200 (0AM) only, CAN 11-bit. Rod positions, pressure and wear reserve are read; values are shown raw for now and need checking on a car.', dsgRead: 'Read values', dsgNeedCan: 'CAN 11-bit protocol needed. Connect to the car first.', dsgNoTcu: 'Transmission module (7E1) does not answer.', dsgOnly0am: 'This is not a 0AM gearbox: the screen works with DQ200 only.', dsgRaw: 'response', dsgVals: 'values', dsgFoot: 'Groups of 3 bytes: format, high, low. Which value belongs to which clutch is to be confirmed in testing.'});
 Object.assign(LANG.de, {odisActive: 'aktiv/statisch', odisSporadic: 'passiv/sporadisch', odisPending: 'anstehend', odisMil: 'MIL an', extTip: 'Erweiterte Daten und Snapshot (19 06 / 19 04)', extRecs: 'Datensätze', dsgTitle: 'DSG 0AM: Kupplungen', dsgNote: 'Test. Nur 7-Gang-Trockenkupplung DQ200 (0AM), CAN 11 Bit. Gelesen werden Stangenposition, Druck und Verschleißreserve; Werte werden vorerst roh angezeigt und müssen am Fahrzeug geprüft werden.', dsgRead: 'Werte abfragen', dsgNeedCan: 'CAN 11 Bit nötig. Zuerst mit dem Fahrzeug verbinden.', dsgNoTcu: 'Getriebesteuergerät (7E1) antwortet nicht.', dsgOnly0am: 'Kein 0AM-Getriebe: der Bildschirm funktioniert nur mit DQ200.', dsgRaw: 'Antwort', dsgVals: 'Werte', dsgFoot: 'Gruppen zu 3 Bytes: Format, High, Low. Welcher Wert zu welcher Kupplung gehört, wird im Test geklärt.'});
+Object.assign(LANG.ru, {"batTitle": "Тест АКБ", "batNote": "Оценка по напряжению (ATRV): покой, пуск, зарядка. Это ориентир, не замена нагрузочной вилке: адаптер замеряет несколько раз в секунду и может пропустить самый глубокий провал при пуске.", "batRun": "Проверить аккумулятор", "batS1": "1/3 Покой: двигатель выключен, замеряю…", "batRest": "Напряжение покоя: {v} В — {s}", "batRunning": "Похоже, двигатель уже работает или идёт зарядка: покой недостоверен.", "batS2": "2/3 Запустите двигатель (жду до 25 с)…", "batNoStart": "Запуск не обнаружен (напряжение не поднялось выше 13.2 В).", "batCrank": "Минимум при пуске: {v} В — {s}", "batS3": "3/3 Зарядка: подержите около 2000 об/мин, замеряю…", "batChg": "Напряжение зарядки: {v} В — {s}", "batOk": "норма", "batMid": "средне", "batLow": "низко", "batBad": "плохо", "batOver": "завышено", "batFoot": "Пороги ориентировочные для свинцового 12-вольтового АКБ: покой ≥12.4, пуск ≥9.6, зарядка 13.5–14.8 В. У машин со start-stop/AGM и «умной» зарядкой напряжение зарядки может быть иным.", "etTitle": "Эталон адресов VAG / ODIS", "etNote": "Адреса диагностики по ODIS (по скринам Golf 7.5). Это не CAN-ID: по адресу нельзя вычислить кадр запроса.", "etPh": "адрес или название", "etEmpty": "ничего не найдено"});
+Object.assign(LANG.en, {"batTitle": "Battery test", "batNote": "Voltage-based estimate (ATRV): rest, cranking, charging. A guide, not a load tester: the adapter samples a few times a second and may miss the deepest dip at cranking.", "batRun": "Check battery", "batS1": "1/3 Rest: engine off, measuring…", "batRest": "Rest voltage: {v} V — {s}", "batRunning": "The engine seems to be running or charging: rest value is unreliable.", "batS2": "2/3 Start the engine (waiting up to 25 s)…", "batNoStart": "No start detected (voltage did not rise above 13.2 V).", "batCrank": "Minimum while cranking: {v} V — {s}", "batS3": "3/3 Charging: hold about 2000 rpm, measuring…", "batChg": "Charging voltage: {v} V — {s}", "batOk": "ok", "batMid": "fair", "batLow": "low", "batBad": "bad", "batOver": "too high", "batFoot": "Approximate thresholds for a 12 V lead-acid battery: rest ≥12.4, cranking ≥9.6, charging 13.5–14.8 V. Start-stop/AGM cars and smart charging can differ.", "etTitle": "VAG / ODIS address reference", "etNote": "Diagnostic addresses from ODIS (Golf 7.5 screenshots). Not CAN IDs: a request frame cannot be derived from the address.", "etPh": "address or name", "etEmpty": "nothing found"});
+Object.assign(LANG.de, {"batTitle": "Batterietest", "batNote": "Voltage-based estimate (ATRV): rest, cranking, charging. A guide, not a load tester: the adapter samples a few times a second and may miss the deepest dip at cranking.", "batRun": "Batterie prüfen", "batS1": "1/3 Rest: engine off, measuring…", "batRest": "Rest voltage: {v} V — {s}", "batRunning": "The engine seems to be running or charging: rest value is unreliable.", "batS2": "2/3 Start the engine (waiting up to 25 s)…", "batNoStart": "No start detected (voltage did not rise above 13.2 V).", "batCrank": "Minimum while cranking: {v} V — {s}", "batS3": "3/3 Charging: hold about 2000 rpm, measuring…", "batChg": "Charging voltage: {v} V — {s}", "batOk": "ok", "batMid": "fair", "batLow": "low", "batBad": "bad", "batOver": "too high", "batFoot": "Approximate thresholds for a 12 V lead-acid battery: rest ≥12.4, cranking ≥9.6, charging 13.5–14.8 V. Start-stop/AGM cars and smart charging can differ.", "etTitle": "VAG/ODIS-Adressreferenz", "etNote": "Diagnostic addresses from ODIS (Golf 7.5 screenshots). Not CAN IDs: a request frame cannot be derived from the address.", "etPh": "Adresse oder Name", "etEmpty": "nothing found"});
 Object.assign(LANG.ru, {"subErrors": "Ошибки", "subMods": "Блоки", "subData": "Данные", "snapTitle": "Снимки при появлении кодов", "snapNote": "Когда в режиме HUD появляется новый код, приложение сохраняет значения параметров. Это снимок приложения, а не стоп-кадр ЭБУ: он сделан в момент, когда код заметили, и содержит диапазон за последние 10 с.", "snapNone": "Снимков пока нет.", "snapClr": "Очистить снимки", "snapVolt": "Напряжение", "snapEcu": "Стоп-кадр ЭБУ (режим 02)", "snapApp": "Снимок приложения (диапазон за 10 с)", "hudNewDtc": "⚠ Новая ошибка", "hudPendDtc": "ожидает"});
 Object.assign(LANG.en, {"subErrors": "Errors", "subMods": "Modules", "subData": "Data", "snapTitle": "Snapshots when codes appear", "snapNote": "When a new code appears in HUD mode, the app saves the parameter values. This is an app snapshot, not the ECU freeze frame: it is taken when the code was noticed and includes the range over the last 10 s.", "snapNone": "No snapshots yet.", "snapClr": "Clear snapshots", "snapVolt": "Voltage", "snapEcu": "ECU freeze frame (mode 02)", "snapApp": "App snapshot (range over 10 s)", "hudNewDtc": "⚠ New fault", "hudPendDtc": "pending"});
 Object.assign(LANG.de, {"subErrors": "Fehler", "subMods": "Module", "subData": "Daten", "snapTitle": "Schnappschüsse bei neuen Codes", "snapNote": "Erscheint im HUD-Modus ein neuer Code, speichert die App die Parameterwerte. Das ist ein App-Schnappschuss, kein Freeze Frame des Steuergeräts: er entsteht, wenn der Code bemerkt wird, und enthält den Bereich der letzten 10 s.", "snapNone": "Noch keine Schnappschüsse.", "snapClr": "Schnappschüsse löschen", "snapVolt": "Spannung", "snapEcu": "Freeze Frame des Steuergeräts (Modus 02)", "snapApp": "App-Schnappschuss (Bereich 10 s)", "hudNewDtc": "⚠ Neuer Fehler", "hudPendDtc": "ausstehend"});
@@ -2808,7 +2820,7 @@ async function doExt0(a) {
 }
 
 function buttons() {
-  $('#bScan').disabled = !running; { const bd = $('#bDsg'); if (bd) bd.disabled = !running; }
+  $('#bScan').disabled = !running; { const bd = $('#bDsg'); if (bd) bd.disabled = !running; const bb = $('#bBat'); if (bb) bb.disabled = !running; }
   { const vb = $('#bVerify'), vr = vehRec(); if (vb) vb.disabled = !(running && vr && vr.mods && vr.mods.length && /CAN/.test(protoName) && !wwh); }
   $('#bDemo').disabled = running;
   $('#bRep').disabled = !running;
@@ -2834,6 +2846,7 @@ const UNITS = {
   unitKm: [['unitKm', v => v, 0], ['unitMi', v => v * 0.621371, 0]]
 };
 let unitSel = {}, graphOn = new Set(), hist = {}, last = {};
+try { graphOn = new Set(JSON.parse(localStorage.getItem('graphOn') || '[]')); } catch (e) { graphOn = new Set(); }
 try { unitSel = JSON.parse(localStorage.getItem('units')) || {}; } catch (e) {}
 let recOn = false, recSet = new Set(), recRows = [], recT0 = 0, recCols = [], recUpdated = new Set();
 try { const j = JSON.parse(localStorage.getItem('rec')); if (Array.isArray(j)) recSet = new Set(j); } catch (e) {}
@@ -2864,6 +2877,7 @@ function render() {
     };
     c.querySelector('.gb').onclick = () => {
       if (graphOn.has(m.k)) graphOn.delete(m.k); else graphOn.add(m.k);
+      try { localStorage.setItem('graphOn', JSON.stringify([...graphOn])); } catch (e) {}
       render();
     };
     host.appendChild(c); paint(m);
@@ -5071,6 +5085,45 @@ async function dsgRead() {
   }
   put(t('dsgFoot'), 'var(--muted)');
 }
+
+// ===== v59: эталон адресов ODIS =====
+const VAG_ETALON = [["01", "MOT", "Электроника двигателя"], ["02", "GET", "Электроника КП"], ["03", "BRE", "Электроника тормозной системы"], ["06", "SVB", "Регулировка переднего пассажирского сиденья"], ["08", "KLH", "Отопитель и климатическая установка"], ["09", "EZE", "Центральная электроника"], ["13", "DIS", "Адаптивный круиз-контроль"], ["14", "RAD", "Электронная система амортизации"], ["15", "AIR", "Подушки безопасности"], ["16", "LRE", "Электроника рулевой колонки"], ["17", "SCH", "Комбинация приборов"], ["18", "ZST", "Дополнительный/автономный отопитель"], ["19", "DID", "Диагностический интерфейс шин данных (шлюз)"], ["20", "FLA", "Ассистент управления дальним светом"], ["22", "ALR", "Электронное оборудование полного привода"], ["23", "BKV", "Усилитель тормозного привода"], ["29", "LSL", "Левый блок управления световыми приборами"], ["2B", "LSV", "Блокировка рулевой колонки"], ["32", "SPR", "Механизм блокировки дифференциалов"], ["36", "SVF", "Регулировка сиденья водителя"], ["39", "LSR", "Правый блок управления световыми приборами"], ["3A", "SFA", "Ассистент для спецавтомобиля"], ["3C", "SWA", "Ассистент смены полосы движения"], ["3D", "SOF", "Специальная функция"], ["42", "TFA", "Электроника двери водителя"], ["44", "LKH", "Усилитель рулевого управления"], ["47", "SOU", "Акустическая система"], ["4B", "MFM", "Многофункциональный модуль"], ["51", "ELA", "Электропривод"], ["52", "TBF", "Электроника двери переднего пассажира"], ["55", "LWR", "Корректор фар"], ["57", "TVT", "ТВ-тюнер"], ["5D", "BED", "Управление"], ["5F", "IFE", "Электронная информационная система 1"], ["65", "REI", "Контроль давления воздуха в шинах"], ["69", "AHF", "Тягово-сцепное устройство"], ["6C", "RFK", "Камера заднего вида"], ["6D", "HDE", "Электроника крышки багажного отсека"], ["75", "NOT", "Модуль аварийного вызова и блок связи"], ["76", "EPH", "Парковочный ассистент"], ["80", "BR1", "Регулирование АКБ, дополнительная память 1"], ["82", "HUD", "Проекционный дисплей"], ["8C", "HBM", "Управление АКБ гибридного автомобиля"], ["A5", "FFF", "Передние датчики вспомогательных систем для водителя"], ["A9", "AFK", "Исполнительный механизм симпозера"], ["B7", "IZS", "Интерфейс системы санкционирования доступа и пуска"], ["BB", "TFH", "Электроника задней двери со стороны водителя"], ["BC", "TBH", "Электроника задней двери со стороны переднего пассажира"], ["BD", "HOB", "Система регулирования заряда высоковольтной АКБ"], ["C0", "AFA", "Исполнительный механизм внешнего шума (Actuator for exterior noise)"], ["C5", "THE", "Управление тепловым режимом (Thermal management)"], ["C6", "HBL", "Зарядное устройство высоковольтной АКБ (High-voltage battery charger)"], ["CA", "SFS", "Блок управления люком (Sunroof control module)"], ["CF", "SW2", "Ассистент смены полосы 2 (Lane change assist 2)"], ["D6", "LS2", "Блок управления фарой слева 2 (Headlight control left 2)"], ["D7", "LR2", "Блок управления фарой справа 2 (Headlight control right 2)"], ["0604", "GTO", "Открыватель гаражных ворот (Garage door opener)"], ["0637", "BU1", "Мониторинг АКБ (Battery monitoring)"], ["06D0", "BJB", "Прерыватель АКБ (Battery interrupt switch)"], ["8118", "AI2", "блок 8118 (в топологии ODIS AI2), название неизвестно"], ["06D1", "CMC", "Модуль управления ячейками АКБ 1 (Battery cell control module 1)"], ["06D2", "CMC", "Модуль управления ячейками АКБ 2 (Battery cell control module 2)"], ["06D3", "CMC", "Модуль управления ячейками АКБ 3 (Battery cell control module 3)"], ["06D4", "CMC", "Модуль управления ячейками АКБ 4 (Battery cell control module 4)"], ["06D5", "CMC", "Модуль управления ячейками АКБ 5 (Battery cell control module 5)"], ["06D6", "CMC", "Модуль управления ячейками АКБ 6 (Battery cell control module 6)"], ["06D7", "CMC", "Модуль управления ячейками АКБ 7 (Battery cell control module 7)"], ["06D8", "CMC", "Модуль управления ячейками АКБ 8 (Battery cell control module 8)"], ["06D9", "CMC", "Модуль управления ячейками АКБ 9 (Battery cell control module 9)"], ["06DA", "CMC", "Модуль управления ячейками АКБ 10 (Battery cell control module 10)"], ["06DB", "CMC", "Модуль управления ячейками АКБ 11 (Battery cell control module 11)"], ["06DC", "CMC", "Модуль управления ячейками АКБ 12 (Battery cell control module 12)"]];
+function etalonUI() {
+  const q = ($('#etQ').value || '').trim().toUpperCase(), out = $('#etOut'); out.textContent = '';
+  const rows = VAG_ETALON.filter(r => !q || r[0].includes(q) || r[1].includes(q) || r[2].toUpperCase().includes(q));
+  if (!rows.length) { out.textContent = t('etEmpty'); return; }
+  const tb = document.createElement('table');
+  rows.forEach(r => { const tr = tb.insertRow(); r.forEach(x => { tr.insertCell().textContent = x; }); });
+  out.appendChild(tb);
+}
+// ===== v59: тест АКБ (по ATRV) =====
+async function batTest() {
+  const out = $('#batOut'); out.textContent = '';
+  const put = (txt, cls) => { const d = document.createElement('div'); if (cls) d.style.color = cls; d.textContent = txt; out.appendChild(d); return d; };
+  const avg = async (n, ms) => { const a = []; for (let i = 0; i < n; i++) { const v = await voltFresh(); if (v !== null) a.push(v); await sleep(ms); } return a.length ? a.reduce((x, y) => x + y) / a.length : null; };
+  const grade = (v, lim, hiBad) => v >= lim[0] ? [t('batOk'), ''] : v >= lim[1] ? [t('batMid'), 'var(--warn)'] : v >= lim[2] ? [t('batLow'), 'var(--warn)'] : [t('batBad'), 'var(--danger)'];
+  put(t('batS1'));
+  const rest = await avg(4, 400);
+  if (rest === null) { put(t('batteryBlock'), 'var(--warn)'); return; }
+  if (rest > 13.2) put(t('batRunning'), 'var(--warn)');
+  else { const g = grade(rest, [12.5, 12.2, 11.9]); put(t('batRest', {v: rest.toFixed(2), s: g[0]}), g[1]); }
+  put(t('batS2'));
+  let mn = 99, mx = 0, up = 0, t0 = Date.now(), started = false;
+  while (Date.now() - t0 < 25000) {
+    const v = await voltFresh(); if (v === null) continue;
+    mn = Math.min(mn, v); mx = Math.max(mx, v);
+    if (mx > rest + 0.5 && v >= 13.2) { if (++up >= 3) { started = true; break; } } else up = 0;
+  }
+  if (!started) { put(t('batNoStart'), 'var(--warn)'); put(t('batFoot'), 'var(--muted)'); return; }
+  { const g = mn >= 10.0 ? [t('batOk'), ''] : mn >= 9.6 ? [t('batMid'), 'var(--warn)'] : mn >= 9.0 ? [t('batLow'), 'var(--warn)'] : [t('batBad'), 'var(--danger)'];
+    put(t('batCrank', {v: mn.toFixed(2), s: g[0]}), g[1]); }
+  put(t('batS3'));
+  await sleep(3000);
+  const ch = await avg(5, 500);
+  if (ch !== null) { const g = ch > 15.0 ? [t('batOver'), 'var(--danger)'] : ch >= 13.5 ? [t('batOk'), ''] : ch >= 13.0 ? [t('batLow'), 'var(--warn)'] : [t('batBad'), 'var(--danger)'];
+    put(t('batChg', {v: ch.toFixed(2), s: g[0]}), g[1]); }
+  put(t('batFoot'), 'var(--muted)');
+}
 // v51: обработчики
 roUI(); auditUI(); vehUI();
 $('#roCb').onchange = e => { roMode = e.target.checked; try { localStorage.setItem('roMode', roMode ? '1' : '0'); } catch (x) {} roUI(); };
@@ -5139,6 +5192,8 @@ $('#carName').addEventListener('input', () => { try { localStorage.setItem('carN
 
 carShow(); initBlocks(); rmInit(); profInit();
 $('#bScan').onclick = () => { action = {t: 'scan'}; };
+$('#bBat').onclick = () => runAct(async () => { await batTest(); }, true, t('batTitle'));
+$('#etQ').oninput = etalonUI; etalonUI();
 $('#bDsg').onclick = () => runAct(async () => { await dsgRead(); await restoreFast(); }, true, t('dsgTitle'));
 $('#bProbe').onclick = () => { action = {t: 'probe'}; };
 $('#bGw').onclick = () => { action = {t: 'gw'}; };
